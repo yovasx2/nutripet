@@ -28,15 +28,15 @@ fi
 ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE up -d traefik db"
 
 # Build new image
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE build rails"
+ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE build nutripet"
 
 # Run migrations
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE run --rm rails rails db:migrate RAILS_ENV=production"
+ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE run --rm nutripet rails db:migrate RAILS_ENV=production"
 
 # Precompile assets
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE run --rm rails rails assets:precompile RAILS_ENV=production"
+ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE run --rm nutripet rails assets:precompile RAILS_ENV=production"
 
 # Deploy with zero-downtime: wait for health check before stopping old container
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE up -d --wait --no-deps rails"
+ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE up -d --wait --no-deps nutripet"
 
 echo "Deployment to $REMOTE_HOST finished."
