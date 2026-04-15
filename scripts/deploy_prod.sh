@@ -21,7 +21,9 @@ fi
 
 # Load environment variables from .env.production
 if [ -f .env.production ]; then
-  export $(grep -v '^#' .env.production | xargs)
+  set -a
+  source .env.production
+  set +a
 fi
 
 # Ensure infrastructure services are running
