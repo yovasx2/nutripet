@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Perfil Biológico de Luna - PetHealth Clinical</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#00B4D8', // Professional Cyan-Blue
+                            600: '#0077B6', // Clinical Blue
+                            700: '#023E8A', // Deep Sea Blue
+                            800: '#03045E', // Navy
+                            900: '#0a192f',
+                            950: '#020617',
+                        },
+                        surface: {
+                            DEFAULT: "#f8fafc",
+                            container: {
+                                lowest: "#ffffff",
+                                low: "#f1f5f9",
+                                high: "#e2e8f0",
+                            }
+                        },
+                        "on-surface": "#0f172a",
+                        "outline": "#94a3b8",
+                        "secondary": "#64748b",
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.75rem",
+                        "lg": "1rem",
+                        "xl": "1.25rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Plus Jakarta Sans", "sans-serif"],
+                        "label": ["Plus Jakarta Sans", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.01em;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-body antialiased">
+<!-- TopNavBar Component -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md flex justify-between items-center px-8 h-16 max-w-full mx-auto border-b border-slate-100">
+<div class="flex items-center gap-2">
+<span class="text-xl font-extrabold text-primary-700 tracking-tight">Pet<span class="text-primary-500">Health</span></span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-primary-600 font-semibold border-b-2 border-primary-600 transition-colors py-1" href="#">Inicio</a>
+<a class="text-slate-500 font-medium hover:text-primary-600 transition-colors" href="#">Mis Mascotas</a>
+<a class="text-slate-500 font-medium hover:text-primary-600 transition-colors" href="#">Plan Nutricional</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-100 rounded-lg transition-colors active:scale-95">
+<span class="material-symbols-outlined text-slate-500">notifications</span>
+</button>
+<button class="p-2 hover:bg-slate-100 rounded-lg transition-colors active:scale-95">
+<span class="material-symbols-outlined text-slate-500">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary-100">
+<img alt="User profile avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDw84OB55xLspStiibMzZh0ruIqF6rWOL4hYb8i_Vn8PUy7qKi2TbnyW1al6lbXE_j2RCnBbwhvLEjNTL6UU87WU7jx_CNFlGlxBV4kGSRaWAqN7uXnrNpf4p7nii7dul3Nk4pvl-J-5K-Vxmjq15DlxO37UvkMvm9-JbFbh6E_rzz_mtzh26YeuHc-uKjXAAx6mOHEqxiDouhwiyfp4gAzntu3bkaTZH6Yibo1TFlX0gPuEXp9YvB84W7xopycvP0EOW4PGZ-ZW7s"/>
+</div>
+</div>
+</nav>
+<!-- SideNavBar Component -->
+<aside class="h-screen w-64 fixed left-0 top-0 hidden lg:flex flex-col p-4 space-y-2 bg-white border-r border-slate-100 pt-20">
+<div class="px-4 py-6 mb-4">
+<p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-1">Perfil de</p>
+<h2 class="text-lg font-black text-primary-800">Luna</h2>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-primary-600 rounded-xl transition-all ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-semibold text-sm">Inicio</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-50 text-primary-700 rounded-xl font-bold border border-primary-100 shadow-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pets</span>
+<span class="font-bold text-sm">Mis Mascotas</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-primary-600 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">restaurant</span>
+<span class="font-semibold text-sm">Plan Nutricional</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-primary-600 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">monitor_weight</span>
+<span class="font-semibold text-sm">Registro de Peso</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-primary-600 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="font-semibold text-sm">Diario</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-slate-50 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-medium text-sm">Centro de Ayuda</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-medium text-sm">Cerrar Sesión</span>
+</a>
+</div>
+</aside>
+<main class="lg:ml-64 pt-24 pb-12 px-6">
+<div class="max-w-5xl mx-auto">
+<header class="mb-10">
+<h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Registro de Actividad</h1>
+<p class="text-slate-500 text-lg">Análisis de la rutina diaria biológica</p>
+</header>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Profile Card -->
+<section class="md:col-span-4 bg-white p-8 rounded-3xl shadow-sm flex flex-col items-center text-center border border-slate-100">
+<div class="relative mb-6">
+<div class="w-32 h-32 rounded-full overflow-hidden ring-4 ring-primary-50 p-1 bg-white">
+<img alt="Luna profile" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6tpLZ9ohn486YLl5rsVA4dPqPjzzZhovp1adjcZr1pSjjBo06OfLOaA3HKw65Z2fSy5go4AZFglXj9TdAxbZ9qWnPtcAMADluHI6CdN-7H8HwviuC9al6lojQ_KgfLgfwepoFVVGQxi4JO9hTismVENUazryZw3codW2W5rM5pRl1wAu1i5HwVpfiqMKRZHaB9n4Y8RirZ7lfeYEVvIK0mihYgnEKpH9V-J-e_Fab_Ch0Q391r7iPYxNkDjM68QIoy5DHQzm5Yvw"/>
+</div>
+<button class="absolute bottom-1 right-1 bg-primary-600 text-white p-2 rounded-full shadow-lg active:scale-90 transition-transform hover:bg-primary-700">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+</div>
+<div class="space-y-1 w-full">
+<h3 class="text-2xl font-bold text-slate-900">Luna</h3>
+<p class="text-primary-600 text-xs font-bold uppercase tracking-[0.15em]">Golden Retriever</p>
+</div>
+<div class="grid grid-cols-2 gap-3 w-full mt-8">
+<div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Edad</p>
+<p class="text-xl font-bold text-primary-800">3 años</p>
+</div>
+<div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Peso</p>
+<p class="text-xl font-bold text-primary-800">28 kg</p>
+</div>
+</div>
+</section>
+<section class="md:col-span-8 flex flex-col gap-6">
+<!-- Activity Level Selector -->
+<div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+<h3 class="text-lg font-bold mb-6 flex items-center gap-2 text-primary-800">
+<span class="material-symbols-outlined text-primary-500">fitness_center</span>
+                        Nivel de actividad clínica
+                    </h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+<button class="flex flex-col items-center gap-3 p-4 bg-slate-50 border border-transparent rounded-2xl hover:border-primary-200 hover:bg-primary-50 transition-all group">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary-500">bed</span>
+<span class="text-sm font-semibold text-slate-600">Sedentario</span>
+</button>
+<button class="flex flex-col items-center gap-3 p-4 bg-slate-50 border border-transparent rounded-2xl hover:border-primary-200 hover:bg-primary-50 transition-all group">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary-500">directions_walk</span>
+<span class="text-sm font-semibold text-slate-600">Moderado</span>
+</button>
+<button class="flex flex-col items-center gap-3 p-4 bg-primary-50 border-2 border-primary-600 rounded-2xl transition-all shadow-sm">
+<span class="material-symbols-outlined text-primary-700" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="text-sm font-bold text-primary-800">Activo</span>
+</button>
+<button class="flex flex-col items-center gap-3 p-4 bg-slate-50 border border-transparent rounded-2xl hover:border-primary-200 hover:bg-primary-50 transition-all group">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary-500">rocket_launch</span>
+<span class="text-sm font-semibold text-slate-600">Atleta</span>
+</button>
+</div>
+</div>
+<!-- Daily Stats Inputs -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-base font-bold flex items-center gap-2 text-slate-800">
+<span class="material-symbols-outlined text-primary-500">potted_plant</span>
+                                Paseos diarios
+                            </h3>
+<span class="text-primary-700 font-extrabold text-2xl">3</span>
+</div>
+<div class="relative h-2.5 bg-slate-100 rounded-full overflow-hidden mb-4">
+<div class="absolute top-0 left-0 h-full w-[75%] bg-gradient-to-r from-primary-400 to-primary-600 rounded-full"></div>
+</div>
+<div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+<span>Mínimo</span>
+<span class="text-primary-500">Óptimo</span>
+<span>Máximo</span>
+</div>
+</div>
+<div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-base font-bold flex items-center gap-2 text-slate-800">
+<span class="material-symbols-outlined text-primary-500">sports_baseball</span>
+                                Tiempo de juego
+                            </h3>
+<div class="flex items-baseline gap-1">
+<span class="text-primary-700 font-extrabold text-2xl">45</span>
+<span class="text-xs font-bold text-slate-400">min</span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-2.5 bg-slate-50 hover:bg-primary-50 border border-slate-100 hover:border-primary-200 rounded-xl text-xs font-bold text-slate-700 transition-all">- 15m</button>
+<button class="flex-1 py-2.5 bg-slate-50 hover:bg-primary-50 border border-slate-100 hover:border-primary-200 rounded-xl text-xs font-bold text-slate-700 transition-all">+ 15m</button>
+</div>
+</div>
+</div>
+<!-- CTA Section -->
+<div class="bg-primary-700 text-white p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between overflow-hidden relative border border-primary-800">
+<div class="relative z-10 text-center md:text-left mb-6 md:mb-0">
+<h4 class="text-xl font-bold mb-1">Perfil Actualizado</h4>
+<p class="text-primary-100 text-sm max-w-xs">Luna mantiene parámetros de salud excelentes bajo este régimen de actividad.</p>
+</div>
+<button class="relative z-10 bg-white text-primary-800 px-10 py-3.5 rounded-xl font-bold shadow-xl hover:bg-primary-50 transition-all active:scale-95 border-b-4 border-slate-200">
+                        Guardar Registro
+                    </button>
+<!-- Clinical Pattern Overlay -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-500/20 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+<div class="absolute bottom-0 left-0 w-48 h-48 bg-primary-900/20 rounded-full -ml-20 -mb-20 blur-2xl"></div>
+</div>
+</section>
+</div>
+<!-- Wellbeing Statistics -->
+<section class="mt-12">
+<h3 class="text-xl font-extrabold text-slate-900 mb-6 flex items-center gap-3">
+<span class="w-1.5 h-6 bg-primary-500 rounded-full"></span>
+                Indicadores de Bienestar
+            </h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-white border border-slate-100 p-8 rounded-3xl flex flex-col justify-between h-48 shadow-sm group hover:border-primary-300 transition-colors">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-4xl text-primary-500 group-hover:scale-110 transition-transform">local_fire_department</span>
+<span class="bg-primary-50 text-primary-700 text-[10px] font-black px-2 py-1 rounded-md uppercase">Calculado</span>
+</div>
+<div>
+<p class="text-4xl font-extrabold text-slate-900 mb-1">1,250</p>
+<p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Kcal diarias estimadas</p>
+</div>
+</div>
+<div class="bg-white border border-slate-100 p-8 rounded-3xl flex flex-col justify-between h-48 shadow-sm group hover:border-primary-300 transition-colors">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-4xl text-primary-500 group-hover:scale-110 transition-transform">distance</span>
+<span class="bg-primary-50 text-primary-700 text-[10px] font-black px-2 py-1 rounded-md uppercase">Estimado</span>
+</div>
+<div>
+<p class="text-4xl font-extrabold text-slate-900 mb-1">4.2</p>
+<p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Km recorridos promedio</p>
+</div>
+</div>
+<div class="bg-primary-900 text-white p-8 rounded-3xl flex flex-col justify-between h-48 shadow-lg border border-primary-800">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-4xl text-primary-400" style="font-variation-settings: 'FILL' 1;">health_metrics</span>
+<span class="bg-white/10 text-white text-[10px] font-black px-2 py-1 rounded-md uppercase">Score Bio</span>
+</div>
+<div>
+<p class="text-4xl font-extrabold mb-1">92%</p>
+<p class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary-300">Puntuación de Salud</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer Component -->
+<footer class="w-full py-10 px-8 border-t border-slate-200 bg-white">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto">
+<div class="flex flex-col items-center md:items-start gap-1">
+<span class="text-lg font-bold text-primary-700">Pet<span class="text-primary-500">Health</span> <span class="text-slate-300 font-light ml-1">Clinical</span></span>
+<span class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">© 2024 Deep Sea Clinical Nutrition Systems.</span>
+</div>
+<div class="flex flex-wrap justify-center gap-6 text-[10px] font-bold uppercase tracking-[0.1em]">
+<a class="text-slate-500 hover:text-primary-600 transition-colors" href="#">Privacidad</a>
+<a class="text-slate-500 hover:text-primary-600 transition-colors" href="#">Términos</a>
+<a class="text-slate-500 hover:text-primary-600 transition-colors" href="#">Soporte</a>
+<a class="text-slate-500 hover:text-primary-600 transition-colors" href="#">Portal Veterinario</a>
+</div>
+</div>
+</footer>
+<!-- Mobile Navigation -->
+<div class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-100 grid grid-cols-4 h-16 z-50">
+<button class="flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary-600">
+<span class="material-symbols-outlined text-2xl">dashboard</span>
+<span class="text-[9px] font-bold uppercase">Inicio</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 text-primary-700">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">pets</span>
+<span class="text-[9px] font-bold uppercase">Mascotas</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary-600">
+<span class="material-symbols-outlined text-2xl">restaurant</span>
+<span class="text-[9px] font-bold uppercase">Plan</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary-600">
+<span class="material-symbols-outlined text-2xl">person</span>
+<span class="text-[9px] font-bold uppercase">Perfil</span>
+</button>
+</div>
+</body></html>

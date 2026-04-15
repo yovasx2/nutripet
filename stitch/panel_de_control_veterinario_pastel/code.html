@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NutriVet MVP - Gestión de Recetas Maestras</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#005d90", secondary: "#00677d", background: "#eefcff", surface: "#eefcff", "surface-variant": "#c3e9f1", outline: "#707881", "on-surface": "#001f24", "primary-container": "#0077b6", "on-primary-container": "#f3f7ff", "error-container": "#ffdad6", "on-error-container": "#93000a", "success-container": "#dcfce7", "on-success-container": "#166534", "on-tertiary-fixed-variant": "#004f59", "secondary-container": "#50d9fe", "surface-container-high": "#c9eff7", "surface-container-lowest": "#ffffff", tertiary: "#00626f", "surface-dim": "#bbe1e8", "on-tertiary": "#ffffff", "on-secondary-fixed": "#001f27", "surface-tint": "#006399", "inverse-primary": "#94ccff", "on-secondary-container": "#005c70", error: "#ba1a1a", "secondary-fixed": "#b3ebff", "on-secondary-fixed-variant": "#004e5f", "surface-container-low": "#dcf9ff", "primary-fixed": "#cde5ff", "on-error": "#ffffff", "on-background": "#001f24", "inverse-surface": "#0e353c", "surface-container-highest": "#c3e9f1", "surface-container": "#cef5fd", "on-surface-variant": "#404850", "tertiary-container": "#227c8a", "outline-variant": "#bfc7d1", "on-tertiary-fixed": "#001f24", "tertiary-fixed-dim": "#83d3e1", "on-tertiary-container": "#e7fbff", "on-secondary": "#ffffff", "surface-bright": "#eefcff", "on-primary-fixed-variant": "#004b74", "tertiary-fixed": "#9feffe", "on-primary": "#ffffff", "secondary-fixed-dim": "#4cd6fb", "on-primary-fixed": "#001d32", "inverse-on-surface": "#d2f7ff", "primary-fixed-dim": "#94ccff"}, borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"}, fontFamily: {headline: ["Plus Jakarta Sans"], body: ["Plus Jakarta Sans"], label: ["Plus Jakarta Sans"], display: "Plus Jakarta Sans"}}}};</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            background: rgba(248, 250, 252, 0.6);
+            backdrop-filter: blur(12px);
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar Component -->
+<header class="fixed top-0 w-full z-50 glass-header border-b border-slate-100/50">
+<div class="flex justify-between items-center px-8 h-16 max-w-full mx-auto">
+<div class="flex items-center gap-10">
+<span class="text-xl font-bold text-primary tracking-tight">NutriVet MVP</span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-500 font-medium hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-primary font-semibold border-b-2 border-primary py-1" href="#">Recetas</a>
+<a class="text-slate-500 font-medium hover:text-primary transition-colors" href="#">Pacientes</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center bg-slate-100 rounded-full px-4 py-1.5 gap-2">
+<span class="material-symbols-outlined text-slate-400 text-sm">search</span>
+<input class="bg-transparent border-none p-0 text-sm focus:ring-0 placeholder-slate-400 w-32 lg:w-48" placeholder="Buscar..." type="text"/>
+</div>
+<button class="p-2 rounded-full hover:bg-slate-100 transition-colors text-slate-600 scale-95 active:duration-150">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-slate-100 transition-colors text-slate-600 scale-95 active:duration-150">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden ml-2 ring-2 ring-slate-100">
+<img alt="User profile avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk8TpgloCspSeH194MN36iquB0ZqhHMYSU2dXFwe3Lx4N3lyWQFDWdLH0Y9EVYiFoyAj_4tAJJ8OWJm-xMO2AjthfqOQy00p92Fzd1kHgemqLwXGHEo_zkSZIZRq2sfxNl0RruY7kbI4XaGljSHk5Yf8knLhzCJ6vAkPW1OO-gD-wwNL9hHyL0qtnwYUiYVnxPcihKkiHup371yoKYTYnJTFS1TbxvFQ5FIQ_7S_rQuPq37piKAasRg7JcYMZv8lEyf2g7ynzkG0s"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar Component -->
+<aside class="hidden lg:flex flex-col fixed left-0 top-0 h-screen w-64 bg-slate-50 border-r border-slate-100 z-40 p-4 space-y-2 pt-20">
+<div class="px-4 mb-6">
+<h2 class="text-lg font-black text-primary leading-tight">NutriVet</h2>
+<p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Gestión Nutricional</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-slate-600 px-4 py-3 hover:bg-slate-100 rounded-full transition-all ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm font-medium">Overview</span>
+</a>
+<a class="flex items-center gap-3 bg-primary-container/50 text-primary rounded-full px-4 py-3 font-bold transition-all ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+<span class="text-sm">Recetas Maestras</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 px-4 py-3 hover:bg-slate-100 rounded-full transition-all ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="monitor_weight">monitor_weight</span>
+<span class="text-sm font-medium">Pacientes</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 px-4 py-3 hover:bg-slate-100 rounded-full transition-all ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="fitness_center">fitness_center</span>
+<span class="text-sm font-medium">Actividad</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 px-4 py-3 hover:bg-slate-100 rounded-full transition-all ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="text-sm font-medium">Prescripciones</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 px-4 py-3 hover:bg-slate-100 rounded-full transition-all ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="text-sm font-medium">Admin Panel</span>
+</a>
+</nav>
+<div class="pt-4 border-t border-slate-100">
+<button class="w-full bg-primary text-white py-3 px-4 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all scale-95 active:duration-150">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+            Nueva Receta
+        </button>
+</div>
+<div class="mt-4 space-y-1">
+<a class="flex items-center gap-3 text-slate-500 px-4 py-2 hover:bg-slate-100 rounded-full text-xs font-semibold uppercase transition-all" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="help">help</span>
+            Centro de Ayuda
+        </a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-2 hover:bg-slate-100 rounded-full text-xs font-semibold uppercase transition-all" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="logout">logout</span>
+            Cerrar Sesión
+        </a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="lg:ml-64 pt-24 pb-20 px-4 md:px-8 max-w-7xl mx-auto">
+<!-- Header Section -->
+<header class="mb-10">
+<h1 class="text-3xl font-extrabold text-on-surface tracking-tight mb-2">Gestión de Recetas Maestras</h1>
+<p class="text-secondary max-w-2xl font-medium">Administre las fórmulas base de nutrición clínica. Asegure el equilibrio de macronutrientes y micronutrientes para cada perfil veterinario.</p>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Column: Table & Forbidden Section -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Recipes Table Card -->
+<section class="bg-surface rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-slate-50/50 border-b border-slate-100">
+<tr>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Nombre de Receta</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Proteína %</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Kcal/100g</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Estado</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">Acciones</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="hover:bg-slate-50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+</div>
+<div>
+<span class="block font-bold text-on-surface">Base Renal Avanzada</span>
+<span class="text-xs text-slate-500 font-medium">Fórmula hipoproteica</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-bold text-primary">14.5%</td>
+<td class="px-6 py-4 font-medium text-slate-700">380</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold bg-success-container text-on-success-container uppercase tracking-wider">Activa</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors p-2 rounded-full hover:bg-slate-100">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+</div>
+<div>
+<span class="block font-bold text-on-surface">Cachorro Crecimiento Plus</span>
+<span class="text-xs text-slate-500 font-medium">Alta densidad energética</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-bold text-primary">28.0%</td>
+<td class="px-6 py-4 font-medium text-slate-700">450</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold bg-success-container text-on-success-container uppercase tracking-wider">Activa</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors p-2 rounded-full hover:bg-slate-100">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Forbidden Ingredients -->
+<section class="space-y-4">
+<h2 class="text-xl font-bold text-on-surface px-1">Alerta de Seguridad Nutricional</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="bg-error-container text-on-error-container p-6 rounded-3xl relative overflow-hidden transition-transform hover:scale-[1.02]">
+<span class="material-symbols-outlined absolute -right-2 -bottom-2 text-7xl opacity-10" data-icon="dangerous">dangerous</span>
+<div class="flex flex-col gap-3">
+<div class="bg-white/40 w-fit p-2 rounded-full">
+<span class="material-symbols-outlined text-xl" data-icon="warning">warning</span>
+</div>
+<div>
+<h3 class="font-extrabold text-lg">Cebolla</h3>
+<p class="text-xs font-semibold opacity-80 mt-1">Nivel: Crítico. Causa anemia hemolítica severa.</p>
+</div>
+</div>
+</div>
+<div class="bg-error-container text-on-error-container p-6 rounded-3xl relative overflow-hidden transition-transform hover:scale-[1.02]">
+<span class="material-symbols-outlined absolute -right-2 -bottom-2 text-7xl opacity-10" data-icon="dangerous">dangerous</span>
+<div class="flex flex-col gap-3">
+<div class="bg-white/40 w-fit p-2 rounded-full">
+<span class="material-symbols-outlined text-xl" data-icon="warning">warning</span>
+</div>
+<div>
+<h3 class="font-extrabold text-lg">Uvas</h3>
+<p class="text-xs font-semibold opacity-80 mt-1">Nivel: Crítico. Fallo renal agudo irreversible.</p>
+</div>
+</div>
+</div>
+<div class="bg-error-container text-on-error-container p-6 rounded-3xl relative overflow-hidden transition-transform hover:scale-[1.02]">
+<span class="material-symbols-outlined absolute -right-2 -bottom-2 text-7xl opacity-10" data-icon="dangerous">dangerous</span>
+<div class="flex flex-col gap-3">
+<div class="bg-white/40 w-fit p-2 rounded-full">
+<span class="material-symbols-outlined text-xl" data-icon="warning">warning</span>
+</div>
+<div>
+<h3 class="font-extrabold text-lg">Xilitol</h3>
+<p class="text-xs font-semibold opacity-80 mt-1">Nivel: Extremo. Hipoglucemia y fallo hepático.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Form -->
+<aside class="lg:col-span-4">
+<div class="bg-slate-100/50 rounded-3xl p-8 sticky top-24 border border-slate-200/40">
+<div class="mb-6">
+<h2 class="font-extrabold text-2xl text-primary">Nueva Receta</h2>
+<p class="text-sm text-slate-500 font-medium">Defina los parámetros base.</p>
+</div>
+<form class="space-y-5">
+<div>
+<label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 px-1">Nombre de Plantilla</label>
+<input class="w-full bg-white border-none rounded-full px-5 py-3.5 text-on-surface ring-1 ring-slate-200 focus:ring-2 focus:ring-primary outline-none transition-shadow placeholder-slate-400 text-sm" placeholder="Ej: Adulto Senior Control Peso" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 px-1">Proteína (%)</label>
+<input class="w-full bg-white border-none rounded-full px-5 py-3.5 text-on-surface ring-1 ring-slate-200 focus:ring-2 focus:ring-primary outline-none transition-shadow font-semibold text-sm" placeholder="0.0" type="number"/>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 px-1">Grasas (%)</label>
+<input class="w-full bg-white border-none rounded-full px-5 py-3.5 text-on-surface ring-1 ring-slate-200 focus:ring-2 focus:ring-primary outline-none transition-shadow font-semibold text-sm" placeholder="0.0" type="number"/>
+</div>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 px-1">Ingredientes Principales</label>
+<div class="space-y-3">
+<div class="flex items-center gap-2">
+<input class="flex-1 bg-white border-none rounded-full px-5 py-3 text-sm ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-primary" placeholder="Ingrediente 1" type="text"/>
+<input class="w-20 bg-white border-none rounded-full px-3 py-3 text-sm ring-1 ring-slate-200 outline-none text-center focus:ring-2 focus:ring-primary font-bold" placeholder="20%" type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<input class="flex-1 bg-white border-none rounded-full px-5 py-3 text-sm ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-primary" placeholder="Ingrediente 2" type="text"/>
+<input class="w-20 bg-white border-none rounded-full px-3 py-3 text-sm ring-1 ring-slate-200 outline-none text-center focus:ring-2 focus:ring-primary font-bold" placeholder="30%" type="text"/>
+</div>
+<button class="text-primary text-xs font-bold flex items-center gap-1.5 mt-2 ml-1 hover:underline" type="button">
+<span class="material-symbols-outlined text-lg" data-icon="add_circle">add_circle</span>
+                                Añadir Ingrediente
+                            </button>
+</div>
+</div>
+<div class="pt-4">
+<button class="w-full bg-primary text-white py-4 rounded-full font-bold text-base hover:shadow-lg hover:shadow-primary/20 transition-all scale-95 active:duration-150">
+                            Guardar Receta Maestra
+                        </button>
+</div>
+</form>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer Component -->
+<footer class="w-full py-12 px-8 border-t border-slate-200/50 bg-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 mt-auto">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="font-bold text-primary text-lg">NutriVet MVP</span>
+<p class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest text-slate-500">© 2024 Clinical Serenity Nutrition. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest text-slate-500 hover:text-primary transition-colors" href="#">Política de Privacidad</a>
+<a class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest text-slate-500 hover:text-primary transition-colors" href="#">Términos de Servicio</a>
+<a class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest text-slate-500 hover:text-primary transition-colors" href="#">Soporte Técnico</a>
+<a class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest text-slate-500 hover:text-primary transition-colors font-bold" href="#">Red Veterinaria</a>
+</div>
+</footer>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-4 bg-white/90 backdrop-blur-lg border-t border-slate-100">
+<a class="flex flex-col items-center justify-center text-slate-400 gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Pacientes</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-primary rounded-2xl px-5 py-2 gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Recetas</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Perfil</span>
+</a>
+</nav>
+<!-- Visual Polish: Decorative Grain Texture -->
+<div class="fixed inset-0 pointer-events-none opacity-[0.03] z-0">
+<svg viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<filter id="noiseFilter">
+<feturbulence basefrequency="0.65" numoctaves="3" stitchtiles="stitch" type="fractalNoise"></feturbulence>
+</filter>
+<rect filter="url(#noiseFilter)" height="100%" width="100%"></rect>
+</svg>
+</div>
+</body></html>

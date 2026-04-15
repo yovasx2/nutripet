@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#005d90", secondary: "#00677d", tertiary: "#00626f", background: "#eefcff", surface: "#eefcff", "surface-container-low": "#dcf9ff", "surface-container-lowest": "#ffffff", "on-surface": "#001f24", "on-surface-variant": "#404850", "outline-variant": "#bfc7d1", "primary-container": "#0077b6", "on-primary-container": "#f3f7ff", "secondary-container": "#50d9fe", "on-secondary-container": "#005c70", "surface-variant": "#c3e9f1", "surface-dim": "#bbe1e8", "on-secondary-fixed-variant": "#004e5f", "secondary-fixed-dim": "#4cd6fb", "on-background": "#001f24", "tertiary-fixed": "#9feffe", "surface-container": "#cef5fd", "on-secondary-fixed": "#001f27", "on-error": "#ffffff", "on-tertiary-fixed": "#001f24", error: "#ba1a1a", "on-error-container": "#93000a", "on-secondary": "#ffffff", "surface-tint": "#006399", "inverse-surface": "#0e353c", "surface-container-high": "#c9eff7", "on-tertiary": "#ffffff", "error-container": "#ffdad6", outline: "#707881", "inverse-on-surface": "#d2f7ff", "on-primary-fixed": "#001d32", "on-primary": "#ffffff", "primary-fixed-dim": "#94ccff", "inverse-primary": "#94ccff", "surface-container-highest": "#c3e9f1", "primary-fixed": "#cde5ff", "on-primary-fixed-variant": "#004b74", "on-tertiary-fixed-variant": "#004f59", "surface-bright": "#eefcff", "tertiary-container": "#227c8a", "tertiary-fixed-dim": "#83d3e1", "on-tertiary-container": "#e7fbff", "secondary-fixed": "#b3ebff"}, borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"}, fontFamily: {headline: ["Plus Jakarta Sans"], body: ["Plus Jakarta Sans"], label: ["Plus Jakarta Sans"], display: "Plus Jakarta Sans"}}}};</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        /* Overriding tailwind rounded default for containers where full-roundness is awkward but following the system request */
+        .card-rounded { border-radius: 2rem; }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex">
+<!-- SideNavBar (Shared Component) -->
+<aside class="hidden lg:flex flex-col h-screen w-64 border-r border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-4 gap-2">
+<div class="flex items-center gap-3 px-2 py-4 mb-4">
+<div class="w-10 h-10 rounded-full bg-blue-700 flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="pets">pets</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-blue-800 leading-none">Clinical Serenity</h1>
+<p class="text-[10px] text-slate-500 font-label uppercase tracking-widest mt-1">Pet Care Portal</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all duration-200 font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+            Overview
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all duration-200 font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+            Diet Plans
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-blue-100/50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-100 rounded-full font-bold text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="monitor_weight" style="font-variation-settings: 'FILL' 1;">monitor_weight</span>
+            Weight Tracker
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all duration-200 font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="fitness_center">fitness_center</span>
+            Activity Logs
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all duration-200 font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+            Prescriptions
+        </a>
+</nav>
+<div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-1">
+<button class="w-full bg-blue-700 text-white py-3 rounded-full font-bold text-sm mb-4 transition-all hover:opacity-90 active:scale-95">
+            New Prescription
+        </button>
+<a class="flex items-center gap-3 px-4 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all text-xs" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="help">help</span>
+            Help Center
+        </a>
+<a class="flex items-center gap-3 px-4 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all text-xs" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="logout">logout</span>
+            Logout
+        </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto bg-background">
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 w-full z-50 bg-slate-50/60 dark:bg-slate-900/60 backdrop-blur-md lg:hidden">
+<div class="flex justify-between items-center px-6 h-16 w-full">
+<span class="text-xl font-bold text-blue-800 dark:text-blue-200 tracking-tight">Clinical Serenity</span>
+<div class="flex items-center gap-3">
+<button class="p-2 rounded-full hover:bg-slate-200/50 text-slate-600">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-slate-200/50 text-slate-600">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex-1 px-6 md:px-12 py-8 mt-16 lg:mt-0 max-w-6xl mx-auto w-full">
+<!-- Breadcrumbs & Header -->
+<div class="mb-10">
+<nav class="flex items-center gap-2 text-xs font-label uppercase tracking-widest text-slate-400 mb-4">
+<span>Pacientes</span>
+<span class="material-symbols-outlined text-xs" data-icon="chevron_right">chevron_right</span>
+<span>Max (Golden Retriever)</span>
+<span class="material-symbols-outlined text-xs" data-icon="chevron_right">chevron_right</span>
+<span class="text-blue-700 font-bold">Seguimiento de Peso</span>
+</nav>
+<h2 class="text-4xl md:text-5xl font-extrabold text-on-surface font-headline tracking-tight mb-2">Control Semanal</h2>
+<p class="text-slate-500 font-body text-lg">Monitoreo clínico del progreso nutricional de Max.</p>
+</div>
+<!-- Bento Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Input Section -->
+<div class="md:col-span-5 flex flex-col gap-6">
+<section class="bg-surface card-rounded p-8 border border-outline-variant/50 shadow-sm">
+<div class="flex items-center justify-between mb-8">
+<span class="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-700 px-4 py-1.5 bg-blue-100 rounded-full">Registro Hoy</span>
+<span class="text-xs text-slate-400 font-label">24 Oct, 2024</span>
+</div>
+<label class="block mb-6 px-4">
+<span class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Peso Actual (kg)</span>
+<div class="relative flex items-end border-b-2 border-slate-200 focus-within:border-blue-700 transition-all pb-2">
+<input class="w-full bg-transparent border-none p-0 text-6xl font-extrabold text-on-surface focus:ring-0 placeholder:text-slate-200" placeholder="00.0" step="0.1" type="number"/>
+<span class="text-2xl font-bold text-slate-300 ml-2 mb-2">KG</span>
+</div>
+</label>
+<button class="w-full bg-blue-700 text-white py-4 rounded-full font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[0.98] active:scale-95 shadow-md shadow-blue-200">
+<span class="material-symbols-outlined" data-icon="save">save</span>
+                        Guardar Registro
+                    </button>
+</section>
+<!-- Alert Section -->
+<section class="bg-blue-50 card-rounded p-6 border border-blue-100">
+<div class="flex gap-4">
+<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-blue-700 shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-3xl" data-icon="trending_down">trending_down</span>
+</div>
+<div>
+<h4 class="text-blue-900 font-bold text-lg font-headline">-200g esta semana</h4>
+<p class="text-blue-800/80 text-sm font-body">¡Buen progreso! Max está respondiendo positivamente al ajuste calórico. Mantener dieta actual.</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Graph Section -->
+<div class="md:col-span-7">
+<section class="bg-surface-container-low card-rounded p-8 h-full flex flex-col border border-slate-200/50">
+<div class="flex items-center justify-between mb-10">
+<div>
+<h3 class="text-xl font-bold text-on-surface">Tendencia (Últimas 4 Semanas)</h3>
+<p class="text-sm text-slate-500">Meta clínica: 32.5 kg</p>
+</div>
+<div class="flex gap-1">
+<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-slate-400 text-sm" data-icon="calendar_month">calendar_month</span>
+</div>
+</div>
+</div>
+<!-- Graph Placeholder -->
+<div class="flex-1 relative min-h-[300px]">
+<div class="absolute inset-0 flex flex-col justify-between py-2">
+<div class="border-t border-slate-200/50 w-full h-0"></div>
+<div class="border-t border-slate-200/50 w-full h-0"></div>
+<div class="border-t border-slate-200/50 w-full h-0"></div>
+<div class="border-t border-slate-200/50 w-full h-0"></div>
+<div class="border-t border-blue-200 w-full h-0 border-dashed relative">
+<span class="absolute -top-3 right-0 text-[10px] font-bold text-blue-400 bg-surface-container-low px-2 uppercase tracking-widest">Meta</span>
+</div>
+</div>
+<svg class="absolute inset-0 w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 400 300">
+<defs>
+<lineargradient id="lineGradient" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" style="stop-color:#1e40af;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1"></stop>
+</lineargradient>
+</defs>
+<path d="M 0 50 L 133 75 L 266 90 L 400 110" fill="none" stroke="url(#lineGradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"></path>
+<circle cx="0" cy="50" fill="#1e40af" r="6" stroke="white" stroke-width="2"></circle>
+<circle cx="133" cy="75" fill="#1e40af" r="6" stroke="white" stroke-width="2"></circle>
+<circle cx="266" cy="90" fill="#3b82f6" r="6" stroke="white" stroke-width="2"></circle>
+<circle cx="400" cy="110" fill="#3b82f6" r="8" stroke="white" stroke-width="3"></circle>
+</svg>
+<div class="absolute bottom-0 w-full flex justify-between px-2 pt-4">
+<div class="text-center">
+<span class="block text-xs text-slate-400">Sem 4</span>
+<span class="block text-sm font-bold text-blue-800">35.2 kg</span>
+</div>
+<div class="text-center">
+<span class="block text-xs text-slate-400">Sem 3</span>
+<span class="block text-sm font-bold text-blue-800">34.8 kg</span>
+</div>
+<div class="text-center">
+<span class="block text-xs text-slate-400">Sem 2</span>
+<span class="block text-sm font-bold text-blue-800">34.4 kg</span>
+</div>
+<div class="text-center">
+<span class="block text-xs text-slate-400">Hoy</span>
+<span class="block text-sm font-bold text-blue-700">34.2 kg</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Stats Section -->
+<div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-slate-50 card-rounded p-6 border border-slate-100">
+<h5 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="monitoring">monitoring</span>
+                    Variación Total
+                </h5>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold text-blue-800">1.2</span>
+<span class="text-lg font-bold text-blue-800/40">kg</span>
+<span class="text-xs font-medium text-blue-700 bg-blue-100 px-3 py-1 rounded-full ml-auto">Perdido</span>
+</div>
+</div>
+<div class="bg-slate-50 card-rounded p-6 border border-slate-100">
+<h5 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="restaurant">restaurant</span>
+                    Consumo Diario
+                </h5>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold text-blue-800">1,150</span>
+<span class="text-lg font-bold text-blue-800/40">kcal</span>
+</div>
+</div>
+<div class="bg-white card-rounded p-6 border-l-4 border-blue-700 shadow-sm">
+<h5 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-blue-700" data-icon="lightbulb">lightbulb</span>
+                    Nota Clínica
+                </h5>
+<p class="text-sm text-slate-600 leading-relaxed italic">"Observar niveles de energía post-ejercicio. El peso está bajando según lo planeado."</p>
+</div>
+</div>
+</div>
+<!-- Footer (Shared Component) -->
+<footer class="w-full bg-slate-100 dark:bg-slate-950 mt-auto py-12 px-8 border-t border-slate-200/50 dark:border-slate-800/50">
+<div class="flex flex-col md:flex-row justify-between items-center gap-4 max-w-screen-2xl mx-auto">
+<p class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 text-center md:text-left">
+                © 2024 Clinical Serenity Nutrition. All rights reserved.
+            </p>
+<div class="flex gap-8">
+<a class="text-slate-500 hover:text-blue-600 transition-colors font-['Plus_Jakarta_Sans'] text-xs tracking-widest uppercase" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors font-['Plus_Jakarta_Sans'] text-xs tracking-widest uppercase" href="#">Terms of Service</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors font-['Plus_Jakarta_Sans'] text-xs tracking-widest uppercase" href="#">Contact Support</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors font-['Plus_Jakarta_Sans'] text-xs tracking-widest uppercase" href="#">Veterinary Network</a>
+</div>
+</div>
+</footer>
+</main>
+</body></html>

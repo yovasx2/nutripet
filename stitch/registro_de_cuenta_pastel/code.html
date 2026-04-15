@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#005d90", secondary: "#00677d", tertiary: "#00626f", surface: "#eefcff", "surface-container-low": "#dcf9ff", "surface-container-lowest": "#ffffff", "on-surface": "#001f24", "on-surface-variant": "#404850", outline: "#707881", "outline-variant": "#bfc7d1", blue: {"50": "#eff6ff", "100": "#dbeafe", "200": "#bfdbfe", "300": "#93c5fd", "400": "#60a5fa", "500": "#3b82f6", "600": "#2563eb", "700": "#1d4ed8", "800": "#1e40af", "900": "#1e3a8a"}, "on-secondary-fixed": "#001f27", "on-tertiary-container": "#e7fbff", "primary-fixed": "#cde5ff", background: "#eefcff", "surface-container-highest": "#c3e9f1", "surface-variant": "#c3e9f1", "tertiary-container": "#227c8a", "on-tertiary-fixed": "#001f24", "on-secondary": "#ffffff", "surface-container": "#cef5fd", "tertiary-fixed": "#9feffe", "on-primary-container": "#f3f7ff", "primary-fixed-dim": "#94ccff", "secondary-fixed-dim": "#4cd6fb", "on-error": "#ffffff", "on-tertiary-fixed-variant": "#004f59", "on-tertiary": "#ffffff", "secondary-fixed": "#b3ebff", "on-secondary-container": "#005c70", "surface-container-high": "#c9eff7", "on-primary": "#ffffff", "surface-dim": "#bbe1e8", "on-secondary-fixed-variant": "#004e5f", "error-container": "#ffdad6", "inverse-on-surface": "#d2f7ff", "inverse-primary": "#94ccff", "primary-container": "#0077b6", "on-background": "#001f24", "on-error-container": "#93000a", "on-primary-fixed": "#001d32", "on-primary-fixed-variant": "#004b74", "surface-bright": "#eefcff", "secondary-container": "#50d9fe", "inverse-surface": "#0e353c", error: "#ba1a1a", "tertiary-fixed-dim": "#83d3e1", "surface-tint": "#006399"}, borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"}, fontFamily: {headline: ["Plus Jakarta Sans"], body: ["Plus Jakarta Sans"], label: ["Plus Jakarta Sans"], display: "Plus Jakarta Sans"}}}};</script>
+<style>
+        .glass-header {
+            background: rgba(248, 250, 252, 0.6);
+            backdrop-filter: blur(12px);
+        }
+        .restorative-glow {
+            background: radial-gradient(circle at top right, rgba(187, 214, 236, 0.3), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(219, 234, 254, 0.3), transparent 40%);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased restorative-glow">
+<!-- TopNavBar Component Replacement -->
+<header class="fixed top-0 w-full z-50 glass-header border-b border-slate-100/50">
+<nav class="fixed top-0 w-full z-50 bg-slate-50/60 dark:bg-slate-900/60 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50">
+    <div class="flex justify-between items-center px-8 h-16 max-w-full mx-auto">
+        <div class="text-xl font-bold text-blue-800 dark:text-blue-200 tracking-tight font-['Plus_Jakarta_Sans']">
+            NutriPet
+        </div>
+        <div class="hidden md:flex items-center gap-8 font-['Plus_Jakarta_Sans'] tracking-tight">
+            <a class="text-blue-700 dark:text-blue-300 font-semibold border-b-2 border-blue-700 pb-1" href="#">Guía Nutricional</a>
+            <a class="text-slate-500 dark:text-slate-400 font-medium hover:text-blue-600 dark:hover:text-blue-200 transition-colors" href="#">Calculadoras</a>
+            <a class="text-slate-500 dark:text-slate-400 font-medium hover:text-blue-600 dark:hover:text-blue-200 transition-colors" href="#">Consultas</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <button class="bg-primary text-on-primary px-6 py-2 rounded-full font-bold transition-all active:scale-95 active:duration-150">
+                Comenzar
+            </button>
+        </div>
+    </div>
+</nav>
+<main class="min-h-screen pt-16 flex flex-col md:flex-row">
+<!-- Left Side: Value Proposition -->
+<section class="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-16 py-12 bg-slate-50/50 relative overflow-hidden">
+<div class="relative z-10 space-y-12">
+<div>
+<h1 class="font-headline text-4xl md:text-5xl font-extrabold text-blue-900 leading-tight tracking-tight mb-4">
+                        Nutrición de grado clínico para tu mejor amigo.
+                    </h1>
+<p class="text-lg text-slate-600 leading-relaxed max-w-lg">
+                        Únete a miles de veterinarios y dueños responsables que utilizan ciencia de datos para optimizar la salud de sus mascotas.
+                    </p>
+</div>
+<!-- Bento Style Benefits -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 hover:border-blue-200 transition-all duration-300">
+<span class="material-symbols-outlined text-blue-600 mb-3 text-3xl">biotech</span>
+<h3 class="font-headline font-bold text-slate-900 mb-2">Ciencia Basada en Datos</h3>
+<p class="text-sm text-slate-500 font-body">Cálculos metabólicos precisos adaptados a cada raza y etapa de vida.</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 hover:border-blue-200 transition-all duration-300">
+<span class="material-symbols-outlined text-blue-400 mb-3 text-3xl">potted_plant</span>
+<h3 class="font-headline font-bold text-slate-900 mb-2">Recetas Saludables</h3>
+<p class="text-sm text-slate-500 font-body">Ingredientes naturales balanceados para prevenir enfermedades crónicas.</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 hover:border-blue-200 transition-all duration-300">
+<span class="material-symbols-outlined text-blue-500 mb-3 text-3xl">monitoring</span>
+<h3 class="font-headline font-bold text-slate-900 mb-2">Seguimiento Clínico</h3>
+<p class="text-sm text-slate-500 font-body">Monitorea peso y condición corporal con herramientas profesionales.</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 hover:border-blue-200 transition-all duration-300">
+<span class="material-symbols-outlined text-blue-300 mb-3 text-3xl">security</span>
+<h3 class="font-headline font-bold text-slate-900 mb-2">Seguridad Primero</h3>
+<p class="text-sm text-slate-500 font-body">Alertas inteligentes de ingredientes tóxicos y dosis seguras.</p>
+</div>
+</div>
+<div class="flex items-center gap-4 pt-4">
+<div class="flex -space-x-2">
+<img alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzkH_qZFzNLws-musuz07LpRMQSHGhdMEo_-C0ZPmYqlYvHixH4vOLKAV-NScAkv66YojbQFjlUNKqC2qJfSfVSTA4Ag-5xhGhz5mzF-3XN51K2-33LmxzSf0T6oPP7Cp6r4a-F8dnN7RLJSU3mL7w8RkyJ9-XcFdiX3MHNUWFIc9Xwv5GIXYwRzjn7rXZalXVCHMtsT_K0zESkCH2O6ogQgJgrpqW24LI964f-mkX7dbPaKCGwwhicI66JLRaazRTsCczo-KnZbA"/>
+<img alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAow9pd-XekV-2vV5H0fLJQiGcudjuwYw7zvOe9cQCQwHXsjY_TjKdlDM4vR7QPDkQ0lPXmUzTucjcoBlRZK3wn2a4ROsvBRiuG3O5BgNuX7IiqHg-K4Y-eSQM4HpGsYvhRGNeqj7ufONO2j19LOCyhGMWqBIH07VpfVfhjjq5MugcYuDQF325uKlyaKW9H9Dl9WEnfhY0tLCeld5JqDVGT1mBqjgY5NFt_7DvgUI3fY9aIqOJ6OSr6lia5qfSaroyIfJCqtItmJaI"/>
+<img alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-XxYwGRXQifF5B1kEOLRBeEYRZCFl-L5OeS4bPVZiQBnCejUHTkXa5K0GSvwkF30_fyXyl1Ww600OVOXjBppFVPFm27VkdHht59ZedAK0LtaLk-UGuPL6_AD7ir6BbfxOM0Ov0bIRxIXRoyyUZRbPbkHMhUE2REhV3hhbINe54GnqOvhn9R0z4IWWBrwRSaSshY8WO5MmrrJWYex_kO4oGI0m8Jh89VSwR4vnc7J2mnAQdWEp9b03sKL-TK-HOWvnOa8IMhmmJ9Q"/>
+</div>
+<span class="text-sm font-medium text-blue-700">Recomendado por +500 clínicas veterinarias</span>
+</div>
+</div>
+</section>
+<!-- Right Side: Signup Form -->
+<section class="w-full md:w-1/2 flex items-center justify-center px-8 md:px-20 py-12 bg-surface">
+<div class="w-full max-w-md space-y-8">
+<div class="space-y-2">
+<h2 class="font-headline text-3xl font-bold text-slate-900 tracking-tight">Crea tu cuenta clínica</h2>
+<p class="text-slate-500 font-body">Comienza el viaje nutricional de tu mascota hoy mismo.</p>
+</div>
+<button class="w-full flex items-center justify-center gap-3 bg-white border border-slate-200 py-3 rounded-full hover:bg-slate-50 transition-all duration-300 shadow-sm active:scale-95">
+<svg class="w-5 h-5" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z" fill="#EA4335"></path>
+</svg>
+<span class="font-bold text-slate-700">Continuar con Google</span>
+</button>
+<div class="relative flex items-center py-2">
+<div class="flex-grow border-t border-slate-200"></div>
+<span class="flex-shrink mx-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">O con tu correo</span>
+<div class="flex-grow border-t border-slate-200"></div>
+</div>
+<form class="space-y-6">
+<div>
+<label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 ml-4" for="name">Nombre Completo</label>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-full px-6 py-3 focus:ring-4 focus:ring-blue-100 focus:border-blue-300 outline-none transition-all font-body text-slate-900 placeholder:text-slate-400" id="name" placeholder="Ej. Ana García" type="text"/>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 ml-4" for="email">Correo Electrónico</label>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-full px-6 py-3 focus:ring-4 focus:ring-blue-100 focus:border-blue-300 outline-none transition-all font-body text-slate-900 placeholder:text-slate-400" id="email" placeholder="ana@ejemplo.com" type="email"/>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 ml-4" for="password">Contraseña</label>
+<div class="relative">
+<input class="w-full bg-slate-50 border border-slate-200 rounded-full px-6 py-3 focus:ring-4 focus:ring-blue-100 focus:border-blue-300 outline-none transition-all font-body text-slate-900 placeholder:text-slate-400" id="password" placeholder="Mínimo 8 caracteres" type="password"/>
+<span class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-blue-600 transition-colors">visibility</span>
+</div>
+</div>
+<div class="flex items-start gap-3 px-2">
+<div class="flex items-center h-5">
+<input class="w-4 h-4 text-blue-600 border-slate-300 rounded-full focus:ring-blue-500/20 cursor-pointer" id="terms" type="checkbox"/>
+</div>
+<label class="text-xs font-medium text-slate-500 leading-tight" for="terms">
+                            Acepto los <a class="text-blue-700 font-bold hover:underline" href="#">Términos de Servicio</a> y la <a class="text-blue-700 font-bold hover:underline" href="#">Política de Privacidad</a>.
+                        </label>
+</div>
+<button class="w-full bg-blue-700 text-white font-bold py-4 rounded-full shadow-lg hover:shadow-blue-200 hover:bg-blue-800 transition-all active:scale-95" type="submit">
+                        Crear mi cuenta
+                    </button>
+</form>
+<p class="text-center text-sm font-medium text-slate-500">
+                    ¿Ya tienes una cuenta? <a class="text-blue-700 font-bold hover:underline" href="#">Inicia sesión</a>
+</p>
+</div>
+</section>
+</main>
+<!-- Footer Component Replacement -->
+<footer class="w-full py-12 px-8 bg-slate-100 border-t border-slate-200/50">
+<footer class="w-full py-12 px-8 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-100 dark:bg-slate-950">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 max-w-screen-2xl mx-auto">
+        <div class="mb-4 md:mb-0">
+            <p class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500">
+                © 2026 NutriPet
+            </p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-8 font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">
+            <a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Términos y Condiciones</a>
+            <a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Aviso de Privacidad</a>
+            <a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Contacto</a>
+        </div>
+    </div>
+</footer>
+<!-- Footer (NutriPet) -->
+<footer class="w-full py-12 px-8 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-100 dark:bg-slate-950">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 max-w-screen-2xl mx-auto">
+        <div class="mb-4 md:mb-0">
+            <p class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500">
+                © 2026 NutriPet
+            </p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-8 font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">
+            <a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Términos y Condiciones</a>
+            <a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Aviso de Privacidad</a>
+            <a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Contacto</a>
+        </div>
+    </div>
+</footer>
+</body></html>

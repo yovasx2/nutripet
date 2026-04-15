@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#005d90", "on-primary": "#ffffff", "primary-container": "#0077b6", "on-primary-container": "#f3f7ff", secondary: "#00677d", "on-secondary": "#ffffff", "secondary-container": "#50d9fe", "on-secondary-container": "#005c70", tertiary: "#00626f", "on-tertiary": "#ffffff", "tertiary-container": "#227c8a", "on-tertiary-container": "#e7fbff", background: "#eefcff", "on-background": "#001f24", surface: "#eefcff", "on-surface": "#001f24", "surface-variant": "#c3e9f1", "on-surface-variant": "#404850", outline: "#707881", "outline-variant": "#bfc7d1", error: "#ba1a1a", "surface-container-low": "#dcf9ff", "surface-container-lowest": "#ffffff", "on-tertiary-fixed": "#001f24", "secondary-fixed": "#b3ebff", "surface-dim": "#bbe1e8", "on-tertiary-fixed-variant": "#004f59", "surface-container": "#cef5fd", "primary-fixed": "#cde5ff", "tertiary-fixed-dim": "#83d3e1", "on-secondary-fixed": "#001f27", "inverse-primary": "#94ccff", "on-primary-fixed-variant": "#004b74", "secondary-fixed-dim": "#4cd6fb", "on-error-container": "#93000a", "tertiary-fixed": "#9feffe", "primary-fixed-dim": "#94ccff", "inverse-surface": "#0e353c", "surface-bright": "#eefcff", "on-primary-fixed": "#001d32", "on-secondary-fixed-variant": "#004e5f", "error-container": "#ffdad6", "surface-container-highest": "#c3e9f1", "surface-tint": "#006399", "on-error": "#ffffff", "inverse-on-surface": "#d2f7ff", "surface-container-high": "#c9eff7"}, borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"}, fontFamily: {headline: ["Plus Jakarta Sans"], body: ["Plus Jakarta Sans"], label: ["Plus Jakarta Sans"], display: "Plus Jakarta Sans"}}}};</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .restorative-blur {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface min-h-screen flex flex-col">
+<!-- TopNavBar Component -->
+<header class="fixed top-0 w-full z-50 bg-slate-50/60 backdrop-blur-md">
+<div class="flex justify-between items-center px-8 h-16 max-w-full mx-auto">
+<div class="flex items-center gap-2">
+<span class="text-xl font-bold text-blue-800 tracking-tight">VET-NUTRI</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-blue-700 font-semibold border-b-2 border-blue-700 text-sm" href="#">Dashboard</a>
+<a class="text-slate-500 font-medium hover:text-blue-600 transition-colors text-sm" href="#">Nutrition Plans</a>
+<a class="text-slate-500 font-medium hover:text-blue-600 transition-colors text-sm" href="#">Medical Records</a>
+<a class="text-slate-500 font-medium hover:text-blue-600 transition-colors text-sm" href="#">Pet Diary</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:text-blue-600 transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:text-blue-600 transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="p-2 text-slate-500 hover:text-blue-600 transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow flex items-center justify-center pt-24 pb-12 px-4 relative overflow-hidden">
+<!-- Abstract background elements for "Clinical Serenity" -->
+<div class="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-100/40 blur-[100px] rounded-full -mr-64 -mt-64"></div>
+<div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-50/50 blur-[100px] rounded-full -ml-64 -mb-64"></div>
+<div class="max-w-md w-full z-10">
+<!-- Centered Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-8 md:p-10 border border-slate-100">
+<div class="text-center mb-8">
+<div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 text-blue-600 rounded-full mb-6">
+<span class="material-symbols-outlined text-3xl" data-icon="lock_reset">lock_reset</span>
+</div>
+<h1 class="font-headline text-2xl font-bold text-on-surface mb-2 tracking-tight">Restablecer Contraseña</h1>
+<p class="text-on-surface-variant text-sm px-4">Asegura tu cuenta de NutriPet Vet con una contraseña nueva y segura.</p>
+</div>
+<form class="space-y-6">
+<!-- New Password Field -->
+<div class="space-y-2">
+<label class="font-label text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-4">Nueva Contraseña</label>
+<div class="relative group">
+<input class="w-full bg-slate-50 border-none focus:ring-2 focus:ring-blue-100 rounded-full py-3 px-6 font-label text-on-surface placeholder:text-outline-variant transition-all outline outline-slate-100" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- Confirm Password Field -->
+<div class="space-y-2">
+<label class="font-label text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-4">Confirmar Contraseña</label>
+<div class="relative group">
+<input class="w-full bg-slate-50 border-none focus:ring-2 focus:ring-blue-100 rounded-full py-3 px-6 font-label text-on-surface placeholder:text-outline-variant transition-all outline outline-slate-100" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- Security Requirements Checklist -->
+<div class="bg-blue-50/50 rounded-xl p-5 space-y-3">
+<p class="font-label text-[10px] font-bold text-blue-700 uppercase tracking-widest mb-2">Requisitos de seguridad:</p>
+<ul class="space-y-2">
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-sm text-blue-600" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label">Mínimo 8 caracteres</span>
+</li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-sm" data-icon="circle">circle</span>
+<span class="font-label">Al menos una letra mayúscula</span>
+</li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-sm" data-icon="circle">circle</span>
+<span class="font-label">Incluir un número o símbolo (@, $, !, %)</span>
+</li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-sm" data-icon="circle">circle</span>
+<span class="font-label">Las contraseñas deben coincidir</span>
+</li>
+</ul>
+</div>
+<!-- Primary Action -->
+<button class="w-full bg-blue-700 text-on-primary font-bold py-4 rounded-full shadow-lg shadow-blue-200 hover:bg-blue-800 transition-all active:scale-95 duration-150 flex items-center justify-center gap-2" type="submit">
+<span>Actualizar Contraseña</span>
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Back Action -->
+<div class="text-center">
+<a class="text-xs font-bold text-blue-700 uppercase tracking-widest hover:text-blue-800 transition-all" href="#">
+                            Volver al inicio de sesión
+                        </a>
+</div>
+</form>
+</div>
+<!-- Contextual Medical Trust Banner -->
+<div class="mt-8 flex items-center justify-center gap-3 text-slate-400">
+<span class="material-symbols-outlined text-lg" data-icon="verified_user">verified_user</span>
+<p class="font-label text-[10px] uppercase tracking-widest font-bold">Encriptación de grado clínico AES-256</p>
+</div>
+</div>
+</main>
+<!-- Footer Component -->
+<footer class="w-full py-12 px-8 bg-slate-100 border-t border-slate-200/50">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto">
+<div class="text-center md:text-left">
+<p class="font-bold text-blue-700 mb-1">VET-NUTRI</p>
+<p class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500">© 2024 Clinical Serenity Nutrition. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-blue-600 transition-colors" href="#">Contact Support</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-blue-600 transition-colors" href="#">Veterinary Network</a>
+</div>
+</div>
+</footer>
+</body></html>

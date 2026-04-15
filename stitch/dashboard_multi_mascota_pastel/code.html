@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NutriPet Vet - Dashboard de Propietario</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#005d90", "primary-container": "#0077b6", "on-primary": "#ffffff", secondary: "#00677d", "secondary-container": "#50d9fe", surface: "#eefcff", "surface-container": "#cef5fd", "surface-container-low": "#dcf9ff", "surface-container-high": "#c9eff7", outline: "#707881", error: "#ba1a1a", "on-surface": "#001f24", "on-surface-variant": "#404850", "error-container": "#ffdad6", "inverse-on-surface": "#d2f7ff", "on-primary-fixed": "#001d32", "primary-fixed-dim": "#94ccff", "outline-variant": "#bfc7d1", "inverse-primary": "#94ccff", "surface-container-lowest": "#ffffff", "on-primary-container": "#f3f7ff", "surface-container-highest": "#c3e9f1", "primary-fixed": "#cde5ff", "on-tertiary-fixed-variant": "#004f59", "on-primary-fixed-variant": "#004b74", "tertiary-container": "#227c8a", "surface-bright": "#eefcff", "tertiary-fixed-dim": "#83d3e1", "on-tertiary-container": "#e7fbff", "secondary-fixed": "#b3ebff", "surface-variant": "#c3e9f1", "on-secondary-container": "#005c70", "on-secondary-fixed-variant": "#004e5f", "surface-dim": "#bbe1e8", "secondary-fixed-dim": "#4cd6fb", "on-background": "#001f24", background: "#eefcff", "tertiary-fixed": "#9feffe", "on-secondary-fixed": "#001f27", "on-error": "#ffffff", "on-tertiary-fixed": "#001f24", tertiary: "#00626f", "on-error-container": "#93000a", "on-secondary": "#ffffff", "inverse-surface": "#0e353c", "surface-tint": "#006399", "on-tertiary": "#ffffff"}, borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"}, fontFamily: {headline: ["Plus Jakarta Sans"], body: ["Plus Jakarta Sans"], label: ["Plus Jakarta Sans"], display: "Plus Jakarta Sans"}}}};</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            background: rgba(248, 250, 252, 0.6);
+            backdrop-filter: blur(12px);
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<div class="flex min-h-screen">
+<!-- SideNavBar Component (COMPONENTS_53 style) -->
+<aside class="hidden lg:flex flex-col h-screen w-64 border-r border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-4 space-y-2 fixed left-0 top-0 z-40">
+<div class="flex items-center gap-3 px-2 mb-8">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="Veterinary Clinic Logo" class="w-full h-full object-cover" data-alt="minimalist professional veterinary clinic logo with a subtle leaf and paw symbol" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJhMHtxpHt7m-kg4nIRVLz6AvnO8axeIzBhHAr4J-UsMWQBZWdTnq9JibM_rN_8nRe-FQaxWHVk8g2SpTOmQPtlzUyrTDJq--msW6g0vFbqlzmGyy5ZoujQUnzVwdqvdneIoqrYESDxjfNPDYbznR-VRzSjsmp41pyt6s3SPc-NcT5NK_tlCDD0w1NZ2y82Ob9cB1sEvDD_CiNSZlM9CzglknLgaWWQm96iNnkqqrXn4XetWpfKaXCti4NH_oP_y4Rt3h3jDnInYA"/>
+</div>
+<div>
+<h2 class="text-lg font-black text-blue-800 dark:text-blue-200 leading-none">Dr. Sanchez</h2>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-label">Pet Care Portal</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="bg-blue-100/50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-100 rounded-full font-bold flex items-center gap-3 px-4 py-3 text-sm transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                    Dashboard
+                </a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full flex items-center gap-3 px-4 py-3 text-sm transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="pets">pets</span>
+                    Patient Records
+                </a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full flex items-center gap-3 px-4 py-3 text-sm transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+                    Diet Formulator
+                </a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full flex items-center gap-3 px-4 py-3 text-sm transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+                    Toxicology Alerts
+                </a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full flex items-center gap-3 px-4 py-3 text-sm transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                    Settings
+                </a>
+</nav>
+<div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 space-y-1">
+<button class="w-full bg-blue-700 text-white py-3 rounded-full font-bold mb-4 flex items-center justify-center gap-2 shadow-sm scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+                    New Diet Plan
+                </button>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full flex items-center gap-3 px-4 py-2 text-sm transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                    Help Center
+                </a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full flex items-center gap-3 px-4 py-2 text-sm transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                    Logout
+                </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 lg:ml-64 bg-surface min-h-screen pb-12">
+<!-- TopNavBar (COMPONENTS_53 style) -->
+<header class="glass-header sticky top-0 z-30 px-8 h-16 flex justify-between items-center border-b border-slate-200/50 dark:border-slate-800/50">
+<div class="flex items-center gap-8">
+<h1 class="text-xl font-bold text-blue-800 dark:text-blue-200 tracking-tight font-headline">Dashboard</h1>
+<div class="hidden md:flex items-center gap-2 bg-slate-100 dark:bg-slate-900 rounded-full p-1">
+<button class="px-5 py-1.5 bg-blue-700 text-white rounded-full text-xs font-bold transition-all">Luna</button>
+<button class="px-5 py-1.5 text-slate-500 hover:text-blue-700 rounded-full text-xs font-medium transition-all">Max</button>
+<button class="px-5 py-1.5 text-slate-500 hover:text-blue-700 rounded-full text-xs font-medium transition-all">Oliver</button>
+<button class="p-1.5 text-slate-500 hover:bg-slate-200 rounded-full flex items-center justify-center transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined text-slate-500 p-2 hover:bg-slate-100 rounded-full transition-colors cursor-pointer">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full ring-2 ring-surface"></span>
+</div>
+<div class="h-9 w-9 rounded-full bg-slate-200 overflow-hidden ring-2 ring-blue-100">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="professional portrait of a confident male veterinarian" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIQsgiMDwoxcsZXGn7csv-4Mbv50HAJ_YnseyWoj68qypGdJ4mJcwMzUaF8_sNa6bKBPHHGhKb1a1ZGVrxQvFRBG96bdyBbCHM3Vb10_eHNgZKqKHsxSD9zwusQkklS0QhDTY-xmbZgIfLC7zls4ylMhFk2qtSt5Ow-B7laPJPWWYr34pjl2iR9MmrZRlq1IdamFt1xl8-C6evi9YhB3ex97NHLVeZoHgnZLTs3lZhSuJqbMucXQhKGZ2YeamuFVRj8fKw2chhn8Q"/>
+</div>
+</div>
+</header>
+<div class="px-8 mt-10 max-w-7xl mx-auto">
+<!-- Active Pet Focus Section -->
+<section class="mb-12">
+<div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-10 overflow-hidden relative">
+<div class="relative z-10 flex-1">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-100 text-blue-800 rounded-full text-xs font-bold mb-6 uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">pets</span>
+                                PACIENTE ACTIVO: LUNA
+                            </div>
+<h2 class="text-6xl font-black text-blue-900 tracking-tighter mb-2 font-headline">Luna</h2>
+<p class="text-xl text-slate-600 font-medium mb-8">Golden Retriever • 4 años • 28.5 kg</p>
+<div class="flex flex-wrap gap-4">
+<button class="px-8 py-3.5 bg-blue-700 text-white rounded-full font-bold shadow-sm hover:bg-blue-800 transition-colors">Ver Historial Completo</button>
+<button class="px-8 py-3.5 bg-white text-blue-700 border border-blue-100 rounded-full font-bold hover:bg-blue-50 transition-colors">Actualizar Peso</button>
+</div>
+</div>
+<div class="relative z-10 w-full md:w-80 aspect-square rounded-2xl overflow-hidden shadow-xl transform hover:scale-[1.02] transition-transform duration-300">
+<img alt="Luna - Golden Retriever" class="w-full h-full object-cover" data-alt="beautiful golden retriever dog sitting gracefully in a sunlit garden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMw4ajmp7Z7lNB1UGyzl8eEs2_qr8YpIGAG6aHcpf6FupKsfe7fC7ha0emKBgqxYEUArbX3J34bEE09831tGbnlCD2vIcuqUrYYRr6VMXNYGPyiLkrEZPcVuaHTfSoNFsprvr-09Ljw44u7K0XuiAtcnZ3UDX79YtT67DduiQQgvode5uH5IwNWGrY4-L5b9XZ725N_Ol_o_EyviZw_3p8TCy1suxTlJ7E13ohl3iokNUNhY7gRxjIxLeYUZqMepVnq4ZyuPqe0bs"/>
+</div>
+</div>
+</section>
+<!-- Bento Grid Dashboard -->
+<div class="bento-grid">
+<!-- Receta Actual Card -->
+<div class="col-span-12 md:col-span-8 bg-white border border-slate-100 rounded-2xl p-8 shadow-sm">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h3 class="text-2xl font-bold text-slate-900 font-headline">Receta Actual</h3>
+<p class="text-slate-500 text-sm font-medium">Dieta de Mantenimiento - BARF Balanceada</p>
+</div>
+<span class="material-symbols-outlined text-blue-700 bg-blue-50 p-3 rounded-full">restaurant_menu</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+<div class="p-6 bg-slate-50 rounded-2xl border border-slate-100/50">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Proteína</span>
+<span class="text-3xl font-bold text-blue-700">650g</span>
+<p class="text-[11px] text-slate-500 mt-1 font-medium">Pollo y Pavo orgánico</p>
+</div>
+<div class="p-6 bg-slate-50 rounded-2xl border border-slate-100/50">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Vegetales</span>
+<span class="text-3xl font-bold text-blue-700">180g</span>
+<p class="text-[11px] text-slate-500 mt-1 font-medium">Espinaca, Calabaza, Zanahoria</p>
+</div>
+<div class="p-6 bg-slate-50 rounded-2xl border border-slate-100/50">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Suplementos</span>
+<span class="text-3xl font-bold text-blue-800">15ml</span>
+<p class="text-[11px] text-slate-500 mt-1 font-medium">Aceite de Salmón &amp; Calcio</p>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-slate-50 flex justify-between items-center">
+<div class="flex -space-x-3">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-blue-200"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-blue-100"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200"></div>
+</div>
+<p class="text-xs font-semibold text-blue-800/60">Última modificación: 12 Oct 2023</p>
+</div>
+</div>
+<!-- Estado de Salud Card -->
+<div class="col-span-12 md:col-span-4 bg-white border border-slate-100 rounded-2xl p-8 shadow-sm flex flex-col justify-between">
+<div>
+<h3 class="text-2xl font-bold text-slate-900 font-headline mb-1">Estado de Salud</h3>
+<p class="text-sm text-slate-500 font-medium mb-8">Basado en últimos análisis clínicos</p>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-600">monitor_heart</span>
+<span class="font-semibold text-sm text-slate-700">Nivel de Energía</span>
+</div>
+<span class="px-3 py-1 bg-green-50 text-green-700 rounded-full text-[10px] font-bold">ÓPTIMO</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-500">opacity</span>
+<span class="font-semibold text-sm text-slate-700">Hidratación</span>
+</div>
+<span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-[10px] font-bold">NORMAL</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-red-500">scale</span>
+<span class="font-semibold text-sm text-slate-700">Índice Masa</span>
+</div>
+<span class="px-3 py-1 bg-red-50 text-red-700 rounded-full text-[10px] font-bold">+2% IDEAL</span>
+</div>
+</div>
+</div>
+<div class="mt-8 p-4 bg-blue-50/30 rounded-2xl border border-blue-50">
+<p class="text-xs font-medium text-blue-900 leading-relaxed italic">
+                                "Luna muestra una mejora del 15% en su movilidad articular tras el ajuste de Omega-3."
+                            </p>
+</div>
+</div>
+<!-- Próxima Entrega Card -->
+<div class="col-span-12 md:col-span-6 bg-blue-800 text-white rounded-2xl p-8 shadow-lg shadow-blue-900/10 overflow-hidden relative">
+<div class="relative z-10">
+<h3 class="text-xl font-bold mb-6 font-headline">Próxima Entrega / Preparación</h3>
+<div class="flex items-end gap-2 mb-2">
+<span class="text-7xl font-black tracking-tighter">18</span>
+<span class="text-2xl font-bold mb-2 uppercase">Octubre</span>
+</div>
+<p class="text-blue-100/70 font-medium flex items-center gap-2 mb-10 text-sm">
+<span class="material-symbols-outlined text-sm">schedule</span>
+                                Entrega programada: 09:00 AM - 11:00 AM
+                            </p>
+<button class="w-full bg-white text-blue-800 py-4 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-blue-50 transition-colors shadow-sm">
+<span class="material-symbols-outlined">local_shipping</span>
+                                Rastrear Pedido
+                            </button>
+</div>
+<div class="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-700 rounded-full opacity-20"></div>
+</div>
+<!-- Quick Stats -->
+<div class="col-span-12 md:col-span-6 grid grid-cols-2 gap-6">
+<div class="bg-slate-50 border border-slate-100 rounded-2xl p-6 flex flex-col justify-between">
+<span class="material-symbols-outlined text-blue-700 bg-white p-2.5 rounded-full w-fit shadow-sm">calendar_month</span>
+<div>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Próxima Cita</p>
+<p class="text-2xl font-black text-slate-900 font-headline">24 Nov</p>
+</div>
+</div>
+<div class="bg-slate-50 border border-slate-100 rounded-2xl p-6 flex flex-col justify-between">
+<span class="material-symbols-outlined text-red-500 bg-white p-2.5 rounded-full w-fit shadow-sm">vaccines</span>
+<div>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Vacunas</p>
+<p class="text-2xl font-black text-red-600 font-headline">Pendiente</p>
+</div>
+</div>
+<div class="col-span-2 bg-slate-100 border border-slate-200/50 rounded-2xl p-6 flex items-center justify-between hover:bg-slate-200/50 transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-blue-700">chat</span>
+</div>
+<div>
+<p class="font-bold text-slate-900">Chat con Dr. Sanchez</p>
+<p class="text-[11px] text-slate-500 font-medium">Disponible ahora para consultas</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:translate-x-1 transition-transform">arrow_forward_ios</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer Component (COMPONENTS_53 style) -->
+<footer class="w-full lg:pl-64">
+<div class="w-full py-12 px-8 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-100 dark:bg-slate-950 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="text-slate-500 font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-center md:text-left">
+                © 2024 Clinical Serenity Nutrition. Cumplimiento con NOM-012-SAG/ZOO-2020 y regulaciones de SADER.
+            </div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="text-slate-500 hover:text-blue-700 font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest transition-colors underline decoration-blue-200 underline-offset-4" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-blue-700 font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest transition-colors underline decoration-blue-200 underline-offset-4" href="#">Terms of Service</a>
+<a class="text-slate-500 hover:text-blue-700 font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest transition-colors underline decoration-blue-200 underline-offset-4" href="#">SAGARPA Guidelines</a>
+<a class="text-slate-500 hover:text-blue-700 font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest transition-colors underline decoration-blue-200 underline-offset-4" href="#">Contact Us</a>
+</div>
+</div>
+</footer>
+</body></html>

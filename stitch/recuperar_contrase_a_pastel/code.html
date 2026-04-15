@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#005d90", secondary: "#00677d", tertiary: "#00626f", background: "#eefcff", surface: "#eefcff", "on-surface": "#001f24", "on-surface-variant": "#404850", outline: "#707881", "outline-variant": "#bfc7d1", "primary-container": "#0077b6", "on-primary-container": "#f3f7ff", "secondary-container": "#50d9fe", "surface-container-low": "#dcf9ff", "surface-container-lowest": "#ffffff", "surface-container": "#cef5fd", "surface-container-high": "#c9eff7", "surface-container-highest": "#c3e9f1", "on-secondary-fixed": "#001f27", "on-tertiary-container": "#e7fbff", "primary-fixed": "#cde5ff", "surface-variant": "#c3e9f1", "tertiary-container": "#227c8a", "on-tertiary-fixed": "#001f24", "on-secondary": "#ffffff", "tertiary-fixed": "#9feffe", "primary-fixed-dim": "#94ccff", "secondary-fixed-dim": "#4cd6fb", "on-error": "#ffffff", "on-tertiary-fixed-variant": "#004f59", "on-tertiary": "#ffffff", "secondary-fixed": "#b3ebff", "on-secondary-container": "#005c70", "on-primary": "#ffffff", "surface-dim": "#bbe1e8", "on-secondary-fixed-variant": "#004e5f", "error-container": "#ffdad6", "inverse-on-surface": "#d2f7ff", "inverse-primary": "#94ccff", "on-background": "#001f24", "on-error-container": "#93000a", "on-primary-fixed": "#001d32", "on-primary-fixed-variant": "#004b74", "surface-bright": "#eefcff", "inverse-surface": "#0e353c", error: "#ba1a1a", "tertiary-fixed-dim": "#83d3e1", "surface-tint": "#006399"}, borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"}, fontFamily: {headline: ["Plus Jakarta Sans"], body: ["Plus Jakarta Sans"], label: ["Plus Jakarta Sans"], display: "Plus Jakarta Sans"}}}};</script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col">
+<!-- TopNavBar (NutriPet) -->
+<nav class="fixed top-0 w-full z-50 bg-slate-50/60 dark:bg-slate-900/60 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50">
+    <div class="flex justify-between items-center px-8 h-16 max-w-full mx-auto">
+        <div class="text-xl font-bold text-blue-800 dark:text-blue-200 tracking-tight font-['Plus_Jakarta_Sans']">
+            NutriPet
+        </div>
+        <div class="hidden md:flex items-center gap-8 font-['Plus_Jakarta_Sans'] tracking-tight">
+            <a class="text-blue-700 dark:text-blue-300 font-semibold border-b-2 border-blue-700 pb-1" href="#">Guía Nutricional</a>
+            <a class="text-slate-500 dark:text-slate-400 font-medium hover:text-blue-600 dark:hover:text-blue-200 transition-colors" href="#">Calculadoras</a>
+            <a class="text-slate-500 dark:text-slate-400 font-medium hover:text-blue-600 dark:hover:text-blue-200 transition-colors" href="#">Consultas</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <button class="bg-primary text-on-primary px-6 py-2 rounded-full font-bold transition-all active:scale-95 active:duration-150">
+                Comenzar
+            </button>
+        </div>
+    </div>
+</nav>
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+<div class="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] bg-blue-100/30 rounded-full blur-[120px]"></div>
+<div class="absolute top-[60%] -right-[5%] w-[40%] h-[50%] bg-slate-200/30 rounded-full blur-[100px]"></div>
+</div>
+<main class="flex-grow flex items-center justify-center p-6 relative z-10 pt-24">
+<div class="max-w-md w-full">
+<div class="bg-surface-container-lowest rounded-xl p-10 shadow-sm border border-outline-variant/30">
+<div class="flex justify-center mb-8">
+<div class="bg-primary-container w-16 h-16 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="medical_services">medical_services</span>
+</div>
+</div>
+<div class="text-center mb-10">
+<h1 class="font-headline text-2xl font-extrabold text-blue-800 tracking-tight mb-2 uppercase">NutriPet</h1>
+<h2 class="font-headline text-xl font-bold text-on-surface mb-3">Recuperar Contraseña</h2>
+<p class="font-body text-on-surface-variant text-sm leading-relaxed">Enter your email to receive a recovery link</p>
+</div>
+<form class="space-y-6">
+<div class="space-y-2">
+<label class="font-label text-[11px] font-bold text-on-surface-variant uppercase tracking-widest ml-1" for="email">Correo Electrónico</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant/60 text-xl" data-icon="mail">mail</span>
+</div>
+<input class="block w-full pl-11 pr-4 py-3.5 bg-surface-container-low border-transparent rounded-full focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all font-body text-on-surface placeholder:text-outline-variant" id="email" name="email" placeholder="ejemplo@veterinaria.com" required="" type="email"/>
+</div>
+</div>
+<button class="w-full py-4 px-6 bg-primary text-white font-headline font-bold rounded-full shadow-md hover:bg-blue-700 active:scale-[0.98] transition-all duration-200" type="submit">
+                        Enviar enlace de recuperación
+                    </button>
+</form>
+<div class="mt-8 flex flex-col items-center gap-4">
+<a class="flex items-center gap-2 font-body text-sm font-semibold text-primary hover:text-blue-800 transition-colors group" href="/login">
+<span class="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform" data-icon="arrow_back">arrow_back</span>
+                        Volver al inicio de sesión
+                    </a>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-2 gap-4">
+<div class="bg-white/40 backdrop-blur-sm p-4 rounded-xl flex items-center gap-3 border border-outline-variant/20">
+<span class="material-symbols-outlined text-primary" data-icon="verified_user">verified_user</span>
+<div class="flex flex-col">
+<span class="font-label text-[10px] uppercase text-on-surface-variant font-bold tracking-widest">Seguridad</span>
+<span class="font-body text-xs text-on-surface">Acceso Clínico</span>
+</div>
+</div>
+<div class="bg-white/40 backdrop-blur-sm p-4 rounded-xl flex items-center gap-3 border border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary" data-icon="support_agent">support_agent</span>
+<div class="flex flex-col">
+<span class="font-label text-[10px] uppercase text-on-surface-variant font-bold tracking-widest">Soporte</span>
+<span class="font-body text-xs text-on-surface">Ayuda 24/7</span>
+</div>
+</div>
+</div>
+</div>
+...existing code...
+</main>
+<!-- Footer (NutriPet) -->
+<footer class="w-full py-12 px-8 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-100 dark:bg-slate-950">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 max-w-screen-2xl mx-auto">
+        <div class="mb-4 md:mb-0">
+            <p class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500">
+                © 2026 NutriPet
+            </p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-8 font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">
+            <a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Términos y Condiciones</a>
+            <a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Aviso de Privacidad</a>
+            <a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Contacto</a>
+        </div>
+    </div>
+</footer>
+<!-- Component: Footer -->
+<footer class="w-full py-12 px-8 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-100 dark:bg-slate-950 mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center gap-4 max-w-7xl mx-auto">
+<div class="mb-4 md:mb-0">
+<span class="font-['Plus_Jakarta_Sans'] font-bold text-blue-700 text-lg uppercase tracking-widest">Clinical Serenity</span>
+</div>
+<div class="flex gap-6 mb-4 md:mb-0">
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-blue-600 transition-colors" href="#">Contact Support</a>
+</div>
+<div class="text-slate-500 font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest opacity-80">
+                © 2024 Clinical Serenity Nutrition. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>

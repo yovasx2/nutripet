@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tu Plan Nutricional Validado | NutriPet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#005d90", "on-primary": "#ffffff", "primary-container": "#0077b6", "on-primary-container": "#f3f7ff", secondary: "#00677d", "on-secondary": "#ffffff", "secondary-container": "#50d9fe", "on-secondary-container": "#005c70", tertiary: "#00626f", "on-tertiary": "#ffffff", "tertiary-container": "#227c8a", "on-tertiary-container": "#e7fbff", error: "#ba1a1a", "on-error": "#ffffff", "error-container": "#ffdad6", "on-error-container": "#93000a", background: "#eefcff", "on-background": "#001f24", surface: "#eefcff", "on-surface": "#001f24", "surface-variant": "#c3e9f1", "on-surface-variant": "#404850", outline: "#707881", "outline-variant": "#bfc7d1", "surface-container-lowest": "#ffffff", "surface-container-low": "#dcf9ff", "surface-container": "#cef5fd", "surface-container-high": "#c9eff7", "surface-container-highest": "#c3e9f1", "primary-fixed-dim": "#94ccff", "on-primary-fixed": "#001d32", "on-primary-fixed-variant": "#004b74", "on-tertiary-fixed-variant": "#004f59", "surface-dim": "#bbe1e8", "inverse-primary": "#94ccff", "on-secondary-fixed-variant": "#004e5f", "inverse-surface": "#0e353c", "on-tertiary-fixed": "#001f24", "primary-fixed": "#cde5ff", "secondary-fixed": "#b3ebff", "surface-bright": "#eefcff", "tertiary-fixed": "#9feffe", "inverse-on-surface": "#d2f7ff", "secondary-fixed-dim": "#4cd6fb", "on-secondary-fixed": "#001f27", "surface-tint": "#006399", "tertiary-fixed-dim": "#83d3e1"}, borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"}, fontFamily: {headline: ["Plus Jakarta Sans"], body: ["Plus Jakarta Sans"], label: ["Plus Jakarta Sans"], display: "Plus Jakarta Sans"}}}};</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            background: rgba(248, 249, 255, 0.6);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased">
+<!-- TopNavBar (NutriPet) -->
+<nav class="fixed top-0 w-full z-50 bg-slate-50/60 dark:bg-slate-900/60 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50">
+    <div class="flex justify-between items-center px-8 h-16 max-w-full mx-auto">
+        <div class="text-xl font-bold text-blue-800 dark:text-blue-200 tracking-tight font-['Plus_Jakarta_Sans']">
+            NutriPet
+        </div>
+        <div class="hidden md:flex items-center gap-8 font-['Plus_Jakarta_Sans'] tracking-tight">
+            <a class="text-blue-700 dark:text-blue-300 font-semibold border-b-2 border-blue-700 pb-1" href="#">Guía Nutricional</a>
+            <a class="text-slate-500 dark:text-slate-400 font-medium hover:text-blue-600 dark:hover:text-blue-200 transition-colors" href="#">Calculadoras</a>
+            <a class="text-slate-500 dark:text-slate-400 font-medium hover:text-blue-600 dark:hover:text-blue-200 transition-colors" href="#">Consultas</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <button class="bg-primary text-on-primary px-6 py-2 rounded-full font-bold transition-all active:scale-95 active:duration-150">
+                Comenzar
+            </button>
+        </div>
+    </div>
+</nav>
+<main class="pt-24 pb-32 px-4 max-w-5xl mx-auto">
+<!-- Hero Header Section -->
+<section class="mb-12">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <h1 class="font-headline font-extrabold text-4xl text-on-surface tracking-tight mb-2">Tu Plan Nutricional Validado</h1>
+            <p class="text-on-surface-variant text-lg max-w-2xl">Prescripción médica personalizada basada en el perfil metabólico de tu mascota y estándares AAFCO.</p>
+        </div>
+        <button class="bg-primary text-on-primary px-6 py-3 rounded-full font-bold flex items-center gap-2 shadow-sm hover:opacity-90 transition-all active:scale-95">
+            <span class="material-symbols-outlined">monitor_weight</span>
+            Registrar Peso Semanal
+        </button>
+    </div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- MER Calculation Card (Primary Value) -->
+<div class="md:col-span-5 bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/30 flex flex-col justify-center items-center text-center relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-primary-container"></div>
+<span class="font-label text-xs font-bold uppercase tracking-widest text-primary mb-4">Gasto Energético en Reposo (MER)</span>
+<div class="font-headline text-7xl font-extrabold text-primary mb-2">845</div>
+<div class="font-label text-xl font-semibold text-on-surface-variant">kcal / día</div>
+<div class="mt-6 flex items-center gap-2 text-primary bg-primary-container/40 px-4 py-2 rounded-full">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-sm font-bold">Validación Veterinaria</span>
+</div>
+</div>
+<!-- Recipe Summary Card -->
+<div class="md:col-span-7 bg-surface-container-low p-8 rounded-xl relative border border-outline-variant/20">
+<div class="flex justify-between items-start mb-6">
+<h3 class="font-headline font-bold text-xl text-primary">Distribución de Nutrientes</h3>
+<span class="material-symbols-outlined text-primary">info</span>
+</div>
+<div class="space-y-6">
+<div class="grid grid-cols-3 gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl text-center border border-outline-variant/10">
+<span class="font-label text-[10px] uppercase font-bold text-outline">Proteína</span>
+<div class="font-headline text-xl font-bold text-on-surface">32%</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl text-center border border-outline-variant/10">
+<span class="font-label text-[10px] uppercase font-bold text-outline">Grasas</span>
+<div class="font-headline text-xl font-bold text-on-surface">18%</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl text-center border border-outline-variant/10">
+<span class="font-label text-[10px] uppercase font-bold text-outline">Carbohidratos</span>
+<div class="font-headline text-xl font-bold text-on-surface">50%</div>
+</div>
+</div>
+<!-- Custom Chart Mockup -->
+<div class="h-4 w-full bg-surface-container-highest rounded-full flex overflow-hidden">
+<div class="h-full bg-primary" style="width: 32%"></div>
+<div class="h-full bg-secondary" style="width: 18%"></div>
+<div class="h-full bg-tertiary" style="width: 50%"></div>
+</div>
+</div>
+</div>
+<!-- Ingredients List (Precise Scaling) -->
+<div class="md:col-span-8 bg-surface-container-lowest rounded-xl border border-outline-variant/30 overflow-hidden">
+<div class="p-6 border-b border-surface-container-low flex justify-between items-center">
+<h3 class="font-headline font-bold text-xl">Ingredientes (Ración Diaria)</h3>
+<div class="flex items-center gap-2 bg-surface-container-low p-1 rounded-full">
+<button class="px-4 py-1 bg-white shadow-sm rounded-full text-xs font-bold text-primary">1 día</button>
+<button class="px-4 py-1 text-xs font-medium text-outline">7 días</button>
+</div>
+</div>
+<div class="divide-y divide-surface-container-low">
+<div class="p-4 flex justify-between items-center hover:bg-surface-container-low transition-colors cursor-default">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-container/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">restaurant</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Pollo cocido (Pechuga)</p>
+<p class="text-xs text-on-surface-variant">Proteína magra de alta biodisponibilidad</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label font-bold text-xl text-primary">150</span><span class="font-label text-sm font-bold text-primary">g</span>
+</div>
+</div>
+<div class="p-4 flex justify-between items-center hover:bg-surface-container-low transition-colors cursor-default">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-container/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">eco</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Calabaza hervida</p>
+<p class="text-xs text-on-surface-variant">Fibra soluble para salud intestinal</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label font-bold text-xl text-primary">80</span><span class="font-label text-sm font-bold text-primary">g</span>
+</div>
+</div>
+<div class="p-4 flex justify-between items-center hover:bg-surface-container-low transition-colors cursor-default">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-container/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">grain</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Arroz integral</p>
+<p class="text-xs text-on-surface-variant">Energía de liberación lenta</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label font-bold text-xl text-primary">120</span><span class="font-label text-sm font-bold text-primary">g</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Mandatory Supplements (AAFCO) -->
+<div class="md:col-span-4 space-y-6">
+<div class="bg-primary text-on-primary p-6 rounded-xl relative overflow-hidden">
+<div class="absolute -right-4 -top-4 opacity-10">
+<span class="material-symbols-outlined text-9xl">medical_services</span>
+</div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined">shield_with_heart</span>
+<h4 class="font-headline font-bold text-xs tracking-wider uppercase">Suplementos Obligatorios (AAFCO)</h4>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between border-b border-white/20 pb-2">
+<span class="font-medium text-sm">Carbonato de Calcio</span>
+<span class="font-label font-bold">2.5g</span>
+</div>
+<div class="flex items-center justify-between border-b border-white/20 pb-2">
+<span class="font-medium text-sm">Aceite Omega-3 (EPA/DHA)</span>
+<span class="font-label font-bold">1 cap (1000mg)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-medium text-sm">Vitamina E</span>
+<span class="font-label font-bold">10 IU</span>
+</div>
+</div>
+<p class="mt-6 text-[10px] leading-relaxed opacity-80 italic">
+                    * Estos suplementos son esenciales para prevenir deficiencias metabólicas a largo plazo según estándares globales.
+                </p>
+</div>
+<div class="bg-surface-container-high p-6 rounded-xl border border-outline-variant/10">
+<h4 class="font-headline font-bold text-on-surface-variant text-sm mb-4">Instrucciones de Preparación</h4>
+<ul class="space-y-3">
+<li class="flex gap-3 text-xs">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+<span>Cocinar al vapor para preservar micronutrientes.</span>
+</li>
+<li class="flex gap-3 text-xs">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+<span>Añadir suplementos solo cuando el alimento esté frío.</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Warning Disclaimer -->
+<div class="mt-8 bg-error-container/40 border border-error/10 p-6 rounded-xl flex gap-4 items-start">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div>
+<h5 class="font-bold text-on-error-container text-sm">Alerta de Seguridad Alimentaria</h5>
+<p class="text-xs text-on-error-container mt-1">No sustituir ingredientes sin validación previa. El desequilibrio de la relación Calcio:Fósforo puede causar daños óseos irreversibles en pacientes jóvenes.</p>
+</div>
+</div>
+...existing code...
+</main>
+<!-- Footer (NutriPet) -->
+<footer class="w-full py-12 px-8 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-100 dark:bg-slate-950">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 max-w-screen-2xl mx-auto">
+        <div class="mb-4 md:mb-0">
+            <p class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500">
+                © 2026 NutriPet
+            </p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-8 font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">
+            <a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Términos y Condiciones</a>
+            <a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Aviso de Privacidad</a>
+            <a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Contacto</a>
+        </div>
+    </div>
+</footer>
+<!-- Footer Component -->
+<footer class="w-full py-12 px-8 border-t border-slate-200/50 bg-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="font-bold text-primary">NutriVet MVP</div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="font-label text-xs uppercase tracking-widest text-slate-500 hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label text-xs uppercase tracking-widest text-slate-500 hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label text-xs uppercase tracking-widest text-slate-500 hover:text-primary transition-colors" href="#">Contact Support</a>
+<a class="font-label text-xs uppercase tracking-widest text-slate-500 hover:text-primary transition-colors" href="#">Veterinary Network</a>
+</div>
+<div class="font-label text-xs uppercase tracking-widest text-slate-500">
+        © 2024 Clinical Serenity Nutrition. All rights reserved.
+    </div>
+</footer>
+<!-- Bottom Navigation Bar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-4 bg-white/90 backdrop-blur-lg border-t border-surface-container-low rounded-t-3xl">
+<div class="flex flex-col items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label text-[10px] font-semibold uppercase tracking-wider mt-1">Inicio</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-label text-[10px] font-semibold uppercase tracking-wider mt-1">Pacientes</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-primary rounded-full px-4 py-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+<span class="font-label text-[10px] font-semibold uppercase tracking-wider mt-1">Recetas</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label text-[10px] font-semibold uppercase tracking-wider mt-1">Perfil</span>
+</div>
+</nav>
+<!-- Visual Polish: Decorative Mesh Background -->
+<div class="fixed top-0 left-0 w-full h-full -z-10 opacity-[0.05] pointer-events-none">
+<svg class="w-full h-full" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<filter id="noiseFilter">
+<feturbulence basefrequency="0.6" numoctaves="3" stitchtiles="stitch" type="fractalNoise"></feturbulence>
+</filter>
+<rect filter="url(#noiseFilter)" height="100" width="100"></rect>
+</svg>
+</div>
+</body></html>
