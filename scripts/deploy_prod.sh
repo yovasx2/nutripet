@@ -19,24 +19,19 @@ else
   echo "No local .env.production found. Make sure to create one on the VPS at $APP_DIR/.env.production"
 fi
 
-# Load environment variables from .env.production
-if [ -f .env.production ]; then
-  export $(grep -v '^#' .env.production | xargs)
-fi
-
 # Ensure infrastructure services are running
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE up -d traefik db"
+ssh $REMOTE_HOST "cd $APP_DIR && docker compose --env-file .env.production -f $COMPOSE_FILE up -d db"
 
 # Build new image
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE build nutripet"
+ssh $REMOTE_HOST "cd $APP_DIR && docker compose --env-file .env.production -f $COMPOSE_FILE build nutripet"
 
 # Run migrations
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE run --rm nutripet rails db:migrate RAILS_ENV=production"
+ssh $REMOTE_HOST "cd $APP_DIR && docker compose --env-file .env.production -f $COMPOSE_FILE run --rm nutripet rails db:migrate RAILS_ENV=production"
 
 # Precompile assets
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE run --rm nutripet rails assets:precompile RAILS_ENV=production"
+ssh $REMOTE_HOST "cd $APP_DIR && docker compose --env-file .env.production -f $COMPOSE_FILE run --rm nutripet rails assets:precompile RAILS_ENV=production"
 
 # Deploy with zero-downtime: wait for health check before stopping old container
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE up -d --wait --no-deps nutripet"
+ssh $REMOTE_HOST "cd $APP_DIR && docker compose --env-file .env.production -f $COMPOSE_FILE up -d --wait --no-deps nutripet"
 
 echo "Deployment to $REMOTE_HOST finished."
