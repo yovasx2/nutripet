@@ -6,17 +6,19 @@ REMOTE_HOST=${1:-root@187.77.19.49}
 REPO_URL=git@github.com:yovasx2/nutripet.git
 APP_DIR=/opt/nutripet
 COMPOSE_FILE=docker-compose.prod.yml
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 echo "Deploying to $REMOTE_HOST"
 
 ssh $REMOTE_HOST "mkdir -p $APP_DIR && cd $APP_DIR && if [ ! -d .git ]; then git clone $REPO_URL .; else git fetch origin && git reset --hard origin/main; fi"
 
 # Copy env file if present locally
-if [ -f .env.production ]; then
+if [ -f "$PROJECT_DIR/.env.production" ]; then
   echo "Uploading .env.production"
-  scp .env.production $REMOTE_HOST:$APP_DIR/.env.production
+  scp "$PROJECT_DIR/.env.production" $REMOTE_HOST:$APP_DIR/.env.production
 else
-  echo "No local .env.production found. Make sure to create one on the VPS at $APP_DIR/.env.production"
+  echo "No local .env.production found at $PROJECT_DIR/.env.production. Make sure to create one before deploy."
 fi
 
 # Ensure infrastructure services are running
