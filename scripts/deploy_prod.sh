@@ -9,6 +9,9 @@ COMPOSE_FILE=docker-compose.prod.yml
 
 echo "Deploying to $REMOTE_HOST"
 
+# Stop rentshield if running
+ssh $REMOTE_HOST "cd /opt/rentshield && if [ -d .git ]; then COMPOSE_PROJECT_NAME=rentshield docker compose -f docker-compose.prod.yml down; fi"
+
 ssh $REMOTE_HOST "mkdir -p $APP_DIR && cd $APP_DIR && if [ ! -d .git ]; then git clone $REPO_URL .; else git fetch origin && git reset --hard origin/main; fi"
 
 # Copy env file if present locally
@@ -24,10 +27,11 @@ if [ -f .env.production ]; then
   set -a
   source .env.production
   set +a
+  export POSTGRES_USER POSTGRES_PASSWORD POSTGRES_DB DATABASE_URL APP_DOMAIN LETSENCRYPT_EMAIL
 fi
 
 # Ensure infrastructure services are running
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && COMPOSE_PROJECT_NAME=nutripet APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE up -d db"
+ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && COMPOSE_PROJECT_NAME=nutripet APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE up -d traefik db"
 
 # Wait for postgres to be ready
 ssh $REMOTE_HOST "cd $APP_DIR && echo 'Waiting for postgres to be ready...' && sleep 10"
