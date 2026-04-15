@@ -25,18 +25,21 @@ if [ -f .env.production ]; then
 fi
 
 # Ensure infrastructure services are running
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && COMPOSE_PROJECT_NAME=nutripet APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE up -d postgres"
+ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && COMPOSE_PROJECT_NAME=nutripet APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE up -d db"
+
+# Wait for postgres to be ready
+ssh $REMOTE_HOST "cd $APP_DIR && echo 'Waiting for postgres to be ready...' && sleep 10"
 
 # Build new image
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && COMPOSE_PROJECT_NAME=nutripet APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE build nutripet"
+ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && COMPOSE_PROJECT_NAME=nutripet APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE build backend"
 
 # Run migrations
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && COMPOSE_PROJECT_NAME=nutripet APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE run --rm nutripet rails db:migrate RAILS_ENV=production"
+ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && COMPOSE_PROJECT_NAME=nutripet APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL DATABASE_HOST=db docker compose -f $COMPOSE_FILE run --rm backend rails db:migrate RAILS_ENV=production"
 
 # Precompile assets
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && COMPOSE_PROJECT_NAME=nutripet APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE run --rm nutripet rails assets:precompile RAILS_ENV=production"
+ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && COMPOSE_PROJECT_NAME=nutripet APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL DATABASE_HOST=db docker compose -f $COMPOSE_FILE run --rm backend rails assets:precompile RAILS_ENV=production"
 
 # Deploy with zero-downtime: wait for health check before stopping old container
-ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && COMPOSE_PROJECT_NAME=nutripet APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE up -d --wait --no-deps nutripet"
+ssh $REMOTE_HOST "cd $APP_DIR && source .env.production && COMPOSE_PROJECT_NAME=nutripet APP_DOMAIN=$APP_DOMAIN LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL docker compose -f $COMPOSE_FILE up -d --wait --no-deps backend"
 
 echo "Deployment to $REMOTE_HOST finished."

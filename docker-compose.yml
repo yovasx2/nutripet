@@ -17,7 +17,7 @@ services:
       timeout: 5s
       retries: 5
 
-  nutripet:
+  backend:
     build: ./rails
     command: >
       sh -c "
