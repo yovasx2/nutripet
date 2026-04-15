@@ -22,7 +22,7 @@ else
 fi
 
 # Ensure infrastructure services are running
-ssh $REMOTE_HOST "cd $APP_DIR && docker compose --env-file .env.production -f $COMPOSE_FILE up -d db"
+ssh $REMOTE_HOST "cd $APP_DIR && docker compose --env-file .env.production -f $COMPOSE_FILE up -d postgres"
 
 # Build new image
 ssh $REMOTE_HOST "cd $APP_DIR && docker compose --env-file .env.production -f $COMPOSE_FILE build nutripet"

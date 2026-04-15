@@ -25,7 +25,7 @@ services:
     networks:
       - web
 
-  db:
+  postgres:
     image: postgres:15
     restart: always
     environment:
@@ -78,7 +78,7 @@ services:
       - web
       - internal
     depends_on:
-      - db
+      - postgres
 
 volumes:
   db-data:
