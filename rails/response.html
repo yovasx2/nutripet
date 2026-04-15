@@ -1,0 +1,428 @@
+<!-- BEGIN app/views/launch/index.html.erb --><!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentShield | Inteligencia Inmobiliaria</title>
+    <meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="HbVpuBaxlQU5QRjaZqW2PNm_fgNyyPxJGVfr9tV7jaZ385k8N6RYeZEq6LagcKfzvrLASDRoaLg7GEieaDR5kw" />
+    
+    <link rel="stylesheet" href="/assets/application-1b463e63.css" data-turbo-track="reload" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        .hero-bg { background: linear-gradient(135deg, #021017 0%, #052c22 100%); }
+
+        /* Animación de Bloques Independientes */
+        .fade-block { transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s ease; }
+        .is-hidden { opacity: 0; transform: translateY(12px); filter: blur(8px); }
+
+        /* Carrusel Continuo con Desvanecimiento Lateral */
+        .carousel-mask {
+            display: flex; overflow: hidden; position: relative; padding: 2rem 0;
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+        .carousel-track { display: flex; width: max-content; animation: marquee 60s linear infinite; }
+        .carousel-track:hover { animation-play-state: paused; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .risk-card { width: 300px; margin: 0 1rem; flex-shrink: 0; background: white; border-radius: 2.5rem; padding: 2.5rem 2rem; text-align: center; border: 1px solid #f1f5f9; }
+
+        /* Monitor de Seguridad Láser */
+        .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); position: relative; overflow: hidden; }
+        .scan-bar {
+            position: absolute; top: -5%; left: 0; width: 100%; height: 3px;
+            background: #10b981; box-shadow: 0 0 20px #10b981, 0 0 40px #10b981;
+            animation: move-scan 4s ease-in-out infinite;
+            z-index: 20;
+        }
+        @keyframes move-scan { 0% { top: -5%; } 50% { top: 100%; } 100% { top: -5%; } }
+
+        .feat-item { transition: all 0.4s ease; opacity: 0.1; filter: grayscale(1); transform: scale(0.98); }
+        .feat-item.active { opacity: 1; filter: grayscale(0); transform: scale(1.05); color: #10b981; }
+        .feat-item i.fa-shield-check { transform: scale(0); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .feat-item.active i.fa-shield-check { transform: scale(1.2); }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+
+    <!-- 1. NAVEGACIÓN -->
+    <nav class="bg-white/95 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50 h-20 flex items-center px-6">
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="fa-stack text-emerald-600 text-lg">
+                    <i class="fa-solid fa-shield-halved fa-stack-2x"></i>
+                </span>
+                <span class="text-2xl font-extrabold text-[#021017] tracking-tighter italic uppercase">RENT<span class="text-emerald-600 font-bold not-italic">Shield</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 items-center font-bold text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                <a href="#riesgos" class="hover:text-emerald-600 transition">Riesgos</a>
+                <a href="#metodo" class="hover:text-emerald-600 transition">Metodología</a>
+                <button onclick="scrollToId('Pre-registro')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-full transition shadow-lg text-[10px] uppercase font-bold tracking-widest">Pre-Registro</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 2. HERO SECTION CON ROTACIÓN ASÍNCRONA -->
+    <section class="hero-bg py-24 px-6 relative text-center lg:text-left overflow-hidden min-h-[750px] flex items-center">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10 w-full">
+            <div class="space-y-12">
+                <!-- Bloque 1: Badge (Vida propia) -->
+                <div id="hero-badge" class="fade-block inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full">
+                    <i class="fa-solid fa-shield-halved text-emerald-400 text-xs"></i>
+                    <span id="badgeText" class="text-emerald-300 text-[10px] font-bold uppercase tracking-widest leading-none">Red Antifraudes para Arrendamientos</span>
+                </div>
+
+                <!-- Bloque 2: Título (Vida propia) -->
+                <div class="min-h-[140px] md:min-h-[180px]">
+                    <h1 id="hero-title" class="fade-block text-4xl md:text-6xl font-extrabold text-white leading-tight tracking-tight">
+                        <span id="slogan1" class="fade-block">Rente con la verdad.</span> <br>
+                        <span id="slogan2" class="fade-block text-emerald-400 italic">Proteja su futuro.</span>
+                    </h1>
+                </div>
+
+                <!-- Bloque 3: Subtítulo (Vida propia) -->
+                <div class="min-h-[80px]">
+                    <p id="hero-sub" class="fade-block text-lg text-slate-300 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed opacity-80 italic">
+                        <span id="dynamicSubtitle">Evite fraudes y perfiles morosos con nuestro repositorio de reputación basado en evidencias contractuales.</span>
+                    </p>
+                </div>
+
+                <!-- Buscador Fijo -->
+                <div class="max-w-xl mx-auto lg:mx-0">
+                    <div class="bg-white p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row items-center gap-2 border border-white/10">
+                        <div class="flex-1 flex items-center px-4 w-full">
+                            <i class="fa-solid fa-magnifying-glass text-slate-300 mr-3"></i>
+                            <input id="searchInput" type="text" class="w-full py-4 text-slate-800 outline-none font-semibold placeholder:text-slate-400" placeholder="Nombre o CURP del prospecto..." onkeypress="handleKeyPress(event)">
+                        </div>
+                        <button onclick="openMockup()" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white px-10 py-4 rounded-xl font-bold transition shadow-lg uppercase text-[10px] tracking-widest">
+                            Consultar
+                        </button>
+                    </div>
+                    <p class="mt-4 text-[10px] text-emerald-400 font-bold uppercase tracking-widest italic opacity-70">
+                        <i class="fa-solid fa-lock mr-1"></i> Consultas 100% gratuitas • Privacidad total • Sin compromiso • Máxima seguridad
+                    </p>
+                </div>
+            </div>
+
+            <!-- MONITOR DE SEGURIDAD INTERACTIVO -->
+            <div class="hidden lg:block relative">
+                <div class="glass-panel rounded-[3.5rem] p-12 shadow-3xl">
+                    <div class="scan-bar"></div>
+                    <div class="flex items-center justify-between mb-12 border-b border-white/10 pb-6">
+                        <div class="flex items-center gap-4">
+                            <i class="fa-solid fa-microchip text-emerald-400 text-3xl"></i>
+                            <div>
+                                <h3 class="text-white font-bold italic tracking-tight uppercase text-sm leading-tight">Protocolo RentShield</h3>
+                                <p class="text-[9px] text-emerald-500 font-bold animate-pulse tracking-widest uppercase">Validación Activa</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-10" id="featureList">
+                        <!-- Items rotados y palomeados por JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. RIESGOS (CARRUSEL CONTINUO) -->
+    <section id="riesgos" class="py-24 bg-slate-50 border-y border-slate-100 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 mb-12 text-center">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-[#021017] mb-4 uppercase tracking-tighter italic">Rentar en México es un <span class="text-emerald-600">riesgo real</span></h2>
+            <p class="text-slate-400 font-medium italic text-sm">RentShield te ayuda a:</p>
+        </div>
+        <div class="carousel-mask">
+            <div id="riskTrack" class="carousel-track"></div>
+        </div>
+    </section>
+
+    <!-- 4. MÉTODO -->
+    <section id="metodo" class="bg-[#021017] py-24 px-6 text-white text-center">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-4 gap-8 text-sm italic">
+            <div class="p-6 border border-white/5 rounded-3xl">
+                <i class="fa-solid fa-user-plus text-emerald-400 text-3xl mb-6"></i>
+                <h4 class="font-bold mb-3 uppercase tracking-widest text-emerald-400 text-xs">Regístrate</h4>
+                <p class="text-slate-400 font-light">Crea tu perfil en la plataforma RentShield.</p>
+            </div>
+            <div class="p-6 border border-white/5 rounded-3xl">
+                <i class="fa-solid fa-file-signature text-emerald-400 text-3xl mb-6"></i>
+                <h4 class="font-bold mb-3 uppercase tracking-widest text-emerald-400 text-xs">Valida Relación Contractual</h4>
+                <p class="text-slate-400 font-light">Sube y verifica tus contratos de arrendamiento.</p>
+            </div>
+            <div class="p-6 border border-white/5 rounded-3xl">
+                <i class="fa-solid fa-star text-emerald-400 text-3xl mb-6"></i>
+                <h4 class="font-bold mb-3 uppercase tracking-widest text-emerald-400 text-xs">Califica</h4>
+                <p class="text-slate-400 font-light">Evalúa y puntúa a tus contrapartes basándote en experiencias reales.</p>
+            </div>
+            <div class="p-6 border border-white/5 rounded-3xl">
+                <i class="fa-solid fa-history text-emerald-400 text-3xl mb-6"></i>
+                <h4 class="font-bold mb-3 uppercase tracking-widest text-emerald-400 text-xs">Consulta de Historial</h4>
+                <p class="text-slate-400 font-light">Revisa el historial completo de comportamientos y transacciones.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. PRE-REGISTRO -->
+    <section id="Pre-registro" class="py-24 px-6 max-w-3xl mx-auto">
+        <div class="bg-white rounded-[3.5rem] shadow-2xl p-10 md:p-16 border border-slate-100 text-center">
+            <i class="fa-solid fa-shield-halved text-emerald-600 text-5xl mb-8"></i>
+            <h2 class="text-3xl font-extrabold text-[#021017] mb-2 italic tracking-tight uppercase leading-none">Acceso Anticipado</h2>
+            <p class="text-slate-500 font-bold text-[10px] uppercase tracking-widest italic mb-10">Únete a la primera red de confianza para arrendamientos en México</p>
+            <form id="preRegForm" class="space-y-6 text-left" data-turbo="false" action="/users" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="UU0rkkOfV11KWeuhHFD34_OOg8O3Jtz6zqqGxBRWBTBsxD4EZuUZo3HJfWoMj1bbqCd1qt6zr3qD-FINTkV3AQ" autocomplete="off" />
+                <div class="grid md:grid-cols-2 gap-6">
+                    <input required="required" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-600 transition font-medium shadow-inner" placeholder="Nombre completo *" type="text" name="user[first_name]" id="user_first_name" />
+                    <input required="required" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-600 transition font-medium shadow-inner" placeholder="Correo electrónico *" type="email" name="user[email]" id="user_email" />
+                </div>
+
+                <div id="formMessage" class="text-sm text-center text-slate-500 italic"></div>
+
+                <input type="submit" name="commit" value="Completar Pre-Registro Gratis" class="w-full bg-[#021017] text-white font-extrabold py-5 rounded-2xl hover:bg-emerald-600 transition shadow-xl uppercase tracking-[0.3em] text-[11px] mt-4" data-disable-with="Completar Pre-Registro Gratis" />
+</form>        </div>
+    </section>
+
+    <!-- MODAL MOCKUP -->
+    <div id="mockupModal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] flex items-center justify-center p-6 text-center">
+        <div class="bg-white max-w-md w-full rounded-[3.5rem] p-10 shadow-3xl relative">
+            <button onclick="closeModal()" class="absolute top-6 right-8 text-slate-300 hover:text-emerald-600 transition text-3xl"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 border border-slate-100"><i class="fa-solid fa-shield-halved text-4xl text-emerald-600"></i></div>
+            <h4 id="demoName" class="text-2xl font-bold text-[#021017] mb-1 italic tracking-tight underline decoration-emerald-400 decoration-2">Usuario Demo</h4>
+            <p id="demoRole" class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-4 italic">Verificado</p>
+
+            <!-- Badges de Validación -->
+            <div class="flex justify-center gap-2 mb-6">
+                <span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest border border-emerald-200">
+                    <i class="fa-solid fa-id-card mr-1"></i>Validación INE ✓
+                </span>
+                <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest border border-blue-200">
+                    <i class="fa-solid fa-file-signature mr-1"></i>Contrato Validado ✓
+                </span>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-3xl mb-8 space-y-4 text-left">
+                <!-- Calificación como Arrendador -->
+                <div class="border-b border-slate-200 pb-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                            <i class="fa-solid fa-house-user mr-1 text-slate-500"></i>Como Arrendador
+                        </span>
+                        <span class="font-bold text-emerald-600 text-sm">4.8 / 5.0 ⭐</span>
+                    </div>
+                    <div class="text-[9px] text-slate-500 italic">12 propiedades rentadas • Excelente</div>
+                </div>
+
+                <!-- Calificación como Arrendatario -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                            <i class="fa-solid fa-key mr-1 text-slate-500"></i>Como Arrendatario
+                        </span>
+                        <span class="font-bold text-emerald-600 text-sm">4.6 / 5.0 ⭐</span>
+                    </div>
+                    <div class="text-[9px] text-slate-500 italic">8 arrendamientos • Muy Bueno</div>
+                </div>
+            </div>
+            <button onclick="scrollToId('Pre-registro'); closeModal();" class="w-full bg-emerald-600 text-white font-extrabold py-5 rounded-2xl shadow-lg uppercase text-[10px]">Unirse al Pre-Registro</button>
+            <p class="mt-4 text-[9px] text-slate-400 italic text-center">* Resultados de demostración para fines ilustrativos</p>
+        </div>
+    </div>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="bg-slate-50 border-t border-slate-200 py-4 px-6 text-center">
+        <p class="text-slate-500 text-xs font-light">© 2026 RentShield. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        // --- 1. MOTOR DE ROTACIÓN SINCRONIZADA ---
+        const badgeData = ["Red Antifraudes para Arrendamientos", "Seguridad para arrendar", "Protección de su patrimonio", "Validación biométrica avanzada", "Confianza en cada contrato", "Certeza jurídica garantizada"];
+
+        const slogans1 = ["Rente con la verdad.", "Evite rentas falsas.", "Menos morosidad.", "Certeza jurídica.", "Valide identidades.", "Proteja su inversión."];
+        const slogans2 = ["Proteja su futuro.", "Proteja su dinero.", "Verifique historial.", "Evidencia real.", "Confianza total.", "Sin riesgos."];
+
+        const subData = [
+            "Evite fraudes y perfiles morosos con nuestro repositorio de reputación basado exclusivamente en evidencias contractuales.",
+            "Verifique que el arrendador sea legítimo antes de realizar depósitos. No caiga en engaños de rentas falsas.",
+            "Acceda al historial de comportamiento de prospectos reales. Proteja su patrimonio de daños y falta de pago.",
+            "La primera red en México que certifica identidades mediante validación del INE con biometría."
+        ];
+
+        async function rotateAllElements() {
+            // Elementos a rotar
+            const elements = ['hero-badge', 'slogan1', 'slogan2', 'hero-sub'];
+            const dataArrays = [badgeData, slogans1, slogans2, subData];
+            const updateFunctions = [
+                (d) => document.getElementById('badgeText').innerText = d,
+                (d) => document.getElementById('slogan1').innerText = d,
+                (d) => document.getElementById('slogan2').innerText = d,
+                (d) => document.getElementById('dynamicSubtitle').innerText = d
+            ];
+
+            // Añadir fade out a todos
+            elements.forEach(id => document.getElementById(id).classList.add('is-hidden'));
+            await new Promise(r => setTimeout(r, 800));
+            // Cambiar textos aleatorios
+            dataArrays.forEach((arr, i) => {
+                const randomText = arr[Math.floor(Math.random() * arr.length)];
+                updateFunctions[i](randomText);
+            });
+            // Remover fade in
+            elements.forEach(id => document.getElementById(id).classList.remove('is-hidden'));
+        }
+
+        // --- 2. MONITOR DE SEGURIDAD DINÁMICO (LÁSER + PALOMITAS) ---
+        const featurePool = [
+            ["Verificación Biométrica", "Relación Contractual Validada", "Cifrado de Grado Militar"],
+            ["Identidad Protegida", "Sustento Legal", "Auditoría en Tiempo Real"],
+            ["Cero Suplantación", "Historial Verificado", "Base de Datos Oficial"]
+        ];
+        let fSetIndex = 0;
+
+        function refreshMonitor() {
+            const box = document.getElementById('featureList');
+            const set = featurePool[fSetIndex];
+            box.innerHTML = set.map((f, i) => `
+                <div class="feat-item flex items-center justify-between text-xs font-extrabold uppercase tracking-widest" id="f-${i}">
+                    <span>${f}</span>
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+            `).join('');
+
+            // Sincronizar palomitas con la barra láser
+            setTimeout(() => document.getElementById('f-0').classList.add('active'), 1000);
+            setTimeout(() => document.getElementById('f-1').classList.add('active'), 2000);
+            setTimeout(() => document.getElementById('f-2').classList.add('active'), 3000);
+
+            fSetIndex = (fSetIndex + 1) % featurePool.length;
+        }
+
+        // --- 3. FUNCIONES CORE ---
+        function scrollToId(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                openMockup();
+            }
+        }
+
+        function openMockup() {
+            const input = document.getElementById('searchInput');
+            if (input.value.trim() !== "") document.getElementById('demoName').innerText = input.value;
+            document.getElementById('mockupModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal() {
+            document.getElementById('mockupModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            document.getElementById('searchInput').value = "";
+        }
+
+        window.onload = () => {
+            // Iniciar rotación sincronizada de todos los elementos
+            setInterval(rotateAllElements, 8000);
+
+            // Iniciar Monitor
+            refreshMonitor();
+            setInterval(refreshMonitor, 4000);
+
+            // Iniciar Carrusel
+            const risks = [
+                { i: "fa-user-xmark", t: "Eliminar la Morosidad Crónica", d: "Inquilinos que acumulan meses de impagos, generando pérdidas acumuladas y procesos legales costosos." },
+                { i: "fa-house-circle-exclamation", t: "Detener las Rentas Fantasma", d: "Estafas donde propietarios inexistentes cobran depósitos y desaparecen, dejando inquilinos sin hogar." },
+                { i: "fa-clock-rotate-left", t: "Evitar Juicios Innecesarios", d: "Desalojos que toman hasta 24 meses en tribunales saturados, con costos elevados y propiedades ociosas." },
+                { i: "fa-user-lock", t: "Prevenir la Suplantación de Identidad", d: "Delincuentes que usan documentos falsos para rentar, causando daños y dificultades de identificación." },
+                { i: "fa-hand-holding-dollar", t: "Parar los Fraudes Financieros", d: "Propietarios que cobran pero no reparan ni mantienen, o desaparecen con el dinero." },
+                { i: "fa-money-bill-wave", t: "Reducir Pérdidas Económicas Masivas", d: "Daños por impagos, vandalismo, desgaste acelerado y oportunidades perdidas de alquiler." },
+                { i: "fa-chart-line", t: "Mejorar las Estadísticas de Impago", d: "Hasta el 30% de contratos terminan en morosidad, con promedio de 3-6 meses de impagos." },
+                { i: "fa-gavel", t: "Evitar Problemas Legales", d: "Contratos fraudulentos derivan en estafa, falsificación y lavado de dinero organizado." },
+                { i: "fa-user-secret", t: "Evitar Investigadores Privados Costosos", d: "Investigadores privados con cobros excesivos que complican procesos sin resultados garantizados." },
+                { i: "fa-user-times", t: "Evitar Inquilinos Problemáticos", d: "Inquilinos que causan daños a la propiedad, generan conflictos, ruido excesivo o abandonan sin previo aviso." }
+            ];
+            const track = document.getElementById('riskTrack');
+            const items = [...risks, ...risks, ...risks];
+            track.innerHTML = items.map(r => `
+                <div class="risk-card">
+                    <i class="fa-solid ${r.i} text-emerald-600 text-2xl mb-6"></i>
+                    <h4 class="font-extrabold text-[#021017] text-[10px] uppercase mb-3 tracking-widest">${r.t}</h4>
+                    <p class="text-[11px] text-slate-500 italic leading-relaxed font-medium">${r.d}</p>
+                </div>
+            `).join('');
+        };
+
+        window.onclick = e => { if(e.target.id == 'mockupModal') closeModal(); }
+
+        // --- 4. SUCCESS MESSAGE HANDLER ---
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById('preRegForm');
+            if (!form) return;
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const messageDiv = document.getElementById('formMessage');
+                const submitBtn = form.querySelector('input[type="submit"]');
+
+                // UI Reset
+                messageDiv.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-emerald-600"></i> Procesando...';
+                messageDiv.className = 'text-sm text-center text-slate-500 italic mt-4';
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+                try {
+                    // Force JSON response
+                    const response = await fetch(form.action + ".json", {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok || response.status === 201) {
+                         // Success - Hide form content, show success
+                         form.innerHTML = `
+                             <div class="text-center py-8 animate-fade-in-up">
+                                <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <i class="fa-solid fa-check text-4xl text-emerald-600"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-[#021017] mb-2 uppercase italic">¡Registro Exitoso!</h3>
+                                <p class="text-slate-500 text-sm mb-6">Gracias por unirte a la lista de acceso anticipado. Pronto recibirás noticias nuestras.</p>
+                                <button onclick="location.reload()" class="text-emerald-600 font-bold text-xs uppercase tracking-widest hover:underline">Volver</button>
+                             </div>
+                         `;
+                         messageDiv.remove(); // Remove old message div
+                    } else {
+                        // Error handling
+                        let errorMsg = 'Ocurrió un error inesperado.';
+
+                        if (data.errors) {
+                             // Handle Rails/Devise errors object
+                             errorMsg = Object.values(data.errors).flat().join('. ');
+                        } else if (data.error) {
+                             errorMsg = data.error;
+                        }
+
+                        messageDiv.innerHTML = `<i class="fa-solid fa-circle-exclamation text-red-500 mr-2"></i> ${errorMsg}`;
+                        messageDiv.className = 'text-sm text-center text-red-600 font-bold bg-red-50 p-3 rounded-lg mt-4 border border-red-100';
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
+
+                } catch (error) {
+                    console.error('Submission error:', error);
+                    messageDiv.innerHTML = '<i class="fa-solid fa-wifi text-red-500 mr-2"></i> Error de conexión. Intente nuevamente.';
+                     messageDiv.className = 'text-sm text-center text-red-600 font-bold bg-red-50 p-3 rounded-lg mt-4 border border-red-100';
+                    submitBtn.disabled = false;
+                     submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+<!-- END app/views/launch/index.html.erb -->

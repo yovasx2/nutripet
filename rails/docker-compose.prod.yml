@@ -1,0 +1,94 @@
+services:
+  traefik:
+    image: traefik:v2.11
+    restart: always
+    environment:
+      - DOCKER_API_VERSION=1.45
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.websecure.address=:443
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=nutripet_web
+      - --certificatesresolvers.leresolver.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.leresolver.acme.email=${LETSENCRYPT_EMAIL}
+      - --certificatesresolvers.leresolver.acme.storage=/letsencrypt/acme.json
+      - --log.level=INFO
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik_letsencrypt:/letsencrypt
+    networks:
+      - web
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - internal
+
+  rails:
+    build:
+      context: ./rails
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - .env.production
+    environment:
+      - RAILS_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/up"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    labels:
+      - "traefik.enable=true"
+      # 1. Definimos el Host (Asegúrate que APP_DOMAIN sea tu dominio, ej: nutripet.tudominio.com)
+      - "traefik.http.routers.nutripet.rule=Host(`${APP_DOMAIN}`) || Host(`www.${APP_DOMAIN}`)"
+      - "traefik.http.routers.nutripet.entrypoints=websecure"
+      - "traefik.http.routers.nutripet.tls=true"
+      - "traefik.http.routers.nutripet.tls.certresolver=leresolver"
+
+      # 2. Forzar que el certificado incluya AMBOS dominios (Crucial para el error de "No seguro")
+      - "traefik.http.routers.nutripet.tls.domains[0].main=${APP_DOMAIN}"
+      - "traefik.http.routers.nutripet.tls.domains[0].sans=www.${APP_DOMAIN}"
+
+      # 3. Middleware para redireccionar rentshield.cloud -> www.rentshield.cloud (Opcional pero recomendado)
+      - "traefik.http.middlewares.www-redirect.redirectregex.regex=^https?://${APP_DOMAIN}/(.*)"
+      - "traefik.http.middlewares.www-redirect.redirectregex.replacement=https://www.${APP_DOMAIN}/$${1}"
+      - "traefik.http.middlewares.www-redirect.redirectregex.permanent=true"
+
+      # 4. Aplicar el middleware al router
+      - "traefik.http.routers.nutripet.middlewares=www-redirect"
+
+      - "traefik.http.services.nutripet.loadbalancer.server.port=3000"
+    networks:
+      - web
+      - internal
+    depends_on:
+      - db
+
+volumes:
+  db-data:
+  traefik_letsencrypt:
+
+networks:
+  web:
+    name: nutripet_web
+    driver: bridge
+  internal:
+    driver: bridge

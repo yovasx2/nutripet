@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nutripet_development
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  nutripet:
+    build: ./rails
+    command: >
+      sh -c "
+        rm -f /app/tmp/pids/server.pid &&
+        bundle exec rails db:create db:migrate &&
+        bundle exec rails server -b 0.0.0.0
+      "
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./rails:/app:cached
+      - nutripet_bundle:/usr/local/bundle
+      - nutripet_tmp:/app/tmp
+      - nutripet_log:/app/log
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      RAILS_ENV: development
+      WEB_CONCURRENCY: 1
+      RAILS_DEVELOPMENT_HOSTS: localhost,127.0.0.1,host.docker.internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  nutripet_bundle:
+  nutripet_tmp:
+  nutripet_log:
