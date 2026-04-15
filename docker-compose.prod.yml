@@ -1,4 +1,30 @@
 services:
+  traefik:
+    image: traefik:v2.11
+    restart: always
+    environment:
+      - DOCKER_API_VERSION=1.45
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.websecure.address=:443
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=nutripet_web
+      - --certificatesresolvers.leresolver.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.leresolver.acme.email=${LETSENCRYPT_EMAIL}
+      - --certificatesresolvers.leresolver.acme.storage=/letsencrypt/acme.json
+      - --log.level=INFO
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik_letsencrypt:/letsencrypt
+    networks:
+      - web
+
   db:
     image: postgres:15
     restart: always
@@ -23,14 +49,14 @@ services:
       - DATABASE_URL=${DATABASE_URL}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/up"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
     labels:
       - "traefik.enable=true"
-      # 1. Definimos el Host (Asegúrate que APP_DOMAIN sea nutripet.cloud)
-      - "traefik.http.routers.backend.rule=Host(`${APP_DOMAIN}`) || Host(`www.${APP_DOMAIN}`)"
+      # 1. Definimos el Host (Asegúrate que APP_DOMAIN sea rentshield.cloud)
+      - "traefik.http.routers.backend.rule=Host(`${APP_DOMAIN}`) || Host(`www.${APP_DOMAIN}`) && PathPrefix(`/nutripet`)"
       - "traefik.http.routers.backend.entrypoints=websecure"
       - "traefik.http.routers.backend.tls=true"
       - "traefik.http.routers.backend.tls.certresolver=leresolver"
@@ -39,15 +65,18 @@ services:
       - "traefik.http.routers.backend.tls.domains[0].main=${APP_DOMAIN}"
       - "traefik.http.routers.backend.tls.domains[0].sans=www.${APP_DOMAIN}"
 
-      # 3. Middleware para redireccionar nutripet.cloud -> www.nutripet.cloud (Opcional pero recomendado)
-      - "traefik.http.middlewares.www-redirect.redirectregex.regex=^https?://${APP_DOMAIN}/(.*)"
-      - "traefik.http.middlewares.www-redirect.redirectregex.replacement=https://www.${APP_DOMAIN}/$${1}"
+      # 3. Middleware para redireccionar rentshield.cloud/nutripet -> www.rentshield.cloud/nutripet (Opcional pero recomendado)
+      - "traefik.http.middlewares.www-redirect.redirectregex.regex=^https?://${APP_DOMAIN}/nutripet/(.*)"
+      - "traefik.http.middlewares.www-redirect.redirectregex.replacement=https://www.${APP_DOMAIN}/nutripet/$${1}"
       - "traefik.http.middlewares.www-redirect.redirectregex.permanent=true"
 
       # 4. Aplicar el middleware al router
-      - "traefik.http.routers.backend.middlewares=www-redirect"
+      - "traefik.http.routers.backend.middlewares=www-redirect,nutripet-strip"
 
       - "traefik.http.services.backend.loadbalancer.server.port=3000"
+
+      # Middleware to strip /nutripet prefix
+      - "traefik.http.middlewares.nutripet-strip.stripprefix.prefixes=/nutripet"
     networks:
       - web
       - internal
@@ -56,10 +85,10 @@ services:
 
 volumes:
   db-data:
+  traefik_letsencrypt:
 
 networks:
   web:
-    external: true
-    name: rentshield_web
+    driver: bridge
   internal:
     driver: bridge
