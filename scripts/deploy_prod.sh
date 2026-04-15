@@ -27,7 +27,6 @@ if [ -f .env.production ]; then
   set -a
   source .env.production
   set +a
-  export POSTGRES_USER POSTGRES_PASSWORD POSTGRES_DB DATABASE_URL APP_DOMAIN LETSENCRYPT_EMAIL
 fi
 
 # Ensure infrastructure services are running
