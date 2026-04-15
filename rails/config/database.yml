@@ -16,9 +16,6 @@ test:
 
 production:
   <<: *default
-<% if ENV["DATABASE_URL"] %>
-  url: <%= ENV["DATABASE_URL"] %>
-<% end %>
   database: nutripet_production
   username: nutripet
   password: <%= ENV["RENTSHIELD_DATABASE_PASSWORD"] %>

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "pages/launch", to: "pages#launch"
   get "pages/terms"
   get "pages/privacy"
   # Authentication
@@ -8,11 +9,12 @@ Rails.application.routes.draw do
     passwords: 'users/passwords'
   }
 
-  # Dashboard for authenticated users
-  get "dashboard", to: "dashboard#index"
+  namespace :admin do
+    resources :recipes, only: [:index]
+  end
 
   # Landing page
-  root "launch#index"
+  root "pages#launch"
 
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check

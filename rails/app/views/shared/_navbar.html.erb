@@ -2,13 +2,21 @@
 <nav class="fixed top-0 w-full z-50 bg-slate-50/60 dark:bg-slate-900/60 backdrop-blur-md">
 <div class="flex justify-between items-center px-8 h-16 max-w-full mx-auto">
 <div class="flex items-center gap-2">
-<%= link_to (user_signed_in? ? dashboard_path : root_path), class: "text-xl font-bold text-blue-800 dark:text-blue-200 tracking-tight font-['Plus_Jakarta_Sans'] hover:text-blue-600 transition-colors" do %>
+<%= link_to root_path, class: "text-xl font-bold text-blue-800 dark:text-blue-200 tracking-tight font-['Plus_Jakarta_Sans'] hover:text-blue-600 transition-colors" do %>
   Nutripet
 <% end %>
 </div>
 <div class="hidden md:flex items-center gap-8 font-['Plus_Jakarta_Sans'] tracking-tight">
+  <% if user_signed_in? && current_user.superadmin? %>
+    <%= link_to 'Admin', admin_recipes_path, class: 'text-slate-700 dark:text-slate-200 font-semibold hover:text-primary transition-colors' %>
+  <% end %>
 </div>
 <div class="flex items-center gap-4">
+  <% if user_signed_in? %>
+    <%= button_to destroy_user_session_path, method: :delete, class: 'text-sm font-semibold text-blue-800 dark:text-blue-200 hover:text-primary transition-colors', form_class: 'm-0' do %>
+      Cerrar sesión
+    <% end %>
+  <% end %>
 </div>
 </div>
 </nav>
