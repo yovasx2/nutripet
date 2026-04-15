@@ -23,5 +23,5 @@ COPY . .
 # Expose port
 EXPOSE 3000
 
-# Start Rails server
-CMD ["sh", "-c", "rm -f /app/tmp/pids/server.pid && rails server -b 0.0.0.0"]
+# Start Rails server after ensuring database migrations are applied
+CMD ["sh", "-c", "rm -f /app/tmp/pids/server.pid && bundle exec rails db:migrate && bundle exec rails server -b 0.0.0.0"]
