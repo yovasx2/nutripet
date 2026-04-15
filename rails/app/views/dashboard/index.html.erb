@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Dashboard - NutriPet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#005d90",
+            "on-primary": "#ffffff",
+            "primary-container": "#0077b6",
+            "on-primary-container": "#f3f7ff",
+            secondary: "#00667d",
+            "on-secondary": "#ffffff",
+            "secondary-container": "#50d9fe",
+            "on-secondary-container": "#005c70",
+            tertiary: "#00626f",
+            "on-tertiary": "#ffffff",
+            "tertiary-container": "#227c8a",
+            "on-tertiary-container": "#e7fbff",
+            error: "#ba1a1a",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a",
+            background: "#eefcff",
+            "on-background": "#001f24",
+            surface: "#eefcff",
+            "on-surface": "#001f24",
+            "surface-variant": "#c3e9f1",
+            "on-surface-variant": "#404850",
+            outline: "#707881",
+            "outline-variant": "#bfc7d1",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#dcf9ff",
+            "surface-container": "#cef5fd",
+            "surface-container-high": "#c9eff7",
+            "surface-container-highest": "#c3e9f1",
+            "primary-fixed-dim": "#94ccff",
+            "on-tertiary-fixed-variant": "#004f59",
+            "inverse-surface": "#0e353c",
+            "secondary-fixed-dim": "#4cd6fb",
+            "surface-tint": "#006399",
+            "on-tertiary-fixed": "#001f24",
+            "on-secondary-fixed": "#001f27",
+            "on-primary-fixed": "#004b74",
+            "primary-fixed": "#cde5ff",
+            "inverse-on-surface": "#d2f7ff",
+            "surface-bright": "#eefcff",
+            "on-primary-fixed-variant": "#004b74",
+            "primary-fixed": "#cde5ff",
+            "inverse-primary": "#94ccff",
+            "tertiary-fixed": "#9feffe",
+            "surface-dim": "#bbe1e8",
+            "tertiary-fixed-dim": "#83d3e1",
+            "on-secondary-fixed-variant": "#004e5f"
+          },
+          borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"},
+          fontFamily: {
+            headline: ["Plus Jakarta Sans"],
+            body: ["Plus Jakarta Sans"],
+            label: ["Plus Jakarta Sans"],
+            display: "Plus Jakarta Sans"
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .glass-nav { background: rgba(248, 250, 253, 0.6); backdrop-filter: blur(12px); }
+    .restorative-mesh {
+      background-image: radial-gradient(at 0% 0%, #B0C4DE 0%, transparent 50%), radial-gradient(at 100% 100%, #d6e4f0 0%, transparent 50%);
+      opacity: 0.3;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<%= render 'shared/navbar' %>
+<main class="relative pt-16 overflow-hidden">
+  <div class="absolute inset-0 restorative-mesh -z-10"></div>
+  <div class="min-h-screen px-6 py-16">
+    <div class="max-w-6xl mx-auto">
+      <div class="bg-surface-container rounded-[2rem] shadow-sm border border-outline-variant overflow-hidden">
+        <div class="p-8 md:p-12">
+          <div class="text-center mb-10">
+            <h1 class="font-headline text-4xl font-extrabold text-on-surface tracking-tight mb-4">Bienvenido a tu Dashboard</h1>
+            <p class="text-on-surface-variant font-body text-lg">Gestiona la nutrición de tus mascotas</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-surface-container-low/80 backdrop-blur-sm p-6 rounded-[1.5rem] border border-surface-container-lowest/60">
+              <span class="material-symbols-outlined text-primary mb-3 block text-3xl">pets</span>
+              <h3 class="font-headline font-bold text-lg text-primary mb-2">Mis Mascotas</h3>
+              <p class="text-on-surface-variant text-sm leading-relaxed mb-4">Registra y administra el perfil nutricional de tus mascotas.</p>
+              <button class="w-full py-3 bg-primary text-on-primary font-headline font-bold rounded-full shadow-md hover:bg-primary-container hover:shadow-lg active:scale-95 transition-all text-sm">
+                Ver Mascotas
+              </button>
+            </div>
+
+            <div class="bg-surface-container-low/80 backdrop-blur-sm p-6 rounded-[1.5rem] border border-surface-container-lowest/60">
+              <span class="material-symbols-outlined text-primary mb-3 block text-3xl">restaurant</span>
+              <h3 class="font-headline font-bold text-lg text-primary mb-2">Planes Alimentarios</h3>
+              <p class="text-on-surface-variant text-sm leading-relaxed mb-4">Accede a planes nutricionales personalizados y recomendaciones.</p>
+              <button class="w-full py-3 bg-primary text-on-primary font-headline font-bold rounded-full shadow-md hover:bg-primary-container hover:shadow-lg active:scale-95 transition-all text-sm">
+                Ver Planes
+              </button>
+            </div>
+
+            <div class="bg-surface-container-low/80 backdrop-blur-sm p-6 rounded-[1.5rem] border border-surface-container-lowest/60">
+              <span class="material-symbols-outlined text-primary mb-3 block text-3xl">monitoring</span>
+              <h3 class="font-headline font-bold text-lg text-primary mb-2">Seguimiento</h3>
+              <p class="text-on-surface-variant text-sm leading-relaxed mb-4">Monitorea el progreso nutricional y registra pesos semanales.</p>
+              <button class="w-full py-3 bg-primary text-on-primary font-headline font-bold rounded-full shadow-md hover:bg-primary-container hover:shadow-lg active:scale-95 transition-all text-sm">
+                Ver Progreso
+              </button>
+            </div>
+          </div>
+
+          <div class="mt-12 text-center">
+            <p class="text-on-surface-variant text-sm">
+              ¿Necesitas ayuda? <a href="mailto:delirable@gmail.com" class="text-primary font-bold hover:underline">Contáctanos</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<%= render 'shared/footer' %>
+</body>
+</html>

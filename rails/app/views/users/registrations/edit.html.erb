@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#005d90", "on-primary": "#ffffff", "primary-container": "#0077b6", "on-primary-container": "#f3f7ff", secondary: "#00677d", "on-secondary": "#ffffff", "secondary-container": "#50d9fe", "on-secondary-container": "#005c70", tertiary: "#00626f", "on-tertiary": "#ffffff", "tertiary-container": "#227c8a", "on-tertiary-container": "#e7fbff", error: "#ba1a1a", "on-error": "#ffffff", "error-container": "#ffdad6", "on-error-container": "#93000a", background: "#eefcff", "on-background": "#001f24", surface: "#eefcff", "on-surface": "#001f24", "surface-variant": "#c3e9f1", "on-surface-variant": "#404850", outline: "#707881", "outline-variant": "#bfc7d1", "surface-container-lowest": "#ffffff", "surface-container-low": "#dcf9ff", "surface-container": "#cef5fd", "surface-container-high": "#c9eff7", "surface-container-highest": "#c3e9f1", "primary-fixed-dim": "#94ccff", "on-tertiary-fixed-variant": "#004f59", "inverse-surface": "#0e353c", "secondary-fixed-dim": "#4cd6fb", "surface-tint": "#006399", "on-tertiary-fixed": "#001f24", "on-secondary-fixed": "#001f27", "on-primary-fixed": "#004b74", "primary-fixed": "#cde5ff", "inverse-on-surface": "#d2f7ff", "surface-bright": "#eefcff", "on-primary-fixed-variant": "#004b74", "primary-fixed": "#cde5ff", "inverse-primary": "#94ccff", "tertiary-fixed": "#9feffe", "surface-dim": "#bbe1e8", "tertiary-fixed-dim": "#83d3e1", "on-secondary-fixed-variant": "#004e5f"}, borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"}, fontFamily: {headline: ["Plus Jakarta Sans"], body: ["Plus Jakarta Sans"], label: ["Plus Jakarta Sans"], display: "Plus Jakarta Sans"}}}};</script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-nav { background: rgba(248, 250, 253, 0.6); backdrop-filter: blur(12px); }
+        .restorative-mesh {
+            background-image: radial-gradient(at 0% 0%, #B0C4DE 0%, transparent 50%), radial-gradient(at 100% 100%, #d6e4f0 0%, transparent 50%);
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col">
+<%= render 'shared/navbar' %>
+<main class="relative flex-1 overflow-hidden pt-16">
+<div class="absolute inset-0 restorative-mesh -z-10"></div>
+<div class="flex-1 flex items-center justify-center px-6 py-6">
+<div class="w-full max-w-md">
+<div class="bg-surface-container rounded-[2rem] shadow-sm border border-outline-variant overflow-hidden">
+<div class="p-6 md:p-8">
+<div class="text-center mb-10">
+<h1 class="font-headline text-3xl font-extrabold text-on-surface tracking-tight mb-2">Editar Perfil</h1>
+<p class="text-on-surface-variant font-body">Actualiza tu información personal</p>
+</div>
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+<div class="space-y-6">
+<% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+<div class="text-center p-4 bg-surface-container-low rounded-lg">
+<p class="text-sm text-on-surface-variant">Esperando confirmación para: <%= resource.unconfirmed_email %></p>
+</div>
+<% end %>
+<div class="space-y-2">
+<label class="block font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-4" for="user_first_name">Nombre</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline">person</span>
+<%= f.text_field :first_name, autofocus: true, autocomplete: "given-name", class: "w-full pl-14 pr-6 py-4 bg-surface-container-lowest border border-outline rounded-full focus:ring-2 focus:ring-primary/10 text-on-surface placeholder:text-on-surface-variant transition-all", placeholder: "Tu nombre" %>
+</div>
+<%= render 'users/shared/field_error', resource: resource, field: :first_name %>
+</div>
+<div class="space-y-2">
+<label class="block font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-4" for="user_last_name">Apellido</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline">person</span>
+<%= f.text_field :last_name, autocomplete: "family-name", class: "w-full pl-14 pr-6 py-4 bg-surface-container-lowest border border-outline rounded-full focus:ring-2 focus:ring-primary/10 text-on-surface placeholder:text-on-surface-variant transition-all", placeholder: "Tu apellido" %>
+</div>
+<%= render 'users/shared/field_error', resource: resource, field: :last_name %>
+</div>
+<div class="space-y-2">
+<label class="block font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-4" for="user_email">Correo Electrónico</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline">mail</span>
+<%= f.email_field :email, autocomplete: "email", class: "w-full pl-14 pr-6 py-4 bg-surface-container-lowest border border-outline rounded-full focus:ring-2 focus:ring-primary/10 text-on-surface placeholder:text-on-surface-variant transition-all", placeholder: "usuario@ejemplo.com" %>
+</div>
+<%= render 'users/shared/field_error', resource: resource, field: :email %>
+</div>
+<div class="space-y-2">
+<label class="block font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-4" for="user_password">Nueva Contraseña</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline">lock</span>
+<%= f.password_field :password, autocomplete: "new-password", class: "w-full pl-14 pr-14 py-4 bg-surface-container-lowest border border-outline rounded-full focus:ring-2 focus:ring-primary/10 text-on-surface placeholder:text-on-surface-variant transition-all", placeholder: "••••••••" %>
+<button id="password-toggle" class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" type="button">visibility</button>
+</div>
+<%= render 'users/shared/field_error', resource: resource, field: :password %>
+<% if @minimum_password_length %>
+<p class="text-xs text-on-surface-variant ml-4">(<%= @minimum_password_length %> caracteres mínimo)</p>
+<% end %>
+</div>
+<div class="space-y-2">
+<label class="block font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-4" for="user_password_confirmation">Confirmar Nueva Contraseña</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline">lock</span>
+<%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full pl-14 pr-6 py-4 bg-surface-container-lowest border border-outline rounded-full focus:ring-2 focus:ring-primary/10 text-on-surface placeholder:text-on-surface-variant transition-all", placeholder: "••••••••" %>
+</div>
+<%= render 'users/shared/field_error', resource: resource, field: :password_confirmation %>
+</div>
+<div class="space-y-2">
+<label class="block font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-4" for="user_current_password">Contraseña Actual</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline">lock</span>
+<%= f.password_field :current_password, autocomplete: "current-password", class: "w-full pl-14 pr-6 py-4 bg-surface-container-lowest border border-outline rounded-full focus:ring-2 focus:ring-primary/10 text-on-surface placeholder:text-on-surface-variant transition-all", placeholder: "••••••••" %>
+</div>
+<p class="text-xs text-on-surface-variant ml-4">Necesitamos tu contraseña actual para confirmar los cambios</p>
+</div>
+<button class="w-full py-4 bg-primary text-on-primary font-headline font-bold rounded-full shadow-md hover:bg-primary-container hover:shadow-lg active:scale-95 transition-all flex justify-center items-center gap-2" type="submit">
+<span>Actualizar Perfil</span>
+<span class="material-symbols-outlined text-lg">save</span>
+</button>
+</div>
+<% end %>
+<div class="mt-10 text-center">
+<p class="text-on-surface-variant text-sm font-body">
+¿Quieres cancelar tu cuenta?
+<%= button_to "Cancelar mi cuenta", registration_path(resource_name), data: { confirm: "¿Estás seguro?", turbo_confirm: "¿Estás seguro?" }, method: :delete, class: "text-error font-extrabold hover:underline ml-1" %>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<%= render 'shared/footer' %>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const toggleButton = document.getElementById('password-toggle');
+  const passwordField = document.getElementById('user_password');
+  toggleButton.addEventListener('click', function() {
+    if (passwordField.type === 'password') {
+      passwordField.type = 'text';
+      toggleButton.textContent = 'visibility_off';
+    } else {
+      passwordField.type = 'password';
+      toggleButton.textContent = 'visibility';
+    }
+  });
+});
+</script>
+</body>
+</html>

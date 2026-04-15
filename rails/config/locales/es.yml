@@ -1,0 +1,20 @@
+es:
+  activerecord:
+    models:
+      user: Usuario
+    attributes:
+      user:
+        first_name: Nombre
+        last_name_father: Apellido paterno
+        last_name_mother: Apellido materno
+        email: Correo electrónico
+        password: Contraseña
+        password_confirmation: Confirmación de contraseña
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      blank: "no puede estar en blanco"
+      confirmation: "no coincide"
+      too_short: "es demasiado corto (mínimo %{count} caracteres)"
+      invalid: "es inválido"
+      not_saved: "No se pudo guardar %{resource} debido a %{count} errores."

@@ -21,18 +21,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_10_021658) do
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.string "first_name"
-    t.string "last_name_father"
-    t.string "last_name_mother"
-    t.string "curp"
-    t.string "ine"
-    t.string "rfc"
-    t.integer "verification_status", default: 0
+    t.string "last_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["curp"], name: "index_users_on_curp", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["ine"], name: "index_users_on_ine", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["rfc"], name: "index_users_on_rfc", unique: true
   end
 end

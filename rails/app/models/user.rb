@@ -4,13 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  enum :verification_status, {
-    pending: 0,
-    verified: 1,
-    rejected: 2,
-  }, default: :pending
 
-  validates :first_name, presence: true
+  # Password confirmation is handled by Devise's validatable module.
   # Email validation is handled by Devise :validatable
 
   before_validation :assign_temporary_password, on: :create
@@ -19,9 +14,7 @@ class User < ApplicationRecord
     "#{first_name} #{last_name_father} #{last_name_mother}".strip
   end
 
-  def verified?
-    verification_status == "verified"
-  end
+
 
   private
 

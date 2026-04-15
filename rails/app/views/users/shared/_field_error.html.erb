@@ -1,0 +1,5 @@
+<% if resource.errors[field].any? %>
+  <p class="mt-2 text-sm text-error">
+    <%= resource.errors.full_messages_for(field).join(', ') %>
+  </p>
+<% end %>

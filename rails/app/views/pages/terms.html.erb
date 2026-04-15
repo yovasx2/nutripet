@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Términos y Condiciones - NutriPet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#005d90",
+            "on-primary": "#ffffff",
+            "primary-container": "#0077b6",
+            "on-primary-container": "#f3f7ff",
+            secondary: "#00677d",
+            "on-secondary": "#ffffff",
+            "secondary-container": "#50d9fe",
+            "on-secondary-container": "#005c70",
+            tertiary: "#00626f",
+            "on-tertiary": "#ffffff",
+            "tertiary-container": "#227c8a",
+            "on-tertiary-container": "#e7fbff",
+            error: "#ba1a1a",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a",
+            background: "#eefcff",
+            "on-background": "#001f24",
+            surface: "#eefcff",
+            "on-surface": "#001f24",
+            "surface-variant": "#c3e9f1",
+            "on-surface-variant": "#404850",
+            outline: "#707881",
+            "outline-variant": "#bfc7d1",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#dcf9ff",
+            "surface-container": "#cef5fd",
+            "surface-container-high": "#c9eff7",
+            "surface-container-highest": "#c3e9f1",
+            "primary-fixed-dim": "#94ccff",
+            "on-tertiary-fixed-variant": "#004f59",
+            "inverse-surface": "#0e353c",
+            "secondary-fixed-dim": "#4cd6fb",
+            "surface-tint": "#006399",
+            "on-tertiary-fixed": "#001f24",
+            "on-secondary-fixed": "#001f27",
+            "on-primary-fixed": "#004b74",
+            "primary-fixed": "#cde5ff",
+            "inverse-on-surface": "#d2f7ff",
+            "surface-bright": "#eefcff",
+            "on-primary-fixed-variant": "#004b74",
+            "primary-fixed": "#cde5ff",
+            "inverse-primary": "#94ccff",
+            "tertiary-fixed": "#9feffe",
+            "surface-dim": "#bbe1e8",
+            "tertiary-fixed-dim": "#83d3e1",
+            "on-secondary-fixed-variant": "#004e5f"
+          },
+          borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"},
+          fontFamily: {
+            headline: ["Plus Jakarta Sans"],
+            body: ["Plus Jakarta Sans"],
+            label: ["Plus Jakarta Sans"],
+            display: "Plus Jakarta Sans"
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .glass-nav { background: rgba(248, 250, 253, 0.6); backdrop-filter: blur(12px); }
+    .restorative-mesh {
+      background-image: radial-gradient(at 0% 0%, #B0C4DE 0%, transparent 50%), radial-gradient(at 100% 100%, #d6e4f0 0%, transparent 50%);
+      opacity: 0.3;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<%= render 'shared/navbar' %>
+<main class="relative pt-16 overflow-hidden">
+  <div class="absolute inset-0 restorative-mesh -z-10"></div>
+  <div class="min-h-screen px-6 py-16">
+    <div class="max-w-4xl mx-auto">
+      <div class="bg-surface-container rounded-[2rem] shadow-sm border border-outline-variant overflow-hidden">
+        <div class="p-8 md:p-12">
+          <div class="text-center mb-10">
+            <h1 class="font-headline text-4xl font-extrabold text-on-surface tracking-tight mb-4">Términos y Condiciones</h1>
+            <p class="text-on-surface-variant font-body text-lg">Última actualización: <%= Time.current.strftime('%d de %B de %Y') %></p>
+          </div>
+
+          <div class="prose prose-lg max-w-none text-on-surface">
+            <h2 class="font-headline text-2xl font-bold text-on-surface mt-8 mb-4">1. Aceptación de los Términos</h2>
+            <p class="mb-6 leading-relaxed">
+              Al acceder y utilizar la plataforma NutriPet, usted acepta y se compromete a cumplir con los términos y condiciones descritos en este documento. Si no está de acuerdo con estos términos, por favor no utilice nuestros servicios.
+            </p>
+
+            <h2 class="font-headline text-2xl font-bold text-on-surface mt-8 mb-4">2. Descripción del Servicio</h2>
+            <p class="mb-6 leading-relaxed">
+              NutriPet es una plataforma veterinaria especializada en nutrición animal que proporciona:
+            </p>
+            <ul class="list-disc pl-6 mb-6 space-y-2">
+              <li>Evaluaciones nutricionales personalizadas para mascotas</li>
+              <li>Planes alimentarios basados en evidencia científica</li>
+              <li>Seguimiento del estado nutricional de su mascota</li>
+              <li>Recomendaciones médicas validadas por veterinarios certificados</li>
+              <li>Herramientas de monitoreo y registro de peso semanal</li>
+            </ul>
+
+            <h2 class="font-headline text-2xl font-bold text-on-surface mt-8 mb-4">3. Uso Aceptable</h2>
+            <p class="mb-6 leading-relaxed">
+              Usted se compromete a utilizar NutriPet únicamente para fines legítimos relacionados con el cuidado nutricional de su mascota. Está prohibido:
+            </p>
+            <ul class="list-disc pl-6 mb-6 space-y-2">
+              <li>Utilizar la plataforma para fines comerciales sin autorización</li>
+              <li>Compartir información médica confidencial de terceros</li>
+              <li>Intentar acceder a sistemas no autorizados</li>
+              <li>Proporcionar información falsa o engañosa</li>
+              <li>Violar derechos de propiedad intelectual</li>
+            </ul>
+
+            <h2 class="font-headline text-2xl font-bold text-on-surface mt-8 mb-4">4. Responsabilidades del Usuario</h2>
+            <p class="mb-6 leading-relaxed">
+              Como usuario de NutriPet, usted es responsable de:
+            </p>
+            <ul class="list-disc pl-6 mb-6 space-y-2">
+              <li>Proporcionar información precisa sobre su mascota</li>
+              <li>Mantener la confidencialidad de sus credenciales de acceso</li>
+              <li>Actualizar regularmente los datos de su mascota</li>
+              <li>Seguir las recomendaciones nutricionales proporcionadas</li>
+              <li>Notificar cualquier cambio en la condición de salud de su mascota</li>
+            </ul>
+
+            <h2 class="font-headline text-2xl font-bold text-on-surface mt-8 mb-4">5. Propiedad Intelectual</h2>
+            <p class="mb-6 leading-relaxed">
+              Todo el contenido, algoritmos, diseños y software de NutriPet están protegidos por derechos de propiedad intelectual. Los usuarios tienen derecho a utilizar la plataforma según estos términos, pero no adquieren ningún derecho de propiedad sobre el contenido.
+            </p>
+
+            <h2 class="font-headline text-2xl font-bold text-on-surface mt-8 mb-4">6. Limitación de Responsabilidad</h2>
+            <p class="mb-6 leading-relaxed">
+              NutriPet proporciona recomendaciones nutricionales basadas en la información proporcionada por el usuario. No somos responsables por:
+            </p>
+            <ul class="list-disc pl-6 mb-6 space-y-2">
+              <li>Decisiones médicas tomadas sin consulta veterinaria directa</li>
+              <li>Condiciones preexistentes no reportadas por el usuario</li>
+              <li>Interpretaciones erróneas de las recomendaciones</li>
+              <li>Daños indirectos o consecuentes</li>
+            </ul>
+
+            <h2 class="font-headline text-2xl font-bold text-on-surface mt-8 mb-4">7. Modificaciones</h2>
+            <p class="mb-6 leading-relaxed">
+              Nos reservamos el derecho de modificar estos términos y condiciones en cualquier momento. Los cambios serán notificados a través de la plataforma y entrarán en vigor inmediatamente después de su publicación.
+            </p>
+
+            <h2 class="font-headline text-2xl font-bold text-on-surface mt-8 mb-4">8. Contacto</h2>
+            <p class="mb-6 leading-relaxed">
+              Para cualquier pregunta sobre estos términos y condiciones, puede contactarnos a través de:
+            </p>
+            <ul class="list-disc pl-6 mb-6 space-y-2">
+              <li>Email: soporte@nutripet.com</li>
+              <li>Teléfono: +52 (55) 1234-5678</li>
+              <li>Sitio web: www.nutripet.com</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<%= render 'shared/footer' %>
+</body>
+</html>
