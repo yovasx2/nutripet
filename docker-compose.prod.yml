@@ -46,8 +46,6 @@ services:
       timeout: 3s
       retries: 3
       start_period: 10s
-    expose:
-      - "3000"
     networks:
       - internal
     depends_on:
