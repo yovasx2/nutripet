@@ -1,0 +1,11 @@
+<% content_for :title, "Nueva mascota" %>
+
+<div class="max-w-2xl mx-auto px-4 py-8">
+  <div class="mb-6">
+    <%= link_to "← Mis mascotas", pets_path, class: "text-sm text-primary font-medium hover:underline" %>
+    <h1 class="text-2xl font-bold text-on-background mt-2">Nueva mascota</h1>
+  </div>
+  <div class="bg-white rounded-2xl border border-outline-variant shadow-sm p-6">
+    <%= render "form", pet: @pet %>
+  </div>
+</div>

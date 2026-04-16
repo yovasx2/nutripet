@@ -4,14 +4,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  enum role: {
-    user: "user",
-    superadmin: "superadmin"
-  }
-
-  validates :role, presence: true, inclusion: { in: roles.keys }
-
-  after_initialize :set_default_role, if: :new_record?
+  has_many :pets, dependent: :destroy
 
   # Password confirmation is handled by Devise's validatable module.
   # Email validation is handled by Devise :validatable
@@ -23,10 +16,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  def set_default_role
-    self.role ||= "user"
-  end
 
   def assign_temporary_password
     if password.blank?

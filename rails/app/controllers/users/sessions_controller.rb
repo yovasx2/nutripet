@@ -20,12 +20,8 @@ class Users::SessionsController < Devise::SessionsController
 
   protected
 
-  def after_sign_in_path_for(resource)
-    if resource.superadmin?
-      admin_recipes_path
-    else
-      root_path
-    end
+  def after_sign_in_path_for(_resource)
+    root_path
   end
 
   # If you have extra params to permit, append them to the sanitizer.

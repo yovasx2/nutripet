@@ -1,0 +1,110 @@
+<% content_for :title, @pet.name %>
+
+<div class="max-w-4xl mx-auto px-4 py-8">
+  <!-- Back + actions -->
+  <div class="flex items-center justify-between mb-6">
+    <%= link_to "← Mis mascotas", pets_path, class: "text-sm text-primary font-medium hover:underline" %>
+    <%= link_to "Editar", edit_pet_path(@pet), class: "text-sm text-on-surface-variant border border-outline-variant rounded-xl px-4 py-2 hover:bg-surface-low transition-colors" %>
+  </div>
+
+  <!-- Pet card -->
+  <div class="bg-white rounded-2xl border border-outline-variant shadow-sm overflow-hidden mb-6">
+    <div class="h-2 <%= @pet.dog? ? 'bg-primary' : 'bg-secondary' %>"></div>
+    <div class="p-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div>
+        <h1 class="text-2xl font-bold text-on-background"><%= @pet.name %></h1>
+        <p class="text-on-surface-variant capitalize text-sm"><%= @pet.species %> · <%= @pet.breed.presence || "Raza no especificada" %></p>
+      </div>
+      <div class="sm:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+        <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
+          <span class="block font-bold text-on-background text-lg"><%= @pet.weight_kg %></span>
+          <span class="text-on-surface-variant text-xs">kg</span>
+        </div>
+        <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
+          <span class="block font-bold text-on-background capitalize"><%= @pet.life_stage %></span>
+          <span class="text-on-surface-variant text-xs">Etapa</span>
+        </div>
+        <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
+          <span class="block font-bold text-on-background capitalize"><%= @pet.activity_level.gsub("_", " ") %></span>
+          <span class="text-on-surface-variant text-xs">Actividad</span>
+        </div>
+        <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
+          <span class="block font-bold text-on-background"><%= @pet.body_condition_score %>/9</span>
+          <span class="text-on-surface-variant text-xs">CC</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conditions + allergens -->
+    <% if @pet.has_conditions? || @pet.has_allergens? %>
+      <div class="px-6 pb-5 border-t border-surface-highest pt-4">
+        <% if @pet.has_conditions? %>
+          <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-2">Condiciones médicas</p>
+          <div class="flex flex-wrap gap-2 mb-3">
+            <% @pet.conditions.each do |c| %>
+              <span class="text-xs bg-error-container text-red-800 px-3 py-1 rounded-full"><%= c.name %></span>
+            <% end %>
+          </div>
+        <% end %>
+        <% if @pet.has_allergens? %>
+          <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-2">Alergias</p>
+          <div class="flex flex-wrap gap-2">
+            <% @pet.allergens.each do |a| %>
+              <span class="text-xs bg-surface-highest text-on-surface-variant px-3 py-1 rounded-full"><%= a.name %></span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Diet section -->
+  <div class="bg-white rounded-2xl border border-outline-variant shadow-sm p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-bold text-on-background">Dieta Clínica</h2>
+      <% if @latest_prescription %>
+        <%= button_to regenerate_pet_diet_prescription_path(@pet, @latest_prescription),
+              method: :post,
+              class: "inline-flex items-center gap-2 bg-secondary text-white text-sm font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity" do %>
+          <span class="material-symbols-outlined text-base leading-none">refresh</span>
+          Regenerar con IA
+        <% end %>
+      <% end %>
+    </div>
+
+    <% if @latest_prescription %>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm mb-4">
+        <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
+          <span class="block font-bold text-on-background text-lg"><%= @latest_prescription.der_kcal.to_i %></span>
+          <span class="text-on-surface-variant text-xs">kcal / día</span>
+        </div>
+        <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
+          <span class="block font-bold text-on-background text-lg"><%= @latest_prescription.daily_portion_g.to_i %></span>
+          <span class="text-on-surface-variant text-xs">g / día</span>
+        </div>
+        <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
+          <span class="block font-bold text-on-background capitalize"><%= @latest_prescription.recipe_name %></span>
+          <span class="text-on-surface-variant text-xs">Receta base</span>
+        </div>
+        <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
+          <span class="block font-bold text-on-background capitalize">
+            <%= @latest_prescription.ai_refined? ? "IA + Motor" : "Motor" %>
+          </span>
+          <span class="text-on-surface-variant text-xs">Fuente</span>
+        </div>
+      </div>
+      <%= link_to "Ver prescripción completa →", pet_diet_prescription_path(@pet, @latest_prescription),
+            class: "text-sm font-semibold text-primary hover:underline" %>
+    <% else %>
+      <div class="text-center py-10 bg-surface-low rounded-xl">
+        <span class="material-symbols-outlined text-5xl text-outline mb-3 block">restaurant</span>
+        <p class="text-on-surface-variant text-sm mb-4">Aún no hay una dieta calculada para <%= @pet.name %>.</p>
+        <%= link_to new_pet_diet_prescription_path(@pet),
+              class: "inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-primary-container transition-colors" do %>
+          <span class="material-symbols-outlined text-base leading-none">calculate</span>
+          Calcular dieta
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

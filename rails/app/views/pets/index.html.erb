@@ -1,0 +1,74 @@
+<% content_for :title, "Mis Mascotas" %>
+
+<div class="max-w-5xl mx-auto px-4 py-8">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-on-background">Mis Mascotas</h1>
+      <p class="text-on-surface-variant text-sm mt-1">Administra los perfiles de tus mascotas</p>
+    </div>
+    <%= link_to new_pet_path, class: "inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-primary-container transition-colors" do %>
+      <span class="material-symbols-outlined text-base leading-none">add</span>
+      Nueva mascota
+    <% end %>
+  </div>
+
+  <% if @pets.any? %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <% @pets.each do |pet| %>
+        <div class="bg-white rounded-2xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow">
+          <!-- Color band by species -->
+          <div class="h-2 rounded-t-2xl <%= pet.dog? ? 'bg-primary' : 'bg-secondary' %>"></div>
+          <div class="p-5">
+            <div class="flex items-start justify-between mb-3">
+              <div>
+                <h2 class="text-lg font-bold text-on-background"><%= pet.name %></h2>
+                <p class="text-sm text-on-surface-variant capitalize"><%= pet.species %> · <%= pet.breed.presence || "Raza no especificada" %></p>
+              </div>
+              <span class="material-symbols-outlined text-3xl <%= pet.dog? ? 'text-primary' : 'text-secondary' %>">
+                <%= pet.dog? ? "pets" : "catching_pokemon" %>
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-xs text-on-surface-variant mb-4">
+              <div class="bg-surface-low rounded-lg px-3 py-2">
+                <span class="block font-medium text-on-background"><%= pet.weight_kg %> kg</span>
+                <span>Peso</span>
+              </div>
+              <div class="bg-surface-low rounded-lg px-3 py-2">
+                <span class="block font-medium text-on-background capitalize"><%= pet.life_stage %></span>
+                <span>Etapa de vida</span>
+              </div>
+            </div>
+
+            <% if pet.has_conditions? || pet.has_allergens? %>
+              <div class="flex flex-wrap gap-1 mb-4">
+                <% pet.conditions.each do |c| %>
+                  <span class="text-xs bg-error-container text-red-800 px-2 py-0.5 rounded-full"><%= c.name %></span>
+                <% end %>
+                <% pet.allergens.each do |a| %>
+                  <span class="text-xs bg-surface-highest text-on-surface-variant px-2 py-0.5 rounded-full"><%= a.name %></span>
+                <% end %>
+              </div>
+            <% end %>
+
+            <div class="flex gap-2">
+              <%= link_to pet_path(pet), class: "flex-1 text-center text-sm font-semibold text-primary border border-primary rounded-xl py-2 hover:bg-surface-low transition-colors" do %>
+                Ver perfil
+              <% end %>
+              <%= link_to edit_pet_path(pet), class: "text-sm font-semibold text-on-surface-variant border border-outline-variant rounded-xl px-4 py-2 hover:bg-surface-low transition-colors" do %>
+                Editar
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-20 bg-surface-low rounded-2xl border border-outline-variant">
+      <span class="material-symbols-outlined text-6xl text-outline mb-4 block">pets</span>
+      <p class="text-on-surface-variant font-medium">Aún no tienes mascotas registradas.</p>
+      <%= link_to "Registrar mi primera mascota", new_pet_path, class: "mt-4 inline-block text-primary font-semibold hover:underline" %>
+    </div>
+  <% end %>
+</div>

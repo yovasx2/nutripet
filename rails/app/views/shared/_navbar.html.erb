@@ -7,8 +7,8 @@
 <% end %>
 </div>
 <div class="hidden md:flex items-center gap-8 font-['Plus_Jakarta_Sans'] tracking-tight">
-  <% if user_signed_in? && current_user.superadmin? %>
-    <%= link_to 'Admin', admin_recipes_path, class: 'text-slate-700 dark:text-slate-200 font-semibold hover:text-primary transition-colors' %>
+  <% if user_signed_in? %>
+    <%= link_to 'Mis Mascotas', pets_path, class: 'text-slate-700 dark:text-slate-200 font-semibold hover:text-primary transition-colors' %>
   <% end %>
 </div>
 <div class="flex items-center gap-4">
