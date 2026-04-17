@@ -36,21 +36,10 @@
                 <span>Peso</span>
               </div>
               <div class="bg-surface-low rounded-lg px-3 py-2">
-                <span class="block font-medium text-on-background capitalize"><%= pet.life_stage %></span>
+                <span class="block font-medium text-on-background"><%= pet.life_stage_label %></span>
                 <span>Etapa de vida</span>
               </div>
             </div>
-
-            <% if pet.has_conditions? || pet.has_allergens? %>
-              <div class="flex flex-wrap gap-1 mb-4">
-                <% pet.conditions.each do |c| %>
-                  <span class="text-xs bg-error-container text-red-800 px-2 py-0.5 rounded-full"><%= c.name %></span>
-                <% end %>
-                <% pet.allergens.each do |a| %>
-                  <span class="text-xs bg-surface-highest text-on-surface-variant px-2 py-0.5 rounded-full"><%= a.name %></span>
-                <% end %>
-              </div>
-            <% end %>
 
             <div class="flex gap-2">
               <%= link_to pet_path(pet), class: "flex-1 text-center text-sm font-semibold text-primary border border-primary rounded-xl py-2 hover:bg-surface-low transition-colors" do %>

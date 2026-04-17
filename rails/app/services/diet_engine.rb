@@ -1,307 +1,338 @@
-# DietEngine
-#
-# Entry points:
-#
-#   DietEngine.proposals(pet, options = {})
-#     options: standard_name:, diet_type:, preparation_style:
-#     → Returns up to 3 proposal objects for the pet.
-#       diet_type "commercial" returns CommercialFood records as proposals.
-#       diet_type "homemade"/"mixed" uses DietComposer (default).
-#
-#   DietEngine.prescribe(pet, formula_or_food, options = {})
-#     → Calculates portions and persists DietPrescription + PrescriptionItems.
-#
-#   DietEngine.generate(pet, options = {})  [legacy / kept for DietRegenerationJob]
-#     → Legacy single-pass generate using Diet catalog.
-
 module DietEngine
+  # Calorie % distribution for energy-dense categories only (protein, carb, fat — sums to 100).
+  # Vegetables are sized by weight (VEGETABLE_WEIGHT_PCT) to avoid inflated portions from
+  # calorie-sparse ingredients like watercress or zucchini.
+  KCAL_COMPOSITION = {
+    "cooked" => { protein: 60, carb: 27, fat: 13 },
+    "raw"    => { protein: 80, carb: 0,  fat: 20 },
+    "mixed"  => { protein: 67, carb: 20, fat: 13 }
+  }.freeze
+
+  # Vegetable grams as % of total protein+carb+fat weight (not calorie-based)
+  VEGETABLE_WEIGHT_PCT = { "cooked" => 15, "raw" => 15, "mixed" => 15 }.freeze
+
+  # How many ingredients to pick per category
+  SAMPLE_COUNT = { protein: 1, vegetable: 1, carb: 1, fat: 1 }.freeze
+
+  # AAFCO 2023 minimums — % of Dry Matter basis
+  # Source: AAFCO Dog Food Nutrient Profiles 2023
+  AAFCO = {
+    "adult"     => { protein_min: 18.0, fat_min: 5.5,  label: "Adulto (mantenimiento)" },
+    "senior"    => { protein_min: 18.0, fat_min: 5.5,  label: "Senior (mantenimiento)",
+                     note: "AAFCO usa mínimo de adulto, pero se recomienda ≥25% BMS para prevenir pérdida muscular en perros mayores de 7 años." },
+    "growth"    => { protein_min: 22.5, fat_min: 8.5,  label: "Crecimiento (cachorro)" },
+    "gestation" => { protein_min: 22.5, fat_min: 8.5,  label: "Gestación",
+                     note: "Mismo mínimo que crecimiento (AAFCO 'Growth & Reproduction')." },
+    "lactation" => { protein_min: 25.0, fat_min: 8.5,  label: "Lactancia",
+                     note: "La etapa de mayor demanda. Se recomienda ≥25% BMS de proteína; la ingesta total puede triplicar el mantenimiento." }
+  }.freeze
+
+  LIFE_STAGE_TO_AAFCO = {
+    "puppy"     => "growth",
+    "adult"     => "adult",
+    "senior"    => "senior",
+    "pregnant"  => "gestation",
+    "lactating" => "lactation"
+  }.freeze
+
+  PREP_NOTES = {
+    "cooked" => "Cocinar las proteínas y carbohidratos completamente (temp. interna ≥ 74 °C). Desinfectar las verduras antes de usarlas y cocinarlas ligeramente al vapor. No añadir sal, cebolla, ajo ni condimentos. Dividir en 2 porciones al día y servir a temperatura ambiente.",
+    "raw"    => "Usar únicamente carne fresca de grado alimenticio. Descongelar en refrigerador — nunca a temperatura ambiente. Cortar en trozos adecuados al tamaño de la mascota para evitar atragantamiento. Desinfectar las verduras antes de usarlas. Mantener carne y verduras separadas de alimentos humanos en todo momento. Desinfectar utensilios, tablas de corte y lavarse las manos con agua y jabón tras la preparación.",
+    "mixed"  => "Cocinar las proteínas y carbohidratos completamente antes de servir (temp. interna ≥ 74 °C). Desinfectar las verduras antes de usarlas; pueden servirse crudas o al vapor. Mantener los componentes crudos y cocidos en recipientes separados hasta el momento de servir. No añadir sal, cebolla, ajo ni condimentos. Lavar utensilios y superficies con agua y jabón tras la preparación."
+  }.freeze
+
   class << self
-    # ------------------------------------------------------------------
-    # Proposals flow
-    # ------------------------------------------------------------------
+    def generate(pet, preparation_style:, excluded_ingredient_ids: [])
+      style = preparation_style.to_s
+      style = "cooked" unless KCAL_COMPOSITION.key?(style)
 
-    def proposals(pet, options = {})
-      standard_name    = options[:standard_name].presence
-      diet_type        = options[:diet_type].presence || "homemade"
-      preparation_style = options[:preparation_style].presence || "cooked"
+      calc = DietEngine::DerCalculator.new(pet)
+      der  = adjusted_der(calc.der, pet)
 
-      standard = StandardMatcher.new(pet).match!(org_name: standard_name)
+      pool = diet_pool(pet, style, excluded_ingredient_ids)
+      items = build_items(pool, style, der)
 
-      # Commercial diet: return active commercial foods for the species
-      if diet_type == "commercial"
-        foods = CommercialFood.active.for_species(pet.species).order(:name).limit(6)
-        return foods.map { |food| commercial_food_to_proposal(food, pet) }
+      macros = compute_macros(items)
+      aafco  = compute_aafco(pet, macros)
+
+      {
+        der_kcal:          der.round(1),
+        daily_portion_g:   items.sum { |i| i[:daily_amount_g] }.round(1),
+        preparation_style: style,
+        items:             items,
+        engine_output: {
+          "macros"                 => macros,
+          "aafco"                  => aafco,
+          "preparation_notes"      => PREP_NOTES[style],
+          "excluded_ingredient_ids" => excluded_ingredient_ids.uniq
+        }
+      }
+    end
+
+    # Recompute macros + AAFCO from existing diet_items (after swap/remove)
+    def recalculate_output(pet, diet)
+      items = diet.diet_items.includes(:ingredient).map do |di|
+        { ingredient: di.ingredient, daily_amount_g: di.daily_amount_g, pct_of_diet: di.pct_of_diet }
+      end
+      total_g = items.sum { |i| i[:daily_amount_g] }
+      macros  = compute_macros(items)
+      aafco   = compute_aafco(pet, macros)
+
+      diet.update!(
+        daily_portion_g: total_g.round(1),
+        engine_output:   diet.engine_output.merge("macros" => macros, "aafco" => aafco)
+      )
+    end
+
+    # Generate diet from a specific list of ingredient IDs chosen by the user.
+    # Protein/carb/fat are allocated by calorie %; vegetables by weight % of total.
+    def generate_with_ingredients(pet, preparation_style:, ingredient_ids:, excluded_ingredient_ids: [])
+      style = preparation_style.to_s
+      style = "cooked" unless KCAL_COMPOSITION.key?(style)
+
+      calc = DietEngine::DerCalculator.new(pet)
+      der  = adjusted_der(calc.der, pet)
+
+      pool         = diet_pool(pet, style, excluded_ingredient_ids)
+      selected     = pool.where(id: ingredient_ids).to_a
+      kcal_comp    = KCAL_COMPOSITION[style]
+      kcal_cats    = %i[protein carb fat].select { |cat| kcal_comp[cat].to_i > 0 }
+
+      return generate(pet, preparation_style: style, excluded_ingredient_ids: excluded_ingredient_ids) if selected.empty? && pool.none?
+
+      selected_by_category = selected.group_by(&:category)
+      available_kcal_cats  = kcal_cats.select do |cat|
+        selected_by_category[cat.to_s].present? || pool.send("#{cat}s").exists?
+      end
+      effective_comp = normalized_composition(kcal_comp, available_kcal_cats)
+
+      return generate(pet, preparation_style: style, excluded_ingredient_ids: excluded_ingredient_ids) if effective_comp.empty?
+
+      items        = []
+      selected_cats = available_kcal_cats.select { |cat| selected_by_category[cat.to_s].present? }
+      refill_cats   = available_kcal_cats - selected_cats
+      selected_ids  = selected.map(&:id)
+
+      # Calorie-based items: protein, carb, fat
+      selected_cats.each do |cat|
+        cat_ings           = selected_by_category[cat.to_s]
+        per_ingredient_pct = effective_comp[cat].to_f / cat_ings.size
+
+        cat_ings.each do |ingredient|
+          kcal_alloc = der * (per_ingredient_pct / 100.0)
+          daily_g    = ingredient.energy_kcal > 0 ? (kcal_alloc / ingredient.energy_kcal * 100.0) : 0
+          items << { ingredient: ingredient, pct_of_diet: per_ingredient_pct.round(2), daily_amount_g: daily_g.round(1) }
+        end
       end
 
-      # Homemade / Mixed: check cache then compose
-      fingerprint    = DietFormula.generate_fingerprint(pet)
-      cached_popular = DietFormula.where(fingerprint: fingerprint).popular.to_a
+      refill_cats.each do |cat|
+        candidates = pool.send("#{cat}s").where.not(id: selected_ids).to_a
+        next if candidates.empty?
 
-      if cached_popular.any? && diet_type == "homemade" && preparation_style == "cooked"
-        return cached_popular.map { |f| formula_to_proposal(f) }
+        chosen             = candidates.sample([SAMPLE_COUNT[cat], candidates.size].min)
+        per_ingredient_pct = effective_comp[cat].to_f / chosen.size
+
+        chosen.each do |ingredient|
+          kcal_alloc = der * (per_ingredient_pct / 100.0)
+          daily_g    = ingredient.energy_kcal > 0 ? (kcal_alloc / ingredient.energy_kcal * 100.0) : 0
+          items << { ingredient: ingredient, pct_of_diet: per_ingredient_pct.round(2), daily_amount_g: daily_g.round(1) }
+        end
       end
 
-      # No reusable cache — compose new proposals
-      composer  = DietComposer.new(pet, standard, preparation_style: preparation_style)
-      proposals = composer.compose(count: DietComposer::PROPOSAL_COUNT)
+      return generate(pet, preparation_style: style, excluded_ingredient_ids: excluded_ingredient_ids) if items.empty?
 
-      raise "No se pudieron generar propuestas para #{pet.species}/#{pet.life_stage}. Verifica que haya ingredientes disponibles." if proposals.empty?
+      # Vegetable items: weight % of calorie-item total
+      veg_pct = VEGETABLE_WEIGHT_PCT[style].to_f
+      if veg_pct > 0
+        veg_target_g    = items.sum { |i| i[:daily_amount_g] } * veg_pct / 100.0
+        user_vegs       = selected_by_category["vegetable"] || []
+        veg_ingredients = if user_vegs.any?
+          user_vegs
+        else
+          cands = pool.vegetables.where.not(id: selected_ids).to_a
+          cands.empty? ? [] : cands.sample([SAMPLE_COUNT[:vegetable], cands.size].min)
+        end
 
-      # Persist formulas (only for homemade cooked — raw/mixed are ephemeral by design)
-      if diet_type == "homemade" && preparation_style == "cooked"
-        proposals.each_with_index do |proposal, i|
-          DietFormula.find_or_create_by!(fingerprint: "#{fingerprint}_#{i}") do |f|
-            f.name                   = proposal.name
-            f.fingerprint            = "#{fingerprint}_#{i}"
-            f.species                = proposal.species
-            f.life_stage             = proposal.life_stage
-            f.condition_ids          = proposal.condition_ids
-            f.allergen_ids           = proposal.allergen_ids
-            f.ingredient_composition = proposal.ingredient_composition
+        unless veg_ingredients.empty?
+          per_veg_g = veg_target_g / veg_ingredients.size
+          veg_ingredients.each do |ingredient|
+            items << { ingredient: ingredient, pct_of_diet: 0.0, daily_amount_g: per_veg_g.round(1) }
           end
         end
       end
 
-      proposals
-    end
+      macros = compute_macros(items)
+      aafco  = compute_aafco(pet, macros)
 
-    # ------------------------------------------------------------------
-    # Prescribe from a chosen formula or commercial food
-    # ------------------------------------------------------------------
-
-    def prescribe(pet, formula_or_food, options = {})
-      standard_name    = options[:standard_name].presence
-      diet_type        = options[:diet_type].presence || "homemade"
-      preparation_style = options[:preparation_style].presence || "cooked"
-      custom_allergens_notes   = options[:custom_allergens_notes]
-      custom_conditions_notes  = options[:custom_conditions_notes]
-
-      calc     = DerCalculator.new(pet)
-      der_kcal = calc.der
-      standard = StandardMatcher.new(pet).match!(org_name: standard_name)
-
-      if diet_type == "commercial" && formula_or_food.is_a?(CommercialFood)
-        food          = formula_or_food
-        daily_g       = food.daily_portion_g(der_kcal) || 0.0
-        macros        = { protein_g: (food.protein_min_pct.to_f * daily_g / 100).round(2),
-                          fat_g:     (food.fat_min_pct.to_f    * daily_g / 100).round(2),
-                          carbs_g:   0.0, fiber_g: 0.0,
-                          energy_kcal: (food.energy_kcal_per_kg.to_f * daily_g / 1000).round(2) }
-        validation    = Validator.new(standard, macros, daily_g).validate
-
-        engine_output = {
-          der_kcal:        der_kcal,
-          rer_kcal:        calc.rer,
-          multiplier:      calc.multiplier,
-          daily_portion_g: daily_g,
-          macros:          macros,
-          validation:      { passed: validation.passed, errors: validation.errors, warnings: validation.warnings },
-          recipe_name:     food.name,
-          standard_used:   "#{standard.standard_name} #{standard.version}",
-          food_form:       food.food_form,
-          brand:           food.brand
+      {
+        der_kcal:          der.round(1),
+        daily_portion_g:   items.sum { |i| i[:daily_amount_g] }.round(1),
+        preparation_style: style,
+        items:             items,
+        engine_output: {
+          "macros"                  => macros,
+          "aafco"                   => aafco,
+          "preparation_notes"       => PREP_NOTES[style],
+          "excluded_ingredient_ids" => excluded_ingredient_ids.uniq
         }
-
-        return DietPrescription.create!(
-          pet:                     pet,
-          nutritional_standard:    standard,
-          commercial_food:         food,
-          der_kcal:                der_kcal,
-          daily_portion_g:         daily_g,
-          diet_type:               "commercial",
-          preparation_style:       "cooked",
-          standard_override:       standard_name,
-          custom_allergens_notes:  custom_allergens_notes,
-          custom_conditions_notes: custom_conditions_notes,
-          engine_output:           engine_output,
-          final_output:            engine_output,
-          rejected_recipes:        [],
-          status:                  "calculated",
-          source:                  "engine"
-        )
-      end
-
-      # Homemade / Mixed path
-      formula = formula_or_food
-      composition_with_objects = formula.ingredient_composition.map do |ing_id, pct|
-        [Ingredient.find(ing_id.to_i), pct.to_f]
-      end
-
-      portions   = FormulaPortionCalculator.new(composition_with_objects, der_kcal).calculate
-      macros     = portions.macro_summary
-      validation = Validator.new(standard, macros, portions.daily_portion_g).validate
-
-      engine_output = {
-        der_kcal:        der_kcal,
-        rer_kcal:        calc.rer,
-        multiplier:      calc.multiplier,
-        daily_portion_g: portions.daily_portion_g,
-        macros:          macros,
-        validation:      { passed: validation.passed, errors: validation.errors, warnings: validation.warnings },
-        recipe_name:     formula.name || "Fórmula personalizada",
-        standard_used:   "#{standard.standard_name} #{standard.version}"
       }
-
-      ActiveRecord::Base.transaction do
-        prescription = DietPrescription.create!(
-          pet:                     pet,
-          nutritional_standard:    standard,
-          diet_formula:            formula,
-          der_kcal:                der_kcal,
-          daily_portion_g:         portions.daily_portion_g,
-          diet_type:               diet_type,
-          preparation_style:       preparation_style,
-          standard_override:       standard_name,
-          custom_allergens_notes:  custom_allergens_notes,
-          custom_conditions_notes: custom_conditions_notes,
-          engine_output:           engine_output,
-          final_output:            engine_output,
-          rejected_recipes:        [],
-          status:                  "calculated",
-          source:                  "engine"
-        )
-
-        portions.items.each do |item|
-          prescription.prescription_items.create!(
-            ingredient:     item[:ingredient],
-            daily_amount_g: item[:daily_amount_g],
-            pct_of_diet:    item[:pct_of_diet],
-            is_substitute:  false
-          )
-        end
-
-        prescription
-      end
     end
 
-    # ------------------------------------------------------------------
-    # LEGACY: Diet-based generate (used by DietRegenerationJob)
-    # ------------------------------------------------------------------
-
-    def generate(pet, options = {})
-      standard_name    = options[:standard_name].presence
-      diet_type        = options[:diet_type].presence || "homemade"
-      preparation_style = options[:preparation_style].presence || "cooked"
-
-      calc     = DerCalculator.new(pet)
-      der_kcal = calc.der
-      standard = StandardMatcher.new(pet).match!(org_name: standard_name)
-
-      # Commercial path — just prescribe the first matching food
-      if diet_type == "commercial"
-        food = CommercialFood.active.for_species(pet.species).first
-        return prescribe(pet, food, options) if food
+    # Compute macros live from current diet_items (for show action, no DB write)
+    def live_macros(diet)
+      items = diet.diet_items.includes(:ingredient).map do |di|
+        { ingredient: di.ingredient, daily_amount_g: di.daily_amount_g, pct_of_diet: di.pct_of_diet }
       end
+      compute_macros(items)
+    end
 
-      candidates = Diet.active
-                        .for_species(pet.species)
-                        .for_life_stage(pet.life_stage)
-                        .includes(:contraindicated_conditions,
-                                  :contraindicated_allergens,
-                                  recipe_ingredients: :ingredient)
+    # Compute AAFCO live (for show action, no DB write)
+    def live_aafco(pet, macros)
+      compute_aafco(pet, macros)
+    end
 
-      filter   = ContraindicationFilter.new(pet)
-      safe     = filter.filter(candidates)
-      rejected = filter.rejected
+    # Alternatives for a given diet_item (same category, safe for pet, not already in diet)
+    def alternatives_for(pet, diet, diet_item)
+      current_ids = diet.diet_items.pluck(:ingredient_id)
+      category    = diet_item.ingredient.category
+      pool        = Ingredient.non_toxic.safe_for(pet.species)
+      pool        = pool.raw_safe if diet.preparation_style == "raw"
+      pool.send("#{category}s").where.not(id: current_ids).order(:name)
+    end
 
-      # Fallback: if no specific master recipe, use formula flow
-      if safe.empty?
-        composer  = DietComposer.new(pet, standard, preparation_style: preparation_style)
-        proposals = composer.compose(count: 1)
-        raise "No se encontró receta ni fórmula segura para #{pet.species}/#{pet.life_stage}" if proposals.empty?
+    def adjusted_der(der, pet)
+      bcs = pet.body_condition_score.to_i
+      return der if bcs == 5
 
-        proposal = proposals.first
-        formula  = DietFormula.find_or_create_by!(fingerprint: "#{DietFormula.generate_fingerprint(pet)}_0") do |f|
-          f.name                   = proposal.name
-          f.species                = proposal.species
-          f.life_stage             = proposal.life_stage
-          f.condition_ids          = proposal.condition_ids
-          f.allergen_ids           = proposal.allergen_ids
-          f.ingredient_composition = proposal.ingredient_composition
-        end
-        return prescribe(pet, formula, options)
-      end
+      # Use ideal body weight (IBW) for DER to avoid over/underfeeding.
+      # Each BCS point away from 5 represents ~10% deviation from ideal weight.
+      # e.g. BCS 8 on a 4.2 kg dog → IBW = 4.2 / 1.30 = 3.23 kg
+      bcs_delta = bcs - 5
+      ibw       = pet.weight_kg.to_f / (1.0 + bcs_delta * 0.10)
 
-      recipe     = safe.first
-      portions   = PortionCalculator.new(recipe, der_kcal).calculate
-      macros     = portions.macro_summary
-      validation = Validator.new(standard, macros, portions.daily_portion_g).validate
+      # Recompute RER from IBW but keep the same activity/neuter/life_stage multiplier
+      calc    = DietEngine::DerCalculator.new(pet)
+      rer_ibw = 70.0 * (ibw**0.75)
+      (rer_ibw * calc.multiplier).round(2)
+    end
 
-      engine_output = {
-        der_kcal:        der_kcal,
-        rer_kcal:        calc.rer,
-        multiplier:      calc.multiplier,
-        daily_portion_g: portions.daily_portion_g,
-        macros:          macros,
-        validation:      { passed: validation.passed, errors: validation.errors, warnings: validation.warnings },
-        recipe_name:     recipe.name,
-        standard_used:   "#{standard.standard_name} #{standard.version}"
-      }
+    def diet_pool(pet, style, excluded_ingredient_ids)
+      pool = Ingredient.non_toxic.safe_for(pet.species)
+      pool = pool.raw_safe if style == "raw"
+      excluded_ingredient_ids.any? ? pool.where.not(id: excluded_ingredient_ids) : pool
+    end
 
-      ActiveRecord::Base.transaction do
-        prescription = DietPrescription.create!(
-          pet:                  pet,
-          nutritional_standard: standard,
-          diet:                 recipe,
-          der_kcal:             der_kcal,
-          daily_portion_g:      portions.daily_portion_g,
-          diet_type:            diet_type,
-          preparation_style:    preparation_style,
-          standard_override:    standard_name,
-          engine_output:        engine_output,
-          final_output:         engine_output,
-          rejected_recipes:     rejected,
-          status:               "calculated",
-          source:               "engine"
-        )
+    def normalized_composition(base_comp, categories)
+      total_pct = categories.sum { |cat| base_comp[cat] }
+      return {} if total_pct.zero?
 
-        portions.items.each do |item|
-          prescription.prescription_items.create!(
-            ingredient:     item[:ingredient],
-            daily_amount_g: item[:daily_amount_g],
-            pct_of_diet:    item[:pct_of_diet],
-            is_substitute:  item[:is_substitute]
-          )
-        end
-
-        prescription
+      scale = 100.0 / total_pct
+      categories.each_with_object({}) do |cat, hash|
+        hash[cat] = (base_comp[cat].to_f * scale).round(2)
       end
     end
 
     private
 
-    def formula_to_proposal(formula)
-      DietComposer::Proposal.new(
-        name:                  formula.name,
-        fingerprint:           formula.fingerprint,
-        ingredient_composition: formula.ingredient_composition,
-        macros:                {},
-        energy_kcal_per_100g:  0,
-        passes_standard:       true,
-        species:               formula.species,
-        life_stage:            formula.life_stage,
-        condition_ids:         formula.condition_ids,
-        allergen_ids:          formula.allergen_ids
-      )
+    def build_items(pool, style, der)
+      comp   = KCAL_COMPOSITION[style]
+      counts = SAMPLE_COUNT
+      items  = []
+
+      # Step 1: protein, carb, fat — allocated by calorie %
+      %i[protein carb fat].each do |cat|
+        pct = comp[cat]
+        next if pct.nil? || pct.zero?
+
+        candidates = pool.send("#{cat}s").to_a
+        next if candidates.empty?
+
+        selected           = candidates.sample([counts[cat], candidates.size].min)
+        per_ingredient_pct = pct.to_f / selected.size
+
+        selected.each do |ingredient|
+          kcal_alloc = der * (per_ingredient_pct / 100.0)
+          daily_g    = ingredient.energy_kcal > 0 ? (kcal_alloc / ingredient.energy_kcal * 100.0) : 0
+          items << { ingredient: ingredient, pct_of_diet: per_ingredient_pct.round(2), daily_amount_g: daily_g.round(1) }
+        end
+      end
+
+      # Step 2: vegetables — weight % of macro-item total
+      # This prevents calorie-sparse vegetables from producing unrealistic gram amounts
+      veg_pct = VEGETABLE_WEIGHT_PCT[style].to_f
+      if veg_pct > 0
+        kcal_total_g = items.sum { |i| i[:daily_amount_g] }
+        veg_target_g = kcal_total_g * veg_pct / 100.0
+        candidates   = pool.vegetables.to_a
+
+        unless candidates.empty?
+          chosen    = candidates.sample([counts[:vegetable], candidates.size].min)
+          per_veg_g = veg_target_g / chosen.size
+          chosen.each do |ingredient|
+            items << { ingredient: ingredient, pct_of_diet: 0.0, daily_amount_g: per_veg_g.round(1) }
+          end
+        end
+      end
+
+      items
     end
 
-    def commercial_food_to_proposal(food, pet)
-      DietComposer::Proposal.new(
-        name:                   food.name,
-        fingerprint:            "commercial_#{food.id}",
-        ingredient_composition: {},
-        macros:                 { protein_g: food.protein_min_pct.to_f,
-                                  fat_g:     food.fat_min_pct.to_f,
-                                  fiber_g:   food.fiber_max_pct.to_f,
-                                  carbs_g:   0.0,
-                                  energy_kcal: (food.energy_kcal_per_kg.to_f / 10).round(2) },
-        energy_kcal_per_100g:   (food.energy_kcal_per_kg.to_f / 10).round(2),
-        passes_standard:        true,
-        species:                food.species,
-        life_stage:             food.life_stage || pet.life_stage,
-        condition_ids:          [],
-        allergen_ids:           []
-      )
+    def compute_aafco(pet, macros)
+      stage_key = LIFE_STAGE_TO_AAFCO[pet.life_stage] || "adult"
+      standard  = AAFCO[stage_key]
+
+      moisture   = macros["moisture_g"].to_f
+      total      = macros["total_g"].to_f
+      dry_matter = total - moisture
+      return {} if dry_matter <= 0
+
+      protein_pct_dm = (macros["protein_g"].to_f / dry_matter * 100).round(1)
+      fat_pct_dm     = (macros["fat_g"].to_f     / dry_matter * 100).round(1)
+
+      # BCS flags
+      bcs          = pet.body_condition_score.to_i
+      obese        = bcs >= 7
+      underweight  = bcs <= 3
+
+      result = {
+        "standard"         => "AAFCO 2023",
+        "life_stage_group" => standard[:label],
+        "protein_min_pct"  => standard[:protein_min],
+        "fat_min_pct"      => standard[:fat_min],
+        "protein_pct_dm"   => protein_pct_dm,
+        "fat_pct_dm"       => fat_pct_dm,
+        "protein_ok"       => protein_pct_dm >= standard[:protein_min],
+        "fat_ok"           => fat_pct_dm     >= standard[:fat_min],
+        "note"             => standard[:note]
+      }
+
+      if obese
+        result["bcs_warning"]  = "Condición corporal (BCS) #{bcs}/9 — Sobrepeso/Obeso. La porción calculada está basada en el peso actual; considera ajustar con tu veterinario usando el peso ideal para evitar sobrealimentación."
+        result["context_note"] = "Condición corporal (BCS) #{bcs}/9 · En pérdida de peso, los mínimos AAFCO aplican igualmente, pero la porción esta ajustada a la baja para evitar sobrealimentación."
+      elsif underweight
+        result["bcs_warning"]  = "Condición corporal (BCS) #{bcs}/9 — Peso bajo. Considera aumentar la porción gradualmente hasta alcanzar Condición corporal (BCS) 4-5."
+        result["context_note"] = "Condición corporal (BCS) #{bcs}/9 · En recuperación de peso, los mínimos AAFCO aplican igualmente, pero la porción esta ajustada al alza para promover ganancia de peso."
+      end
+
+      result
+    end
+
+    def compute_macros(items)
+      total_g = items.sum { |i| i[:daily_amount_g] }
+      return {} if total_g.zero?
+
+      protein_g = items.sum { |i| i[:ingredient].protein_g * i[:daily_amount_g] / 100.0 }
+      fat_g     = items.sum { |i| i[:ingredient].fat_g     * i[:daily_amount_g] / 100.0 }
+      carbs_g   = items.sum { |i| i[:ingredient].carbs_g   * i[:daily_amount_g] / 100.0 }
+      moisture_g = items.sum { |i| i[:ingredient].moisture_g * i[:daily_amount_g] / 100.0 }
+
+      {
+        "protein_g"  => protein_g.to_f.round(1),
+        "fat_g"      => fat_g.to_f.round(1),
+        "carbs_g"    => carbs_g.to_f.round(1),
+        "moisture_g" => moisture_g.to_f.round(1),
+        "total_g"    => total_g.to_f.round(1)
+      }
     end
   end
 end

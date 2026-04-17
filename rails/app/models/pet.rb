@@ -1,17 +1,12 @@
 class Pet < ApplicationRecord
   belongs_to :user
 
-  has_many :pet_conditions, dependent: :destroy
-  has_many :conditions, through: :pet_conditions
+  has_many :diets, dependent: :destroy
 
-  has_many :pet_allergens, dependent: :destroy
-  has_many :allergens, through: :pet_allergens
-
-  has_many :diet_prescriptions, dependent: :destroy
-
-  SPECIES = %w[dog cat].freeze
-  LIFE_STAGES = %w[puppy kitten adult senior pregnant lactating].freeze
+  SPECIES = %w[dog].freeze
+  LIFE_STAGES = %w[puppy adult senior pregnant lactating].freeze
   ACTIVITY_LEVELS = %w[sedentary low moderate high very_high].freeze
+  SEXES = %w[female male].freeze
 
   validates :name, presence: true
   validates :species, presence: true, inclusion: { in: SPECIES }
@@ -19,6 +14,7 @@ class Pet < ApplicationRecord
   validates :life_stage, presence: true, inclusion: { in: LIFE_STAGES }
   validates :activity_level, presence: true, inclusion: { in: ACTIVITY_LEVELS }
   validates :body_condition_score, inclusion: { in: 1..9 }
+  validates :sex, presence: true, inclusion: { in: SEXES }
 
   validate :life_stage_matches_species
 
@@ -30,25 +26,60 @@ class Pet < ApplicationRecord
     species == "cat"
   end
 
-  def has_conditions?
-    conditions.any?
+  def female?
+    sex == "female"
   end
 
-  def has_allergens?
-    allergens.any?
+  def male?
+    sex == "male"
   end
 
-  def needs_ai_refinement?
-    has_conditions? || has_allergens?
+  LIFE_STAGE_LABELS = {
+    "puppy"     => "Cachorro",
+    "adult"     => "Adulto",
+    "senior"    => "Senior",
+    "pregnant"  => "Gestante",
+    "lactating" => "Lactante"
+  }.freeze
+
+  SPECIES_LABELS = {
+    "dog" => "Perro"
+  }.freeze
+
+  SEX_LABELS = {
+    "female" => "Hembra",
+    "male"   => "Macho"
+  }.freeze
+
+  ACTIVITY_LABELS = {
+    "sedentary" => "Sedentario",
+    "low"       => "Bajo",
+    "moderate"  => "Moderado",
+    "high"      => "Alto",
+    "very_high" => "Muy alto"
+  }.freeze
+
+  def species_label
+    SPECIES_LABELS[species] || species.to_s.capitalize
+  end
+
+  def life_stage_label
+    LIFE_STAGE_LABELS[life_stage] || life_stage.to_s.capitalize
+  end
+
+  def activity_label
+    ACTIVITY_LABELS[activity_level] || activity_level.to_s.humanize
+  end
+
+  def sex_label
+    SEX_LABELS[sex] || sex.to_s.capitalize
   end
 
   private
 
   def life_stage_matches_species
-    if dog? && life_stage == "kitten"
-      errors.add(:life_stage, "cannot be kitten for a dog")
-    elsif cat? && life_stage == "puppy"
-      errors.add(:life_stage, "cannot be puppy for a cat")
+    if male? && life_stage.in?(%w[pregnant lactating])
+      errors.add(:life_stage, "solo disponible para hembras")
     end
   end
 end

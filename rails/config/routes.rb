@@ -10,21 +10,16 @@ Rails.application.routes.draw do
     passwords: 'users/passwords'
   }
 
-  # Pet profiles + nested prescriptions
+  # Pet profiles + nested diets
   resources :pets do
-    resources :diet_prescriptions, only: [:new, :show, :create] do
-      member do
-        post :regenerate
-        post :upvote
-      end
+    resources :diets, only: [:show, :new, :create] do
+      patch :regenerate, on: :member
     end
   end
 
   # Admin panel
   namespace :admin do
     resources :ingredients
-    resources :nutritional_standards, only: [:index, :show, :edit, :update]
-    resources :commercial_foods
   end
 
   # Landing page

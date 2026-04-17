@@ -1,37 +1,27 @@
 class Diet < ApplicationRecord
-  has_many :recipe_ingredients, dependent: :destroy
-  has_many :ingredients, through: :recipe_ingredients
+  belongs_to :pet
+  has_many :diet_items, dependent: :destroy
+  has_many :ingredients, through: :diet_items
 
-  has_many :recipe_contraindicated_conditions, dependent: :destroy
-  has_many :contraindicated_conditions, through: :recipe_contraindicated_conditions, source: :condition
+  PREP_STYLES = {
+    "cooked" => "Cocida",
+    "raw"    => "⚠️ Cruda (BARF)",
+    "mixed"  => "⚠️ Mixta"
+  }.freeze
 
-  has_many :recipe_contraindicated_allergens, dependent: :destroy
-  has_many :contraindicated_allergens, through: :recipe_contraindicated_allergens, source: :allergen
+  def prep_style_label
+    PREP_STYLES.fetch(preparation_style, preparation_style)
+  end
 
-  has_many :diet_prescriptions, dependent: :restrict_with_error
+  def macros
+    engine_output["macros"] || {}
+  end
 
-  STATUSES = %w[draft active archived].freeze
-  SPECIES = %w[dog cat].freeze
-  LIFE_STAGES = (Pet::LIFE_STAGES + ["all_life_stages"]).freeze
+  def aafco
+    engine_output["aafco"] || {}
+  end
 
-  validates :name, presence: true, uniqueness: true
-  validates :species, presence: true, inclusion: { in: SPECIES }
-  validates :life_stage, presence: true, inclusion: { in: LIFE_STAGES }
-  validates :status, inclusion: { in: STATUSES }
-
-  scope :active, -> { where(status: "active") }
-  scope :for_species, ->(species) { where(species: species) }
-  scope :for_life_stage, ->(stage) {
-    where("life_stage = ? OR life_stage = 'all_life_stages'", stage)
-  }
-
-  def safe_for_pet?(pet)
-    pet_condition_ids = pet.conditions.pluck(:id)
-    pet_allergen_ids  = pet.allergens.pluck(:id)
-
-    return false if contraindicated_conditions.where(id: pet_condition_ids).exists?
-    return false if contraindicated_allergens.where(id: pet_allergen_ids).exists?
-
-    true
+  def preparation_notes
+    engine_output["preparation_notes"] || ""
   end
 end

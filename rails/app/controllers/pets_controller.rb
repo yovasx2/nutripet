@@ -7,7 +7,7 @@ class PetsController < ApplicationController
   end
 
   def show
-    @latest_prescription = @pet.diet_prescriptions.latest_for_pet(@pet.id).first
+    @latest_diet = @pet.diets.order(created_at: :desc).first
   end
 
   def new
@@ -48,9 +48,8 @@ class PetsController < ApplicationController
 
   def pet_params
     params.require(:pet).permit(
-      :name, :species, :breed, :weight_kg,
-      :life_stage, :activity_level, :body_condition_score, :is_neutered,
-      condition_ids: [], allergen_ids: []
+      :name, :species, :breed, :sex, :weight_kg,
+      :life_stage, :activity_level, :body_condition_score, :is_neutered
     )
   end
 end

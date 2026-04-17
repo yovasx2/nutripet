@@ -1,0 +1,57 @@
+<% content_for :title, "Nueva Dieta — #{@pet.name}" %>
+
+<div class="max-w-2xl mx-auto px-4 py-10">
+  <%= link_to "← #{@pet.name}", @pet, class: "text-sm text-primary font-medium hover:underline block mb-6" %>
+
+  <!-- Pet summary -->
+  <div class="bg-white rounded-2xl border border-outline-variant shadow-sm overflow-hidden mb-6">
+    <div class="h-2 bg-primary"></div>
+    <div class="p-5 flex items-center gap-4">
+      <div class="flex-1">
+        <p class="font-bold text-on-background text-lg"><%= @pet.name %></p>
+        <p class="text-on-surface-variant text-sm">
+          <%= @pet.species_label %> · <%= @pet.weight_kg %> kg ·
+          <%= @pet.life_stage_label %> · <%= @pet.activity_label %>
+          <% if @pet.is_neutered %> · Esterilizado/a<% end %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prep style form -->
+  <div class="bg-white rounded-2xl border border-outline-variant shadow-sm p-6">
+    <h1 class="text-xl font-bold text-on-background mb-1">Calcular Dieta Casera</h1>
+    <p class="text-on-surface-variant text-sm mb-6">Elige el estilo de preparación para generar el plan de alimentación.</p>
+
+    <%= form_with url: pet_diets_path(@pet), method: :post, class: "space-y-4" do |f| %>
+      <div class="space-y-3">
+        <% Diet::PREP_STYLES.each do |value, label| %>
+          <label class="flex items-start gap-4 p-4 rounded-xl border border-outline-variant cursor-pointer hover:bg-surface-low transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+            <input type="radio" name="preparation_style" value="<%= value %>"
+              <%= "checked" if value == "cooked" %>
+              class="mt-0.5 w-4 h-4 text-primary focus:ring-primary border-outline-variant" />
+            <div class="flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <p class="font-semibold text-sm text-on-background"><%= label %></p>
+                <% if value == "cooked" %>
+                  <span class="text-xs bg-primary text-white px-2 py-0.5 rounded-full font-medium">Recomendado</span>
+                <% end %>
+              </div>
+              <% descriptions = {
+                "cooked" => "Alimentos cocidos: pollo, arroz, verduras al vapor. La opción más segura y digestiva.",
+                "raw"    => "Alimentación cruda (BARF): carnes frescas y verduras sin cocción. Para dueños con experiencia.",
+                "mixed"  => "Mezcla de cocido y crudo: lo mejor de ambos mundos. Flexibilidad en la preparación."
+              } %>
+              <p class="text-xs text-on-surface-variant mt-0.5"><%= descriptions[value] %></p>
+            </div>
+          </label>
+        <% end %>
+      </div>
+
+      <button type="submit"
+        class="w-full bg-primary text-white text-sm font-semibold py-3 rounded-xl hover:bg-primary-container transition-colors mt-2">
+        Generar dieta
+      </button>
+    <% end %>
+  </div>
+</div>

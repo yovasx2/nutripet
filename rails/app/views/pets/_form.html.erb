@@ -1,65 +1,91 @@
 <!-- Shared form partial for new + edit pet -->
 <%= form_with model: pet, class: "space-y-6" do |f| %>
-  <% if pet.errors.any? %>
-    <div class="bg-error-container text-red-800 text-sm rounded-xl px-4 py-3">
-      <ul class="list-disc list-inside space-y-1">
-        <% pet.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <% field_class = ->(attr) {
+    base = "w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 bg-white "
+    pet.errors[attr].any? ? base + "border-red-400 focus:ring-red-400" : base + "border-outline-variant focus:ring-primary"
+  } %>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
     <!-- Name -->
     <div>
-      <%= f.label :name, "Nombre", class: "block text-sm font-semibold text-on-background mb-1" %>
-      <%= f.text_field :name, class: "w-full border border-outline-variant rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white", placeholder: "Ej. Luna" %>
+      <%= f.label :name, class: "block text-sm font-semibold text-on-background mb-1" do %>
+        Nombre <span class="text-red-500">*</span>
+      <% end %>
+      <%= f.text_field :name, class: field_class.(:name), placeholder: "Ej. Luna" %>
+      <% if pet.errors[:name].any? %>
+        <p class="text-xs text-red-500 mt-1"><%= pet.errors[:name].to_sentence %></p>
+      <% end %>
     </div>
 
     <!-- Breed -->
     <div>
       <%= f.label :breed, "Raza", class: "block text-sm font-semibold text-on-background mb-1" %>
-      <%= f.text_field :breed, class: "w-full border border-outline-variant rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white", placeholder: "Ej. Labrador" %>
+      <%= f.text_field :breed, class: field_class.(:breed), placeholder: "Ej. Labrador" %>
     </div>
 
-    <!-- Species -->
+    <!-- Species (hidden — dogs only) -->
+    <%= f.hidden_field :species, value: "dog" %>
+
+    <!-- Sex -->
     <div>
-      <%= f.label :species, "Especie", class: "block text-sm font-semibold text-on-background mb-1" %>
-      <%= f.select :species, Pet::SPECIES.map { |s| [s.capitalize, s] },
-            { prompt: "Selecciona especie" },
-            class: "w-full border border-outline-variant rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white" %>
+      <%= f.label :sex, class: "block text-sm font-semibold text-on-background mb-1" do %>
+        Sexo <span class="text-red-500">*</span>
+      <% end %>
+      <%= f.select :sex, Pet::SEX_LABELS.map { |val, label| [label, val] }, { prompt: "Selecciona sexo", selected: pet.new_record? ? nil : pet.sex },
+            id: "pet_sex",
+            class: field_class.(:sex) %>
+      <% if pet.errors[:sex].any? %>
+        <p class="text-xs text-red-500 mt-1"><%= pet.errors[:sex].to_sentence %></p>
+      <% end %>
     </div>
 
     <!-- Weight -->
     <div>
-      <%= f.label :weight_kg, "Peso (kg)", class: "block text-sm font-semibold text-on-background mb-1" %>
-      <%= f.number_field :weight_kg, step: 0.1, min: 0.1, class: "w-full border border-outline-variant rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white", placeholder: "Ej. 12.5" %>
+      <%= f.label :weight_kg, class: "block text-sm font-semibold text-on-background mb-1" do %>
+        Peso (kg) <span class="text-red-500">*</span>
+      <% end %>
+      <%= f.number_field :weight_kg, step: 0.1, min: 0.1, class: field_class.(:weight_kg), placeholder: "Ej. 12.5" %>
+      <% if pet.errors[:weight_kg].any? %>
+        <p class="text-xs text-red-500 mt-1"><%= pet.errors[:weight_kg].to_sentence %></p>
+      <% end %>
     </div>
 
     <!-- Life stage -->
     <div>
-      <%= f.label :life_stage, "Etapa de vida", class: "block text-sm font-semibold text-on-background mb-1" %>
-      <%= f.select :life_stage, Pet::LIFE_STAGES.map { |s| [s.capitalize, s] },
+      <%= f.label :life_stage, class: "block text-sm font-semibold text-on-background mb-1" do %>
+        Etapa de vida <span class="text-red-500">*</span>
+      <% end %>
+      <%= f.select :life_stage, Pet::LIFE_STAGE_LABELS.map { |val, label| [label, val] },
             { prompt: "Selecciona etapa" },
-            class: "w-full border border-outline-variant rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white" %>
+            class: field_class.(:life_stage) %>
+      <% if pet.errors[:life_stage].any? %>
+        <p class="text-xs text-red-500 mt-1"><%= pet.errors[:life_stage].to_sentence %></p>
+      <% end %>
     </div>
 
     <!-- Activity level -->
     <div>
-      <%= f.label :activity_level, "Nivel de actividad", class: "block text-sm font-semibold text-on-background mb-1" %>
+      <%= f.label :activity_level, class: "block text-sm font-semibold text-on-background mb-1" do %>
+        Nivel de actividad <span class="text-red-500">*</span>
+      <% end %>
       <%= f.select :activity_level,
             [["Sedentario", "sedentary"], ["Bajo", "low"], ["Moderado", "moderate"], ["Alto", "high"], ["Muy alto", "very_high"]],
             { prompt: "Selecciona nivel" },
-            class: "w-full border border-outline-variant rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white" %>
+            class: field_class.(:activity_level) %>
+      <% if pet.errors[:activity_level].any? %>
+        <p class="text-xs text-red-500 mt-1"><%= pet.errors[:activity_level].to_sentence %></p>
+      <% end %>
     </div>
 
-    <!-- BCS -->
+    <!-- Condición corporal (BCS) -->
     <div>
-      <%= f.label :body_condition_score, "Condición corporal (1–9)", class: "block text-sm font-semibold text-on-background mb-1" %>
-      <%= f.select :body_condition_score, (1..9).map { |n| [n, n] }, {},
-            class: "w-full border border-outline-variant rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white" %>
-      <p class="text-xs text-on-surface-variant mt-1">1 = muy delgado · 5 = ideal · 9 = obeso</p>
+      <%= f.label :body_condition_score, "Condición corporal (BCS) 1–9", class: "block text-sm font-semibold text-on-background mb-1" %>
+      <%= f.select :body_condition_score, (1..9).map { |n| [n, n] }, { prompt: "Selecciona condición" },
+            class: field_class.(:body_condition_score) %>
+      <p class="text-xs text-on-surface-variant mt-1">BCS = Body Condition Score. 1 = muy delgado · 5 = ideal · 9 = obeso</p>
+      <% if pet.errors[:body_condition_score].any? %>
+        <p class="text-xs text-red-500 mt-1"><%= pet.errors[:body_condition_score].to_sentence %></p>
+      <% end %>
     </div>
 
     <!-- Neutered -->
@@ -69,43 +95,45 @@
     </div>
   </div>
 
-  <!-- Conditions -->
-  <% if (all_conditions = Condition.all).any? %>
-    <div>
-      <p class="text-sm font-semibold text-on-background mb-2">Condiciones médicas</p>
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        <% all_conditions.each do |condition| %>
-          <label class="flex items-center gap-2 text-sm text-on-surface-variant cursor-pointer">
-            <%= check_box_tag "pet[condition_ids][]", condition.id,
-                  pet.condition_ids.include?(condition.id),
-                  class: "rounded border-outline-variant text-primary focus:ring-primary" %>
-            <%= condition.name %>
-          </label>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
-
-  <!-- Allergens -->
-  <% if (all_allergens = Allergen.all).any? %>
-    <div>
-      <p class="text-sm font-semibold text-on-background mb-2">Alergias</p>
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        <% all_allergens.each do |allergen| %>
-          <label class="flex items-center gap-2 text-sm text-on-surface-variant cursor-pointer">
-            <%= check_box_tag "pet[allergen_ids][]", allergen.id,
-                  pet.allergen_ids.include?(allergen.id),
-                  class: "rounded border-outline-variant text-primary focus:ring-primary" %>
-            <%= allergen.name %>
-          </label>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
-
   <div class="flex gap-3 pt-2">
     <%= f.submit pet.new_record? ? "Registrar mascota" : "Guardar cambios",
           class: "bg-primary text-white text-sm font-semibold px-6 py-2.5 rounded-xl hover:bg-primary-container transition-colors cursor-pointer" %>
     <%= link_to "Cancelar", pets_path, class: "text-sm font-medium text-on-surface-variant hover:text-on-background transition-colors px-4 py-2.5" %>
   </div>
 <% end %>
+
+<script>
+  (function() {
+    const sexSelect       = document.getElementById("pet_sex");
+    const lifeStageSelect = document.getElementById("pet_life_stage");
+    const femaleOnly      = ["pregnant", "lactating"];
+
+    // Store all original options once
+    const allOptions = Array.from(lifeStageSelect.options).map(function(o) {
+      return { value: o.value, text: o.text };
+    });
+
+    function filterLifeStage() {
+      const isFemale      = sexSelect.value === "female";
+      const currentValue  = lifeStageSelect.value;
+
+      // Rebuild options: show female-only options only when female is selected
+      lifeStageSelect.innerHTML = "";
+      allOptions.forEach(function(o) {
+        if (!isFemale && femaleOnly.includes(o.value)) return;
+        const opt   = document.createElement("option");
+        opt.value   = o.value;
+        opt.text    = o.text;
+        lifeStageSelect.appendChild(opt);
+      });
+
+      // Restore previous selection if still valid
+      if (isFemale || !femaleOnly.includes(currentValue)) {
+        lifeStageSelect.value = currentValue;
+      }
+    }
+
+    sexSelect.addEventListener("change", filterLifeStage);
+    filterLifeStage();
+  })();
+</script>
