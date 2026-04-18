@@ -127,7 +127,15 @@
   <% end %>
 
   <!-- Ingredient customisation + Regenerate (single form) -->
-  <%= form_with url: regenerate_pet_diet_path(@pet, @diet), method: :patch, local: true, class: "space-y-6" do |f| %>
+  <% if @bcs_critical %>
+    <div class="bg-red-50 border border-red-300 rounded-2xl shadow-sm p-6 mb-6">
+      <h2 class="font-bold text-red-900 mb-2">Atención veterinaria inmediata</h2>
+      <p class="text-sm text-red-800 leading-relaxed">
+        BCS <%= @pet.body_condition_score %>/9: por seguridad, la dieta no puede modificarse ni regenerarse hasta valoración médica.
+      </p>
+    </div>
+  <% else %>
+    <%= form_with url: regenerate_pet_diet_path(@pet, @diet), method: :patch, local: true, class: "space-y-6" do |f| %>
 
     <!-- Safety warning (raw / mixed only) -->
     <% prep_warnings = {
@@ -265,10 +273,11 @@
       </div>
     </div>
 
-  <% end %>
+    <% end %>
 
-  <%= form_with url: pet_diets_path(@pet), method: :post, local: true, id: "new_diet_form" do |f| %>
-    <input type="hidden" name="preparation_style" value="<%= @diet.preparation_style %>">
+    <%= form_with url: pet_diets_path(@pet), method: :post, local: true, id: "new_diet_form" do |f| %>
+      <input type="hidden" name="preparation_style" value="<%= @diet.preparation_style %>">
+    <% end %>
   <% end %>
 </div>
 

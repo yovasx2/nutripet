@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_18_000940) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_18_013000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -56,6 +56,20 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_18_000940) do
     t.text "safety_notes"
     t.integer "therapeutic_for", default: [], array: true
     t.boolean "raw_safe", default: false, null: false
+    t.decimal "calcium_mg", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "phosphorus_mg", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "magnesium_mg", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "potassium_mg", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "zinc_mg", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "iron_mg", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "copper_mg", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "iodine_mcg", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "selenium_mcg", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "omega3_mg", precision: 8, scale: 2, default: "0.0", null: false
+    t.integer "digestibility", default: 5, null: false
+    t.integer "gas_risk", default: 5, null: false
+    t.integer "stool_firming", default: 5, null: false
+    t.integer "omega3", default: 5, null: false
     t.index ["category"], name: "index_ingredients_on_category"
     t.index ["is_custom"], name: "index_ingredients_on_is_custom"
     t.index ["name"], name: "index_ingredients_on_name", unique: true

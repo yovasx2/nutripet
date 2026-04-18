@@ -68,7 +68,7 @@
                  value="<%= pet.age_months.to_i % 12 %>"
                  class="w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 bg-white border-outline-variant focus:ring-primary"
                  placeholder="Meses" />
-          <p class="text-xs text-on-surface-variant mt-1">meses (0–11)</p>
+          <p class="text-xs text-on-surface-variant mt-1">meses</p>
         </div>
       </div>
       <%= f.hidden_field :age_months, id: "pet_age_months" %>
@@ -93,13 +93,45 @@
 
     <!-- Condición corporal (BCS) -->
     <div>
-      <%= f.label :body_condition_score, "Condición corporal 2–8", class: "block text-sm font-semibold text-on-background mb-1" %>
-      <%= f.select :body_condition_score, (2..8).map { |n| [n, n] }, { prompt: "Selecciona condición" },
-            class: field_class.(:body_condition_score) %>
-      <p class="text-xs text-on-surface-variant mt-1">2 = delgado · 5 = ideal · 8 = obeso</p>
+      <div class="flex items-center gap-2 mb-1">
+        <%= f.label :body_condition_score, class: "block text-sm font-semibold text-on-background" do %>
+          Condición corporal 1–9 <span class="text-red-500">*</span>
+        <% end %>
+        <button
+          type="button"
+          id="bcs-help-open"
+          class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-outline-variant text-xs font-bold text-on-surface-variant hover:bg-surface-low"
+          aria-label="Ver guía visual de condición corporal"
+          title="Ver guía visual"
+        >
+          ?
+        </button>
+      </div>
+      <%= f.select :body_condition_score, (1..9).map { |n| [n, n] }, { prompt: "Selecciona condición" },
+            class: field_class.(:body_condition_score), required: true %>
+      <p class="text-xs text-on-surface-variant mt-1">1 = delgadez severa · 5 = ideal · 9 = obesidad severa</p>
       <% if pet.errors[:body_condition_score].any? %>
         <p class="text-xs text-red-500 mt-1"><%= pet.errors[:body_condition_score].to_sentence %></p>
       <% end %>
+
+      <div id="bcs-help-modal" class="hidden fixed inset-0 z-50 bg-black/80 p-4 sm:p-8" role="dialog" aria-modal="true" aria-label="Guía visual de condición corporal">
+        <button
+          type="button"
+          id="bcs-help-close"
+          class="absolute right-4 top-4 sm:right-8 sm:top-8 inline-flex h-14 w-14 items-center justify-center rounded-full border border-white/40 bg-black/45 text-white shadow-lg backdrop-blur-sm transition hover:scale-105 hover:bg-black/60 focus:outline-none focus:ring-2 focus:ring-white/80"
+          aria-label="Cerrar guía visual"
+          title="Cerrar"
+        >
+          <span class="material-symbols-outlined" style="font-size: 34px; line-height: 1">close</span>
+        </button>
+        <div class="h-full w-full flex items-center justify-center">
+          <img
+            src="/icc-perros.png"
+            alt="Guía de índice de condición corporal para perros"
+            class="max-h-full max-w-full object-contain rounded-lg"
+          />
+        </div>
+      </div>
     </div>
 
     <!-- Neutered + reproductive flags -->
@@ -160,5 +192,31 @@
     syncAgeMonths();
     yearsInput.addEventListener("input", syncAgeMonths);
     monthsInput.addEventListener("input", syncAgeMonths);
+  })();
+
+  (function() {
+    var openBtn = document.getElementById("bcs-help-open");
+    var closeBtn = document.getElementById("bcs-help-close");
+    var modal = document.getElementById("bcs-help-modal");
+    if (!openBtn || !closeBtn || !modal) return;
+
+    function openModal() {
+      modal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+      modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+
+    openBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", function(e) {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") closeModal();
+    });
   })();
 </script>

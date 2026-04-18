@@ -2,6 +2,7 @@ class DietsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_pet
   before_action :set_diet, only: [:show, :regenerate]
+  before_action :block_diet_calculation_for_critical_bcs!, only: [:new, :create, :regenerate]
 
   def show
     redirect_to new_pet_diet_path(@pet) unless @diet
@@ -17,11 +18,11 @@ class DietsController < ApplicationController
 
       bcs = @pet.body_condition_score.to_i
       @bcs_warning = if bcs > 5
-        "Condición corporal (BCS) #{bcs}/8 — Sobrepeso. La porción calculada está reducida un #{(bcs - 5) * 5}% respecto al mantenimiento ideal."
+        "Condición corporal (BCS) #{bcs}/9 — Sobrepeso. La porción calculada está reducida un #{(bcs - 5) * 5}% respecto al mantenimiento ideal."
       elsif bcs < 5
-        "Condición corporal (BCS) #{bcs}/8 — Peso bajo. La porción calculada está aumentada un #{(5 - bcs) * 5}% respecto al mantenimiento ideal."
+        "Condición corporal (BCS) #{bcs}/9 — Peso bajo. La porción calculada está aumentada un #{(5 - bcs) * 5}% respecto al mantenimiento ideal."
       end
-      @bcs_critical = false
+      @bcs_critical = critical_bcs?
     end
   end
 
@@ -119,5 +120,16 @@ class DietsController < ApplicationController
       end
       diet
     end
+  end
+
+  def critical_bcs?
+    [1, 9].include?(@pet.body_condition_score.to_i)
+  end
+
+  def block_diet_calculation_for_critical_bcs!
+    return unless critical_bcs?
+
+    flash[:alert] = "BCS #{@pet.body_condition_score}/9: #{@pet.name} necesita atención veterinaria inmediata. La dieta no puede calcularse hasta valoración médica."
+    redirect_to pet_path(@pet)
   end
 end

@@ -24,7 +24,7 @@ class Pet < ApplicationRecord
   validates :weight_kg, presence: true, numericality: { greater_than: 0 }
   validates :age_months, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :activity_level, presence: true, inclusion: { in: ACTIVITY_LEVELS }
-  validates :body_condition_score, inclusion: { in: 2..8 }
+  validates :body_condition_score, presence: true, inclusion: { in: 1..9 }
   validates :sex, presence: true, inclusion: { in: SEXES }
 
   validate :reproductive_flags_only_for_females

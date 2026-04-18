@@ -19,11 +19,20 @@
               <%= @pet.species_label %> · <%= @pet.breed.presence || "raza no especificada" %>
             </p>
           </div>
-          <% if @pet.female? %>
-            <span class="material-symbols-outlined text-5xl text-pink-400" title="Hembra">female</span>
-          <% else %>
-            <span class="material-symbols-outlined text-5xl text-blue-400" title="Macho">male</span>
-          <% end %>
+          <div class="flex items-center gap-2">
+            <% if @pet.female? %>
+              <span class="material-symbols-outlined text-5xl leading-none text-pink-400" title="Hembra">female</span>
+            <% else %>
+              <span class="material-symbols-outlined text-5xl leading-none text-blue-400" title="Macho">male</span>
+            <% end %>
+            <% if [1, 9].include?(@pet.body_condition_score.to_i) %>
+              <span class="relative inline-flex group">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-rose-200 bg-rose-50 text-rose-500">
+                  <span class="material-symbols-outlined text-[21px] leading-none">warning</span>
+                </span>
+              </span>
+            <% end %>
+          </div>
         </div>
         <div class="flex flex-wrap gap-1 mt-2">
           <% if @pet.is_neutered %>
@@ -58,7 +67,9 @@
         </div>
         <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
           <span class="block font-bold text-on-background"><%= @pet.body_condition_score %></span>
-          <span class="text-on-surface-variant text-xs">Condición corporal</span>
+          <span class="inline-flex items-center justify-center gap-1 text-on-surface-variant text-xs">
+            Condición corporal
+          </span>
         </div>
       </div>
     </div>
@@ -91,10 +102,14 @@
       <div class="text-center py-10 bg-surface-low rounded-xl">
         <span class="material-symbols-outlined text-5xl text-outline mb-3 block">restaurant</span>
         <p class="text-on-surface-variant text-sm mb-4">Aún no hay una dieta calculada para <%= @pet.name %>.</p>
-        <%= link_to new_pet_diet_path(@pet),
-            class: "inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-primary-container transition-colors" do %>
-          <span class="material-symbols-outlined text-base leading-none">calculate</span>
-          Calcular dieta
+        <% if [1, 9].include?(@pet.body_condition_score.to_i) %>
+          <p class="text-sm font-semibold text-red-700">Necesita atención veterinaria inmediata antes de calcular su dieta.</p>
+        <% else %>
+          <%= link_to new_pet_diet_path(@pet),
+              class: "inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-primary-container transition-colors" do %>
+            <span class="material-symbols-outlined text-base leading-none">calculate</span>
+            Calcular dieta
+          <% end %>
         <% end %>
       </div>
     <% end %>

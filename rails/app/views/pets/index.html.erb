@@ -42,11 +42,23 @@
                   <% end %>
                 </div>
               </div>
-              <% if pet.female? %>
-                <span class="material-symbols-outlined text-4xl text-pink-400" title="Hembra">female</span>
-              <% else %>
-                <span class="material-symbols-outlined text-4xl text-blue-400" title="Macho">male</span>
-              <% end %>
+              <div class="flex items-center gap-2">
+                <% if pet.female? %>
+                  <span class="material-symbols-outlined text-4xl leading-none text-pink-400" title="Hembra">female</span>
+                <% else %>
+                  <span class="material-symbols-outlined text-4xl leading-none text-blue-400" title="Macho">male</span>
+                <% end %>
+                <% if [1, 9].include?(pet.body_condition_score.to_i) %>
+                  <span class="relative inline-flex group">
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-rose-200 bg-rose-50 text-rose-500">
+                      <span class="material-symbols-outlined text-[19px] leading-none">warning</span>
+                    </span>
+                    <span class="pointer-events-none absolute right-0 top-full z-20 mt-2 w-56 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-[11px] font-medium leading-snug text-rose-700 shadow-sm opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">
+                      Condición corporal crítica, necesita atención veterinaria inmediata.
+                    </span>
+                  </span>
+                <% end %>
+              </div>
             </div>
 
             <div class="grid grid-cols-2 gap-2 text-xs text-on-surface-variant mb-4">
