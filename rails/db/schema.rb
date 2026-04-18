@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_16_040000) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_18_000940) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -77,6 +77,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_16_040000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "sex", default: "female", null: false
+    t.integer "age_months"
+    t.boolean "is_pregnant", default: false, null: false
+    t.boolean "is_lactating", default: false, null: false
     t.index ["life_stage"], name: "index_pets_on_life_stage"
     t.index ["sex"], name: "index_pets_on_sex"
     t.index ["species"], name: "index_pets_on_species"

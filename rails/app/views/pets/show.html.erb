@@ -12,11 +12,36 @@
     <div class="h-2 <%= @pet.dog? ? 'bg-primary' : 'bg-secondary' %>"></div>
     <div class="p-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
       <div>
-        <h1 class="text-2xl font-bold text-on-background"><%= @pet.name %></h1>
-        <p class="text-on-surface-variant text-sm"><%= @pet.species_label %> · <%= @pet.sex_label %> · <%= @pet.breed.presence || "Raza no especificada" %></p>
-        <% if @pet.is_neutered %>
-          <span class="mt-1 inline-block text-xs bg-surface-low text-on-surface-variant px-2 py-0.5 rounded-full">Esterilizado/a</span>
-        <% end %>
+        <div class="flex items-start justify-between mb-0.5">
+          <div>
+            <h1 class="text-2xl font-bold text-on-background capitalize"><%= @pet.name %></h1>
+            <p class="text-on-surface-variant text-sm capitalize">
+              <%= @pet.species_label %> · <%= @pet.breed.presence || "raza no especificada" %>
+            </p>
+          </div>
+          <% if @pet.female? %>
+            <span class="material-symbols-outlined text-5xl text-pink-400" title="Hembra">female</span>
+          <% else %>
+            <span class="material-symbols-outlined text-5xl text-blue-400" title="Macho">male</span>
+          <% end %>
+        </div>
+        <div class="flex flex-wrap gap-1 mt-2">
+          <% if @pet.is_neutered %>
+            <span class="inline-flex items-center gap-1 text-xs bg-surface-low text-on-surface-variant px-2 py-0.5 rounded-full">
+              <span class="material-symbols-outlined text-xs leading-none">content_cut</span> Esterilizado/a
+            </span>
+          <% end %>
+          <% if @pet.is_pregnant? %>
+            <span class="inline-flex items-center gap-1 text-xs bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full">
+              <span class="material-symbols-outlined text-xs leading-none">pregnant_woman</span> Gestante
+            </span>
+          <% end %>
+          <% if @pet.is_lactating? %>
+            <span class="inline-flex items-center gap-1 text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
+              <span class="material-symbols-outlined text-xs leading-none">child_care</span> Lactante
+            </span>
+          <% end %>
+        </div>
       </div>
       <div class="sm:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
         <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
@@ -32,8 +57,8 @@
           <span class="text-on-surface-variant text-xs">Actividad</span>
         </div>
         <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
-          <span class="block font-bold text-on-background"><%= @pet.body_condition_score %>/9</span>
-          <span class="text-on-surface-variant text-xs">Condición corporal (BCS)</span>
+          <span class="block font-bold text-on-background"><%= @pet.body_condition_score %></span>
+          <span class="text-on-surface-variant text-xs">Condición corporal</span>
         </div>
       </div>
     </div>

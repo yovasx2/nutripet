@@ -44,22 +44,36 @@
       <%= f.label :weight_kg, class: "block text-sm font-semibold text-on-background mb-1" do %>
         Peso (kg) <span class="text-red-500">*</span>
       <% end %>
-      <%= f.number_field :weight_kg, step: 0.1, min: 0.1, class: field_class.(:weight_kg), placeholder: "Ej. 12.5" %>
+      <%= f.number_field :weight_kg, step: 0.01, min: 0.1, class: field_class.(:weight_kg), placeholder: "Ej. 12.5" %>
       <% if pet.errors[:weight_kg].any? %>
         <p class="text-xs text-red-500 mt-1"><%= pet.errors[:weight_kg].to_sentence %></p>
       <% end %>
     </div>
 
-    <!-- Life stage -->
+    <!-- Age: years + months UI → hidden age_months -->
     <div>
-      <%= f.label :life_stage, class: "block text-sm font-semibold text-on-background mb-1" do %>
-        Etapa de vida <span class="text-red-500">*</span>
+      <%= f.label :age_months, class: "block text-sm font-semibold text-on-background mb-1" do %>
+        Edad <span class="text-red-500">*</span>
       <% end %>
-      <%= f.select :life_stage, Pet::LIFE_STAGE_LABELS.map { |val, label| [label, val] },
-            { prompt: "Selecciona etapa" },
-            class: field_class.(:life_stage) %>
-      <% if pet.errors[:life_stage].any? %>
-        <p class="text-xs text-red-500 mt-1"><%= pet.errors[:life_stage].to_sentence %></p>
+      <div class="flex gap-2">
+        <div class="flex-1">
+          <input type="number" id="age_years_input" min="0" step="1"
+                 value="<%= pet.age_months.to_i / 12 %>"
+                 class="w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 bg-white border-outline-variant focus:ring-primary"
+                 placeholder="Años" />
+          <p class="text-xs text-on-surface-variant mt-1">años</p>
+        </div>
+        <div class="flex-1">
+          <input type="number" id="age_months_input" min="0" max="11" step="1"
+                 value="<%= pet.age_months.to_i % 12 %>"
+                 class="w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 bg-white border-outline-variant focus:ring-primary"
+                 placeholder="Meses" />
+          <p class="text-xs text-on-surface-variant mt-1">meses (0–11)</p>
+        </div>
+      </div>
+      <%= f.hidden_field :age_months, id: "pet_age_months" %>
+      <% if pet.errors[:age_months].any? %>
+        <p class="text-xs text-red-500 mt-1"><%= pet.errors[:age_months].to_sentence %></p>
       <% end %>
     </div>
 
@@ -79,21 +93,48 @@
 
     <!-- Condición corporal (BCS) -->
     <div>
-      <%= f.label :body_condition_score, "Condición corporal (BCS) 1–9", class: "block text-sm font-semibold text-on-background mb-1" %>
-      <%= f.select :body_condition_score, (1..9).map { |n| [n, n] }, { prompt: "Selecciona condición" },
+      <%= f.label :body_condition_score, "Condición corporal 2–8", class: "block text-sm font-semibold text-on-background mb-1" %>
+      <%= f.select :body_condition_score, (2..8).map { |n| [n, n] }, { prompt: "Selecciona condición" },
             class: field_class.(:body_condition_score) %>
-      <p class="text-xs text-on-surface-variant mt-1">BCS = Body Condition Score. 1 = muy delgado · 5 = ideal · 9 = obeso</p>
+      <p class="text-xs text-on-surface-variant mt-1">2 = delgado · 5 = ideal · 8 = obeso</p>
       <% if pet.errors[:body_condition_score].any? %>
         <p class="text-xs text-red-500 mt-1"><%= pet.errors[:body_condition_score].to_sentence %></p>
       <% end %>
     </div>
 
-    <!-- Neutered -->
-    <div class="flex items-center gap-3 pt-6">
-      <%= f.check_box :is_neutered, class: "w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" %>
-      <%= f.label :is_neutered, "Esterilizado/a", class: "text-sm font-medium text-on-background" %>
+    <!-- Neutered + reproductive flags -->
+    <div class="flex flex-col gap-2 pt-6">
+      <div class="flex items-center gap-3">
+        <%= f.check_box :is_neutered, class: "w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" %>
+        <%= f.label :is_neutered, "Esterilizado/a", class: "text-sm font-medium text-on-background" %>
+      </div>
+      <div id="reproductive_flags" class="flex flex-col gap-2 <%= pet.male? ? 'hidden' : '' %>">
+        <div class="flex items-center gap-3">
+          <%= f.check_box :is_pregnant, class: "w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" %>
+          <%= f.label :is_pregnant, "Gestante", class: "text-sm font-medium text-on-background" %>
+        </div>
+        <div class="flex items-center gap-3">
+          <%= f.check_box :is_lactating, class: "w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" %>
+          <%= f.label :is_lactating, "Lactante", class: "text-sm font-medium text-on-background" %>
+        </div>
+      </div>
     </div>
   </div>
+
+  <script>
+    (function() {
+      var sexSelect = document.getElementById("pet_sex");
+      var repFlags  = document.getElementById("reproductive_flags");
+      if (!sexSelect || !repFlags) return;
+      function toggleRepFlags() {
+        repFlags.classList.toggle("hidden", sexSelect.value === "male");
+        if (sexSelect.value === "male") {
+          repFlags.querySelectorAll("input[type=checkbox]").forEach(function(cb) { cb.checked = false; });
+        }
+      }
+      sexSelect.addEventListener("change", toggleRepFlags);
+    })();
+  </script>
 
   <div class="flex gap-3 pt-2">
     <%= f.submit pet.new_record? ? "Registrar mascota" : "Guardar cambios",
@@ -104,36 +145,20 @@
 
 <script>
   (function() {
-    const sexSelect       = document.getElementById("pet_sex");
-    const lifeStageSelect = document.getElementById("pet_life_stage");
-    const femaleOnly      = ["pregnant", "lactating"];
+    var yearsInput  = document.getElementById("age_years_input");
+    var monthsInput = document.getElementById("age_months_input");
+    var hiddenField = document.getElementById("pet_age_months");
+    if (!yearsInput || !monthsInput || !hiddenField) return;
 
-    // Store all original options once
-    const allOptions = Array.from(lifeStageSelect.options).map(function(o) {
-      return { value: o.value, text: o.text };
-    });
-
-    function filterLifeStage() {
-      const isFemale      = sexSelect.value === "female";
-      const currentValue  = lifeStageSelect.value;
-
-      // Rebuild options: show female-only options only when female is selected
-      lifeStageSelect.innerHTML = "";
-      allOptions.forEach(function(o) {
-        if (!isFemale && femaleOnly.includes(o.value)) return;
-        const opt   = document.createElement("option");
-        opt.value   = o.value;
-        opt.text    = o.text;
-        lifeStageSelect.appendChild(opt);
-      });
-
-      // Restore previous selection if still valid
-      if (isFemale || !femaleOnly.includes(currentValue)) {
-        lifeStageSelect.value = currentValue;
-      }
+    function syncAgeMonths() {
+      var y = parseInt(yearsInput.value, 10)  || 0;
+      var m = parseInt(monthsInput.value, 10) || 0;
+      hiddenField.value = y * 12 + m;
     }
 
-    sexSelect.addEventListener("change", filterLifeStage);
-    filterLifeStage();
+    // Initialize hidden field on page load
+    syncAgeMonths();
+    yearsInput.addEventListener("input", syncAgeMonths);
+    monthsInput.addEventListener("input", syncAgeMonths);
   })();
 </script>

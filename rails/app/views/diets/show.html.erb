@@ -42,8 +42,8 @@
         </div>
       </div>
       <% if @bcs_warning.present? %>
-        <div class="mt-4 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 leading-relaxed">
-          ⚠️ <%= @bcs_warning %>
+        <div class="mt-4 text-xs <%= @bcs_critical ? 'text-red-700 bg-red-50 border-red-300' : 'text-amber-700 bg-amber-50 border-amber-200' %> border rounded-xl px-3 py-2 leading-relaxed">
+          <%= @bcs_warning %>
         </div>
       <% end %>
     </div>

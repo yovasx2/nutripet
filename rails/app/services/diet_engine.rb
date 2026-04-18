@@ -18,8 +18,7 @@ module DietEngine
   # Source: AAFCO Dog Food Nutrient Profiles 2023
   AAFCO = {
     "adult"     => { protein_min: 18.0, fat_min: 5.5,  label: "Adulto (mantenimiento)" },
-    "senior"    => { protein_min: 18.0, fat_min: 5.5,  label: "Senior (mantenimiento)",
-                     note: "AAFCO usa mínimo de adulto, pero se recomienda ≥25% BMS para prevenir pérdida muscular en perros mayores de 7 años." },
+    "senior"    => { protein_min: 18.0, fat_min: 5.5,  label: "Senior (mantenimiento)" },
     "growth"    => { protein_min: 22.5, fat_min: 8.5,  label: "Crecimiento (cachorro)" },
     "gestation" => { protein_min: 22.5, fat_min: 8.5,  label: "Gestación",
                      note: "Mismo mínimo que crecimiento (AAFCO 'Growth & Reproduction')." },
@@ -82,6 +81,37 @@ module DietEngine
         daily_portion_g: total_g.round(1),
         engine_output:   diet.engine_output.merge("macros" => macros, "aafco" => aafco)
       )
+    end
+
+    # Rescale all diet_item gram amounts to match the pet's new DER, then
+    # update macros/AAFCO. Called after the pet's attributes change (weight, BCS, etc.).
+    def rescale_to_pet!(pet, diet)
+      return unless diet
+
+      new_der = adjusted_der(DietEngine::DerCalculator.new(pet).der, pet)
+      diet_items = diet.diet_items.includes(:ingredient).to_a
+      return if diet_items.empty?
+
+      current_kcal = diet_items.sum { |di| di.ingredient.energy_kcal.to_f * di.daily_amount_g / 100.0 }
+      return if current_kcal <= 0
+
+      scale = new_der / current_kcal
+
+      diet.transaction do
+        diet_items.each do |di|
+          di.update!(daily_amount_g: (di.daily_amount_g * scale).round(1))
+        end
+
+        items  = diet_items.map { |di| { ingredient: di.ingredient, daily_amount_g: di.daily_amount_g, pct_of_diet: di.pct_of_diet } }
+        macros = compute_macros(items)
+        aafco  = compute_aafco(pet, macros)
+
+        diet.update!(
+          der_kcal:        new_der.round(1),
+          daily_portion_g: items.sum { |i| i[:daily_amount_g] }.round(1),
+          engine_output:   diet.engine_output.merge("macros" => macros, "aafco" => aafco)
+        )
+      end
     end
 
     # Generate diet from a specific list of ingredient IDs chosen by the user.
@@ -161,6 +191,13 @@ module DietEngine
         end
       end
 
+      # Normalize all grams so total delivered kcal == DER exactly.
+      total_kcal = items.sum { |i| i[:ingredient].energy_kcal.to_f * i[:daily_amount_g] / 100.0 }
+      if total_kcal > 0
+        scale = der / total_kcal
+        items.each { |i| i[:daily_amount_g] = (i[:daily_amount_g] * scale).round(1) }
+      end
+
       macros = compute_macros(items)
       aafco  = compute_aafco(pet, macros)
 
@@ -204,16 +241,14 @@ module DietEngine
       bcs = pet.body_condition_score.to_i
       return der if bcs == 5
 
-      # Use ideal body weight (IBW) for DER to avoid over/underfeeding.
-      # Each BCS point away from 5 represents ~10% deviation from ideal weight.
-      # e.g. BCS 8 on a 4.2 kg dog → IBW = 4.2 / 1.30 = 3.23 kg
-      bcs_delta = bcs - 5
-      ibw       = pet.weight_kg.to_f / (1.0 + bcs_delta * 0.10)
-
-      # Recompute RER from IBW but keep the same activity/neuter/life_stage multiplier
-      calc    = DietEngine::DerCalculator.new(pet)
-      rer_ibw = 70.0 * (ibw**0.75)
-      (rer_ibw * calc.multiplier).round(2)
+      # Adjust DER by 5% per BCS point away from ideal (5), using current weight as base.
+      # This avoids the aggressive swings of IBW-based calculation:
+      #   - Overweight (BCS 6-9): modest caloric restriction (-5% to -20%)
+      #   - Underweight (BCS 1-4): modest caloric surplus (+5% to +20%)
+      # Source: WSAVA / WSAVA Global Nutrition Committee practical guidelines.
+      bcs_delta  = bcs - 5
+      adjustment = bcs_delta * -0.05   # negative for overweight, positive for underweight
+      (der * (1.0 + adjustment)).round(2)
     end
 
     def diet_pool(pet, style, excluded_ingredient_ids)
@@ -274,6 +309,14 @@ module DietEngine
         end
       end
 
+      # Step 3: normalize all grams so total delivered kcal == DER exactly.
+      # Vegetables are calorie-additive on top of the macro budget without this step.
+      total_kcal = items.sum { |i| i[:ingredient].energy_kcal.to_f * i[:daily_amount_g] / 100.0 }
+      if total_kcal > 0
+        scale = der / total_kcal
+        items.each { |i| i[:daily_amount_g] = (i[:daily_amount_g] * scale).round(1) }
+      end
+
       items
     end
 
@@ -289,12 +332,7 @@ module DietEngine
       protein_pct_dm = (macros["protein_g"].to_f / dry_matter * 100).round(1)
       fat_pct_dm     = (macros["fat_g"].to_f     / dry_matter * 100).round(1)
 
-      # BCS flags
-      bcs          = pet.body_condition_score.to_i
-      obese        = bcs >= 7
-      underweight  = bcs <= 3
-
-      result = {
+      {
         "standard"         => "AAFCO 2023",
         "life_stage_group" => standard[:label],
         "protein_min_pct"  => standard[:protein_min],
@@ -305,16 +343,6 @@ module DietEngine
         "fat_ok"           => fat_pct_dm     >= standard[:fat_min],
         "note"             => standard[:note]
       }
-
-      if obese
-        result["bcs_warning"]  = "Condición corporal (BCS) #{bcs}/9 — Sobrepeso/Obeso. La porción calculada está basada en el peso actual; considera ajustar con tu veterinario usando el peso ideal para evitar sobrealimentación."
-        result["context_note"] = "Condición corporal (BCS) #{bcs}/9 · En pérdida de peso, los mínimos AAFCO aplican igualmente, pero la porción esta ajustada a la baja para evitar sobrealimentación."
-      elsif underweight
-        result["bcs_warning"]  = "Condición corporal (BCS) #{bcs}/9 — Peso bajo. Considera aumentar la porción gradualmente hasta alcanzar Condición corporal (BCS) 4-5."
-        result["context_note"] = "Condición corporal (BCS) #{bcs}/9 · En recuperación de peso, los mínimos AAFCO aplican igualmente, pero la porción esta ajustada al alza para promover ganancia de peso."
-      end
-
-      result
     end
 
     def compute_macros(items)

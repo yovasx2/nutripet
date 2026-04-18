@@ -16,11 +16,12 @@ class DietsController < ApplicationController
       @aafco  = DietEngine.live_aafco(@pet, @macros)
 
       bcs = @pet.body_condition_score.to_i
-      @bcs_warning = if bcs >= 7
-        "Condición corporal (BCS) #{bcs}/9 — Sobrepeso/Obeso. La porción calculada está basada en el peso actual."
-      elsif bcs <= 3
-        "Condición corporal (BCS) #{bcs}/9 — Peso bajo. La porción calculada está basada en el peso actual."
+      @bcs_warning = if bcs > 5
+        "Condición corporal (BCS) #{bcs}/8 — Sobrepeso. La porción calculada está reducida un #{(bcs - 5) * 5}% respecto al mantenimiento ideal."
+      elsif bcs < 5
+        "Condición corporal (BCS) #{bcs}/8 — Peso bajo. La porción calculada está aumentada un #{(5 - bcs) * 5}% respecto al mantenimiento ideal."
       end
+      @bcs_critical = false
     end
   end
 

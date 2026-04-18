@@ -22,12 +22,31 @@
           <div class="p-5">
             <div class="flex items-start justify-between mb-3">
               <div>
-                <h2 class="text-lg font-bold text-on-background"><%= pet.name %></h2>
-                <p class="text-sm text-on-surface-variant capitalize"><%= pet.species %> · <%= pet.breed.presence || "Raza no especificada" %></p>
+                <h2 class="text-lg font-bold text-on-background capitalize mb-0.5"><%= pet.name %></h2>
+                <p class="text-sm text-on-surface-variant capitalize"><%= pet.species_label %> · <%= pet.breed.presence || "raza no especificada" %></p>
+                <div class="flex flex-wrap gap-1 mt-1.5">
+                  <% if pet.is_neutered %>
+                    <span class="inline-flex items-center gap-0.5 text-xs bg-surface-low text-on-surface-variant px-2 py-0.5 rounded-full">
+                      <span class="material-symbols-outlined" style="font-size:11px">content_cut</span> Esterilizado/a
+                    </span>
+                  <% end %>
+                  <% if pet.is_pregnant? %>
+                    <span class="inline-flex items-center gap-0.5 text-xs bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full">
+                      <span class="material-symbols-outlined" style="font-size:11px">pregnant_woman</span> Gestante
+                    </span>
+                  <% end %>
+                  <% if pet.is_lactating? %>
+                    <span class="inline-flex items-center gap-0.5 text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
+                      <span class="material-symbols-outlined" style="font-size:11px">child_care</span> Lactante
+                    </span>
+                  <% end %>
+                </div>
               </div>
-              <span class="material-symbols-outlined text-3xl <%= pet.dog? ? 'text-primary' : 'text-secondary' %>">
-                <%= pet.dog? ? "pets" : "catching_pokemon" %>
-              </span>
+              <% if pet.female? %>
+                <span class="material-symbols-outlined text-4xl text-pink-400" title="Hembra">female</span>
+              <% else %>
+                <span class="material-symbols-outlined text-4xl text-blue-400" title="Macho">male</span>
+              <% end %>
             </div>
 
             <div class="grid grid-cols-2 gap-2 text-xs text-on-surface-variant mb-4">

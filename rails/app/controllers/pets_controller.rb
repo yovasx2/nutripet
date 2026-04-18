@@ -27,6 +27,8 @@ class PetsController < ApplicationController
 
   def update
     if @pet.update(pet_params)
+      latest_diet = @pet.diets.order(created_at: :desc).first
+      DietEngine.rescale_to_pet!(@pet, latest_diet) if latest_diet
       redirect_to @pet, notice: "Datos actualizados."
     else
       render :edit, status: :unprocessable_entity
@@ -48,8 +50,9 @@ class PetsController < ApplicationController
 
   def pet_params
     params.require(:pet).permit(
-      :name, :species, :breed, :sex, :weight_kg,
-      :life_stage, :activity_level, :body_condition_score, :is_neutered
+      :name, :species, :breed, :sex, :weight_kg, :age_months,
+      :activity_level, :body_condition_score, :is_neutered,
+      :is_pregnant, :is_lactating
     )
   end
 end
