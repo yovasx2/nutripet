@@ -25,6 +25,63 @@ puts "  Vegetables: #{Ingredient.vegetables.non_toxic.count}"
 puts "  Carbs: #{Ingredient.carbs.non_toxic.count}"
 puts "  Fats: #{Ingredient.fats.non_toxic.count}"
 
+puts "\nSeeding premixes..."
+premixes = [
+  {
+    name: "Balance Canino Total",
+    species_safe: "dog",
+    description: "Premix completo para perros con enfoque en cierre de brechas minerales.",
+    notes: "Recomendado para planes caseros cocidos o mixtos cuando el set no alcanza micronutrientes mínimos.",
+    calcium_mg_per_g: 420.0,
+    phosphorus_mg_per_g: 210.0,
+    magnesium_mg_per_g: 55.0,
+    potassium_mg_per_g: 300.0,
+    zinc_mg_per_g: 6.5,
+    iron_mg_per_g: 5.2,
+    copper_mg_per_g: 0.7,
+    iodine_mcg_per_g: 95.0,
+    selenium_mcg_per_g: 32.0
+  },
+  {
+    name: "Balance Felino Total",
+    species_safe: "cat",
+    description: "Premix completo para gatos con cobertura mineral conservadora.",
+    notes: "Diseñado para complementar recetas felinas caseras.",
+    calcium_mg_per_g: 430.0,
+    phosphorus_mg_per_g: 215.0,
+    magnesium_mg_per_g: 60.0,
+    potassium_mg_per_g: 280.0,
+    zinc_mg_per_g: 6.8,
+    iron_mg_per_g: 4.8,
+    copper_mg_per_g: 0.72,
+    iodine_mcg_per_g: 100.0,
+    selenium_mcg_per_g: 34.0
+  },
+  {
+    name: "Balance Universal Micro",
+    species_safe: "both",
+    description: "Premix universal para cierre fino de micronutrientes en perros y gatos.",
+    notes: "Cobertura amplia; prioriza yodo, zinc, hierro y calcio con perfil balanceado.",
+    calcium_mg_per_g: 450.0,
+    phosphorus_mg_per_g: 225.0,
+    magnesium_mg_per_g: 58.0,
+    potassium_mg_per_g: 320.0,
+    zinc_mg_per_g: 7.0,
+    iron_mg_per_g: 5.5,
+    copper_mg_per_g: 0.75,
+    iodine_mcg_per_g: 110.0,
+    selenium_mcg_per_g: 36.0
+  }
+]
+
+premixes.each do |attrs|
+  premix = Premix.find_or_initialize_by(name: attrs[:name])
+  premix.assign_attributes(attrs.merge(active: true))
+  premix.save!
+end
+
+puts "Seeded #{Premix.count} premixes"
+
 puts "\nSeeding demo user..."
 user = User.find_or_create_by!(email: "user@nutripet") do |u|
   u.password = "nutri1234"

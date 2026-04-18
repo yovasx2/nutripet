@@ -1,46 +1,68 @@
-<% content_for :title, "Dieta de #{@pet.name}" %>
+<% content_for :title, "Plan de #{@pet.name}" %>
+<% content_for :title, t("diets.show.page_title", pet_name: @pet.name) %>
 
-<div class="max-w-3xl mx-auto px-4 py-8">
-  <%= link_to "← #{@pet.name}", @pet, class: "text-sm text-primary font-medium hover:underline block mb-6" %>
+<div class="max-w-4xl mx-auto px-4 py-8">
+  <%= link_to t("diets.show.back_link", pet_name: @pet.name), @pet, class: "text-sm text-primary font-medium hover:underline block mb-6" %>
 
-  <!-- Header card -->
+  <% plan = @fixed_set_plan || {} %>
+  <% recipes = @plan_recipes || [] %>
+  <% report = @validation_report || {} %>
+  <% premix = plan["premix"] || {} %>
+  <% plan_status = if premix.present? && premix["mandatory"]
+    t("diets.show.status.needs_premix")
+  elsif report["valid"] == false
+    t("diets.show.status.needs_review")
+  else
+    t("diets.show.status.validated")
+  end %>
+
   <div class="bg-white rounded-2xl border border-outline-variant shadow-sm overflow-hidden mb-6">
     <div class="h-2 bg-primary"></div>
     <div class="p-6">
       <div class="flex items-start justify-between gap-4 mb-4">
         <div>
-          <h1 class="text-xl font-bold text-on-background">Dieta de <%= @pet.name %></h1>
+          <h1 class="text-xl font-bold text-on-background">Plan nutricional de <%= @pet.name %></h1>
           <p class="text-on-surface-variant text-sm mt-0.5">
             <%= @pet.weight_kg %> kg · <%= @pet.life_stage_label %> · <%= @pet.activity_label %>
             <% if @pet.is_neutered %> · Esterilizado/a<% end %>
           </p>
         </div>
         <div class="flex flex-col items-end gap-1">
+          <% mode_value = (plan["diet_mode"].presence || @diet.preparation_style).to_s %>
+          <% mode_label = Diet::PREP_STYLES.fetch(mode_value, mode_value.humanize) %>
           <span class="inline-block text-xs font-semibold bg-primary/10 text-primary px-3 py-1 rounded-full whitespace-nowrap">
-            <%= @diet.prep_style_label %>
+            <%= mode_label %>
           </span>
         </div>
       </div>
 
-      <!-- Key metrics -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
         <div class="bg-surface-low rounded-xl px-3 py-3 text-center">
-          <span class="block font-bold text-on-background text-2xl"><%= (@diet.daily_portion_g / 2.0).round(1) %> <span class="text-base font-semibold">g</span></span>
-          <span class="text-on-surface-variant text-xs font-medium">por porción</span>
+          <span class="block font-bold text-on-background text-2xl"><%= (plan["recipe_count"] || recipes.size).to_i %></span>
+          <span class="text-on-surface-variant text-xs font-medium">días del plan</span>
         </div>
         <div class="bg-surface-low rounded-xl px-3 py-3 text-center">
-          <span class="block font-bold text-on-background text-2xl">2 <span class="text-base font-semibold">x</span></span>
-          <span class="text-on-surface-variant text-xs font-medium">porciones al día</span>
+          <% total_kcal = plan["total_kcal_set"].to_f.positive? ? plan["total_kcal_set"].to_f : recipes.sum { |recipe| recipe["kcal_target"].to_f } %>
+          <span class="block font-bold text-on-background text-2xl"><%= total_kcal.round(0) %> <span class="text-base font-semibold">kcal</span></span>
+          <span class="text-on-surface-variant text-xs font-medium">total del set</span>
         </div>
         <div class="bg-surface-low rounded-xl px-3 py-3 text-center">
-          <span class="block font-bold text-on-background text-2xl"><%= @diet.daily_portion_g.round(1) %> <span class="text-base font-semibold">g</span></span>
-          <span class="text-on-surface-variant text-xs font-medium">totales al día</span>
+          <span class="block font-bold text-on-background text-2xl"><%= (plan["kcal_per_recipe"] || @diet.der_kcal).to_f.round(0) %> <span class="text-base font-semibold">kcal</span></span>
+          <span class="text-on-surface-variant text-xs font-medium">por día</span>
         </div>
         <div class="bg-surface-low rounded-xl px-3 py-3 text-center">
-          <span class="block font-bold text-on-background text-2xl"><%= @diet.der_kcal.to_i %> <span class="text-base font-semibold">kcal</span></span>
-          <span class="text-on-surface-variant text-xs font-medium">al día</span>
+        <% status_color = plan_status == t("diets.show.status.validated") ? 'text-green-700' : 'text-amber-700' %>
+          <span class="block font-bold text-2xl <%= status_color %>">
+            <%= plan_status %>
+          </span>
+          <span class="text-on-surface-variant text-xs font-medium">estado nutricional</span>
         </div>
       </div>
+
+      <p class="mt-4 text-xs text-on-surface-variant">
+      <%= t("diets.show.plan_note") %>
+      </p>
+
       <% if @bcs_warning.present? %>
         <div class="mt-4 text-xs <%= @bcs_critical ? 'text-red-700 bg-red-50 border-red-300' : 'text-amber-700 bg-amber-50 border-amber-200' %> border rounded-xl px-3 py-2 leading-relaxed">
           <%= @bcs_warning %>
@@ -49,302 +71,117 @@
     </div>
   </div>
 
-  <!-- Nutrition analysis -->
-  <% macros = @macros %>
-  <% aafco  = @aafco  %>
-  <% if macros.any? %>
-    <div class="bg-white rounded-2xl border border-outline-variant shadow-sm p-6 mb-6">
-
-      <div class="flex items-start justify-between gap-2 mb-4">
-        <div>
-          <h2 class="font-bold text-on-background">Aporte de la dieta</h2>
-          <% if aafco.any? %>
-            <p class="text-xs text-on-surface-variant mt-0.5">
-              <span class="font-semibold">Estándar:</span> <%= aafco["standard"] %> · <%= aafco["life_stage_group"] %>
-            </p>
-            <% if aafco["context_note"].present? %>
-              <p class="text-xs text-amber-700 mt-0.5"><%= aafco["context_note"] %></p>
-            <% end %>
-          <% end %>
-        </div>
-        <span class="text-xs text-on-surface-variant whitespace-nowrap">Base materia seca (BMS)</span>
-      </div>
-
-      <!-- Macros en gramos -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm mb-4">
-        <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
-          <span class="block font-bold text-on-background"><%= macros["protein_g"].to_f.round(1) %> g</span>
-          <span class="text-on-surface-variant text-xs">Proteína</span>
-        </div>
-        <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
-          <span class="block font-bold text-on-background"><%= macros["carbs_g"].to_f.round(1) %> g</span>
-          <span class="text-on-surface-variant text-xs">Carbohidratos</span>
-        </div>
-        <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
-          <span class="block font-bold text-on-background"><%= macros["fat_g"].to_f.round(1) %> g</span>
-          <span class="text-on-surface-variant text-xs">Grasa</span>
-        </div>
-        <div class="bg-surface-low rounded-xl px-3 py-2 text-center">
-          <span class="block font-bold text-on-background"><%= macros["moisture_g"].to_f.round(1) %> g</span>
-          <span class="text-on-surface-variant text-xs">Humedad</span>
-        </div>
-      </div>
-
-      <!-- % BMS vs mínimos AAFCO -->
-      <% if aafco.any? %>
-        <div class="grid grid-cols-2 gap-3">
-          <div class="flex items-center justify-between bg-surface-low rounded-xl px-3 py-2">
-            <div>
-              <span class="text-xs text-on-surface-variant block">Proteína % BMS</span>
-              <span class="font-bold text-sm text-on-background"><%= aafco["protein_pct_dm"] %>%</span>
-              <span class="text-xs text-on-surface-variant"> / mín <%= aafco["protein_min_pct"] %>%</span>
-            </div>
-            <% if aafco["protein_ok"] %>
-              <span class="text-green-600 text-xl">✓</span>
-            <% else %>
-              <span class="text-red-500 text-xl font-bold">✗</span>
-            <% end %>
-          </div>
-          <div class="flex items-center justify-between bg-surface-low rounded-xl px-3 py-2">
-            <div>
-              <span class="text-xs text-on-surface-variant block">Grasa % BMS</span>
-              <span class="font-bold text-sm text-on-background"><%= aafco["fat_pct_dm"] %>%</span>
-              <span class="text-xs text-on-surface-variant"> / mín <%= aafco["fat_min_pct"] %>%</span>
-            </div>
-            <% if aafco["fat_ok"] %>
-              <span class="text-green-600 text-xl">✓</span>
-            <% else %>
-              <span class="text-red-500 text-xl font-bold">✗</span>
-            <% end %>
-          </div>
-        </div>
-        <% if aafco["note"].present? %>
-          <p class="text-xs text-on-surface-variant leading-relaxed mt-3">ℹ️ <%= aafco["note"] %></p>
+  <% failures = Array(report["failures"]) %>
+  <% if failures.any? %>
+    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
+      <h2 class="font-bold text-amber-900 mb-2"><%= t("diets.show.validator.heading") %></h2>
+      <ul class="space-y-1 text-sm text-amber-800">
+        <% failures.each do |failure| %>
+          <li>• <%= failure %></li>
         <% end %>
-      <% end %>
-
+      </ul>
     </div>
   <% end %>
 
-  <!-- Ingredient customisation + Regenerate (single form) -->
+  <% if premix.present? && premix["mandatory"] %>
+    <% premix_labels = {
+      "calcium_mg" => t("diets.show.nutrients.calcium"),
+      "phosphorus_mg" => t("diets.show.nutrients.phosphorus"),
+      "magnesium_mg" => t("diets.show.nutrients.magnesium"),
+      "potassium_mg" => t("diets.show.nutrients.potassium"),
+      "zinc_mg" => t("diets.show.nutrients.zinc"),
+      "iron_mg" => t("diets.show.nutrients.iron"),
+      "copper_mg" => t("diets.show.nutrients.copper"),
+      "iodine_mcg" => t("diets.show.nutrients.iodine"),
+      "selenium_mcg" => t("diets.show.nutrients.selenium")
+    } %>
+    <div class="bg-blue-50 border border-blue-200 rounded-2xl p-5 mb-6">
+      <h2 class="font-bold text-blue-900 mb-1"><%= t("diets.show.premix.heading", name: premix["name"].presence || t("diets.show.premix.default_name")) %></h2>
+      <p class="text-sm text-blue-800 mb-3"><%= premix["note"].presence || t("diets.show.premix.default_note") %></p>
+      <% if premix["description"].present? %>
+        <p class="text-sm text-blue-800 mb-2"><%= premix["description"] %></p>
+      <% end %>
+      <% if premix["grams_per_day"].to_f.positive? %>
+        <p class="text-sm text-blue-900 font-semibold mb-3"><%= premix["grams_per_day"].to_f.round(2) %> g/día recomendados</p>
+      <% end %>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs text-blue-900">
+        <% (premix["payload"] || {}).each do |k, v| %>
+          <% key = k.to_s %>
+          <% label = premix_labels[key] || key.humanize %>
+          <% unit = key.end_with?("_mcg") ? "mcg" : "mg" %>
+          <% amount = v.to_f.round(2) %>
+          <% next if amount <= 0 %>
+          <div class="bg-white/70 rounded-lg px-2 py-1">
+            <span class="font-semibold"><%= label %>:</span> <%= amount %> <%= unit %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="bg-white rounded-2xl border border-outline-variant shadow-sm p-6 mb-6">
+    <h2 class="font-bold text-on-background mb-2"><%= t("diets.show.days.heading") %></h2>
+    <p class="text-sm text-on-surface-variant mb-4"><%= t("diets.show.days.description") %></p>
+    <% category_labels = {
+      "protein" => t("diets.show.categories.protein"),
+      "vegetable" => t("diets.show.categories.vegetable"),
+      "carb" => t("diets.show.categories.carb"),
+      "fat" => t("diets.show.categories.fat")
+    } %>
+
+    <div class="space-y-4">
+      <% recipes.each_with_index do |recipe, idx| %>
+        <div class="border border-outline-variant rounded-xl p-4">
+          <div class="flex items-center justify-between gap-3 mb-3">
+            <h3 class="font-semibold text-on-background"><%= recipe["name"].presence || t("diets.show.days.day_label", number: idx + 1) %></h3>
+            <span class="text-xs font-semibold bg-primary/10 text-primary px-2 py-1 rounded-full"><%= recipe["kcal_target"].to_f.round(0) %> kcal</span>
+          </div>
+
+          <div class="space-y-2">
+            <% Array(recipe["items"]).each do |item| %>
+              <div class="flex items-center justify-between text-sm bg-surface-low rounded-lg px-3 py-2">
+                <div>
+                  <span class="font-medium text-on-background"><%= item["ingredient_name"] %></span>
+                  <span class="text-xs text-on-surface-variant"> · <%= category_labels[item["category"].to_s] || item["category"].to_s.humanize %></span>
+                </div>
+                <span class="text-on-surface-variant"><%= item["daily_amount_g"].to_f.round(1) %> g</span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
   <% if @bcs_critical %>
     <div class="bg-red-50 border border-red-300 rounded-2xl shadow-sm p-6 mb-6">
-      <h2 class="font-bold text-red-900 mb-2">Atención veterinaria inmediata</h2>
+      <h2 class="font-bold text-red-900 mb-2"><%= t("diets.show.critical.heading") %></h2>
       <p class="text-sm text-red-800 leading-relaxed">
-        BCS <%= @pet.body_condition_score %>/9: por seguridad, la dieta no puede modificarse ni regenerarse hasta valoración médica.
+        <%= t("diets.show.critical.body", bcs: @pet.body_condition_score) %>
       </p>
     </div>
   <% else %>
-    <%= form_with url: regenerate_pet_diet_path(@pet, @diet), method: :patch, local: true, class: "space-y-6" do |f| %>
-
-    <!-- Safety warning (raw / mixed only) -->
-    <% prep_warnings = {
-      "raw"   => {
-        title: "⛔ DIETA BARF — Riesgo biológico",
-        body:  "Las carnes crudas pueden contener Salmonella, Campylobacter y E. coli, causando infecciones graves tanto en la mascota como en los humanos del hogar. Esta dieta solo debe seguirse bajo supervisión veterinaria y NO es adecuada para cachorros, hembras gestantes o lactantes, adultos senior ni mascotas inmunodeprimidas. (WSAVA 2022)",
-        style: "bg-red-50 border-red-300 text-red-900",
-        title_style: "text-red-900",
-        body_style: "text-red-800"
-      },
-      "mixed" => {
-        title: "⛔ Dieta mixta — Componentes crudos",
-        body:  "Esta dieta incluye carnes que se sirven crudas. Las carnes crudas pueden contener Salmonella, Campylobacter y E. coli, representando riesgo de infección para la mascota y los humanos del hogar. Lavar bien las verduras con agua. No recomendada para cachorros, gestantes/lactantes ni mascotas inmunodeprimidas. (WSAVA 2022)",
-        style: "bg-red-50 border-red-300 text-red-900",
-        title_style: "text-red-900",
-        body_style: "text-red-800"
-      }
-    } %>
-    <% warn_data = prep_warnings[@diet.preparation_style] %>
-    <% if warn_data %>
-      <div class="<%= warn_data[:style] %> rounded-2xl border shadow-sm p-6 mb-6">
-        <h2 class="font-bold <%= warn_data[:title_style] %> mb-2"><%= warn_data[:title] %></h2>
-        <p class="text-sm <%= warn_data[:body_style] %> leading-relaxed"><%= warn_data[:body] %></p>
-      </div>
-    <% end %>
-
-    <!-- Preparation instructions -->
-    <% unless @diet.preparation_notes.blank? %>
-      <div class="bg-white rounded-2xl border border-outline-variant shadow-sm p-6 mb-6">
-        <h2 class="font-bold text-on-background mb-2">Instrucciones de preparación</h2>
-        <p class="text-sm text-on-surface-variant leading-relaxed"><%= @diet.preparation_notes %></p>
-      </div>
-    <% end %>
-
-    <!-- Ingredient list -->
     <div class="bg-white rounded-2xl border border-outline-variant shadow-sm p-6">
-      <h2 class="font-bold text-on-background mb-1">Personaliza los ingredientes</h2>
-      <p class="text-xs text-on-surface-variant mb-4">
-        Presiona <strong>Cambiar</strong> para elegir un ingrediente equivalente, o <strong>Quitar</strong> para excluirlo.
-        Los cambios se aplican al presionar <strong>Aplicar cambios</strong>.
-      </p>
-      <div class="space-y-2">
-        <% cat_labels = { "protein" => "Proteína", "vegetable" => "Verdura", "carb" => "Carbohidrato", "fat" => "Grasa" } %>
-        <% item_count = @diet.diet_items.size %>
-        <% @diet.diet_items.by_weight.includes(:ingredient).sort_by { |item| %w[protein carb fat vegetable].index(item.ingredient.category) || 99 }.each do |item| %>
-          <% ing = item.ingredient %>
-          <% alts = @alternatives[item.id] || [] %>
-          <div id="row-<%= item.id %>"
-               class="border border-outline-variant rounded-xl overflow-hidden transition-all duration-150"
-               data-removed="false">
-            <!-- Main row -->
-            <div class="flex items-center gap-2 px-4 py-3">
-              <span class="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">
-                <%= cat_labels[ing.category] %>
-              </span>
-              <div class="flex-1 min-w-0">
-                <span class="text-sm font-medium text-on-background"><%= ing.name %></span>
-                <% liquid_fat = ing.category == "fat" && ing.fat_g.to_f >= 90 && ing.moisture_g.to_f < 5 %>
-                <% amount_str = liquid_fat ? "#{(item.daily_amount_g / 0.92).round(1)} ml" : "#{item.daily_amount_g.round(1)} g" %>
-                <span class="text-xs text-on-surface-variant ml-1"><%= amount_str %></span>
-              </div>
-              <%# Hidden input: submits current ingredient when no swap is pending %>
-              <input type="hidden" id="hidden-<%= item.id %>" name="ingredient_ids[]" value="<%= ing.id %>">
-              <div class="flex gap-2 shrink-0">
-                <% if alts.any? %>
-                  <button type="button" id="cambiar-btn-<%= item.id %>"
-                          onclick="toggleCambiar('<%= item.id %>')"
-                          class="text-xs font-semibold text-primary border border-primary rounded-lg px-3 py-1.5 hover:bg-surface-low transition-colors">
-                    Cambiar
-                  </button>
-                <% end %>
-                <% if item_count > 1 %>
-                  <button type="button" id="remove-btn-<%= item.id %>"
-                          onclick="toggleRemoveItem('<%= item.id %>')"
-                          class="text-xs font-semibold text-red-500 border border-red-300 rounded-lg px-3 py-1.5 hover:bg-red-50 transition-colors">
-                    Quitar
-                  </button>
-                <% end %>
-              </div>
-            </div>
-            <!-- Swap panel: revealed on Cambiar click -->
-            <% if alts.any? %>
-              <div id="swap-panel-<%= item.id %>" class="hidden border-t border-outline-variant bg-surface-low px-4 py-3">
-                <p class="text-xs text-on-surface-variant mb-2">Selecciona el reemplazo (<%= cat_labels[ing.category] %>):</p>
-                <select id="select-<%= item.id %>" name="ingredient_ids[]" disabled
-                        class="w-full text-sm border border-outline-variant rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary">
-                  <%= options_from_collection_for_select([ing] + alts, :id, :name, ing.id) %>
-                </select>
-              </div>
-            <% end %>
-            <p id="removed-notice-<%= item.id %>"
-               class="hidden px-4 pb-3 text-xs text-on-surface-variant italic">
-              Se excluirá al regenerar. Presiona <strong>Restaurar</strong> para reincluirlo.
-            </p>
-          </div>
-        <% end %>
-      </div>
-    </div>
-
-    <!-- Prep style + submit -->
-    <div class="bg-white rounded-2xl border border-outline-variant shadow-sm p-6">
-      <h2 class="font-bold text-on-background mb-1">Estilo de preparación</h2>
+      <h2 class="font-bold text-on-background mb-1"><%= t("diets.show.regenerate.heading") %></h2>
       <p class="text-sm text-on-surface-variant mb-4">
-        Selecciona el estilo de preparación antes de aplicar o generar.
+        <%= t("diets.show.regenerate.description") %>
       </p>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
-        <% Diet::PREP_STYLES.each do |value, label| %>
-          <label class="flex items-center gap-3 p-3 rounded-xl border border-outline-variant cursor-pointer hover:bg-surface-low transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-            <input type="radio" name="preparation_style" value="<%= value %>"
-              <%= "checked" if value == @diet.preparation_style %>
-              class="w-4 h-4 text-primary focus:ring-primary border-outline-variant" />
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="font-medium text-sm text-on-background"><%= label %></span>
-              <% if value == "cooked" %>
-                <span class="text-xs bg-primary text-white px-2 py-0.5 rounded-full font-medium">Recomendado</span>
-              <% end %>
-            </div>
-          </label>
-        <% end %>
-      </div>
 
-      <div class="flex flex-col sm:flex-row gap-3">
+      <%= form_with url: regenerate_pet_diet_path(@pet, @diet), method: :patch, local: true, class: "space-y-4" do |f| %>
         <div>
-          <button type="submit"
-                  class="bg-primary text-white text-sm font-semibold px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity">
-            Aplicar cambios a esta dieta
-          </button>
+          <label class="block text-xs font-semibold text-on-surface-variant mb-1"><%= t("diets.show.regenerate.plan_mode") %></label>
+          <% selected_mode = (plan["diet_mode"].presence || @diet.preparation_style).to_s %>
+          <select name="diet_mode" class="w-full text-sm border border-outline-variant rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+            <option value="cooked" <%= "selected" if selected_mode == "cooked" %>><%= t("diets.show.modes.cooked") %></option>
+            <option value="mixed" <%= "selected" if selected_mode == "mixed" %>><%= t("diets.show.modes.mixed") %></option>
+            <option value="raw" <%= "selected" if selected_mode == "raw" %>><%= Diet::PREP_STYLES["raw"] %></option>
+          </select>
         </div>
-        <div>
-          <button type="submit" form="new_diet_form"
-                  class="bg-white text-on-background text-sm font-semibold px-6 py-2.5 rounded-xl border border-outline-variant hover:bg-surface-low transition-colors">
-            Generar dieta nueva
-          </button>
-        </div>
-      </div>
+
+        <button type="submit" class="bg-primary text-white text-sm font-semibold px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity">
+          <%= t("diets.show.regenerate.button") %>
+        </button>
+      <% end %>
     </div>
-
-    <% end %>
-
-    <%= form_with url: pet_diets_path(@pet), method: :post, local: true, id: "new_diet_form" do |f| %>
-      <input type="hidden" name="preparation_style" value="<%= @diet.preparation_style %>">
-    <% end %>
   <% end %>
 </div>
-
-<script>
-  window.toggleCambiar = function(itemId) {
-    const panel  = document.getElementById('swap-panel-' + itemId);
-    const select = document.getElementById('select-' + itemId);
-    const hidden = document.getElementById('hidden-' + itemId);
-    const btn    = document.getElementById('cambiar-btn-' + itemId);
-    if (!panel) return;
-    const isOpen = !panel.classList.contains('hidden');
-
-    if (isOpen) {
-      panel.classList.add('hidden');
-      if (select) select.disabled = true;
-      if (hidden) hidden.disabled = false;
-      btn.textContent = 'Cambiar';
-    } else {
-      panel.classList.remove('hidden');
-      if (select) select.disabled = false;
-      if (hidden) hidden.disabled = true;
-      btn.textContent = 'Cancelar';
-    }
-  };
-
-  window.toggleRemoveItem = function(itemId) {
-    const row        = document.getElementById('row-' + itemId);
-    const hidden     = document.getElementById('hidden-' + itemId);
-    const sel        = document.getElementById('select-' + itemId);
-    const panel      = document.getElementById('swap-panel-' + itemId);
-    const btn        = document.getElementById('remove-btn-' + itemId);
-    const notice     = document.getElementById('removed-notice-' + itemId);
-    const cambiarBtn = document.getElementById('cambiar-btn-' + itemId);
-    if (!row) return;
-    const removed = row.dataset.removed === 'true';
-
-    if (removed) {
-      row.dataset.removed = 'false';
-      row.classList.remove('opacity-50');
-      if (hidden) hidden.disabled = false;
-      btn.textContent = 'Quitar';
-      btn.classList.remove('text-on-surface-variant', 'border-outline-variant');
-      btn.classList.add('text-red-500', 'border-red-300');
-      if (notice) notice.classList.add('hidden');
-      if (cambiarBtn) cambiarBtn.disabled = false;
-    } else {
-      if (panel && !panel.classList.contains('hidden')) window.toggleCambiar(itemId);
-      row.dataset.removed = 'true';
-      row.classList.add('opacity-50');
-      if (hidden) hidden.disabled = true;
-      if (sel) sel.disabled = true;
-      btn.textContent = 'Restaurar';
-      btn.classList.remove('text-red-500', 'border-red-300');
-      btn.classList.add('text-on-surface-variant', 'border-outline-variant');
-      if (notice) notice.classList.remove('hidden');
-      if (cambiarBtn) cambiarBtn.disabled = true;
-    }
-  };
-
-  // Keep new_diet_form prep style in sync with the radio buttons
-  (function syncPrepStyle() {
-    var newDietInput = document.querySelector('#new_diet_form input[name="preparation_style"]');
-    if (!newDietInput) return;
-    document.querySelectorAll('input[name="preparation_style"]').forEach(function(radio) {
-      radio.addEventListener('change', function() {
-        newDietInput.value = this.value;
-      });
-    });
-  })();
-</script>

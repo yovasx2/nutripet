@@ -1,4 +1,4 @@
-<% content_for :title, "Nueva Dieta — #{@pet.name}" %>
+<% content_for :title, "Nuevo Plan — #{@pet.name}" %>
 
 <div class="max-w-2xl mx-auto px-4 py-10">
   <%= link_to "← #{@pet.name}", @pet, class: "text-sm text-primary font-medium hover:underline block mb-6" %>
@@ -20,37 +20,22 @@
 
   <!-- Prep style form -->
   <div class="bg-white rounded-2xl border border-outline-variant shadow-sm p-6">
-    <h1 class="text-xl font-bold text-on-background mb-1">Calcular Dieta Casera</h1>
-    <p class="text-on-surface-variant text-sm mb-6">Elige el estilo de preparación para generar el plan de alimentación.</p>
+    <h1 class="text-xl font-bold text-on-background mb-1">Generar plan nutricional</h1>
+    <p class="text-on-surface-variant text-sm mb-6">Selecciona el modo del plan para generar el set completo de recetas.</p>
 
     <%= form_with url: pet_diets_path(@pet), method: :post, class: "space-y-4" do |f| %>
-      <div class="space-y-3">
-        <% Diet::PREP_STYLES.each do |value, label| %>
-          <label class="flex items-start gap-4 p-4 rounded-xl border border-outline-variant cursor-pointer hover:bg-surface-low transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-            <input type="radio" name="preparation_style" value="<%= value %>"
-              <%= "checked" if value == "cooked" %>
-              class="mt-0.5 w-4 h-4 text-primary focus:ring-primary border-outline-variant" />
-            <div class="flex-1">
-              <div class="flex items-center gap-2 flex-wrap">
-                <p class="font-semibold text-sm text-on-background"><%= label %></p>
-                <% if value == "cooked" %>
-                  <span class="text-xs bg-primary text-white px-2 py-0.5 rounded-full font-medium">Recomendado</span>
-                <% end %>
-              </div>
-              <% descriptions = {
-                "cooked" => "Alimentos cocidos: pollo, arroz, verduras al vapor. La opción más segura y digestiva.",
-                "raw"    => "Alimentación cruda (BARF): carnes frescas y verduras sin cocción. Para dueños con experiencia.",
-                "mixed"  => "Mezcla de cocido y crudo: lo mejor de ambos mundos. Flexibilidad en la preparación."
-              } %>
-              <p class="text-xs text-on-surface-variant mt-0.5"><%= descriptions[value] %></p>
-            </div>
-          </label>
-        <% end %>
+      <div>
+        <label class="block text-xs font-semibold text-on-surface-variant mb-1">Modo del plan</label>
+        <select name="diet_mode" class="w-full text-sm border border-outline-variant rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+          <option value="cooked" selected>Cocida</option>
+          <option value="mixed">Mixto</option>
+          <option value="raw"><%= Diet::PREP_STYLES["raw"] %></option>
+        </select>
       </div>
 
       <button type="submit"
         class="w-full bg-primary text-white text-sm font-semibold py-3 rounded-xl hover:bg-primary-container transition-colors mt-2">
-        Generar dieta
+        Generar plan
       </button>
     <% end %>
   </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_18_013000) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_18_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -98,6 +98,27 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_18_013000) do
     t.index ["sex"], name: "index_pets_on_sex"
     t.index ["species"], name: "index_pets_on_species"
     t.index ["user_id"], name: "index_pets_on_user_id"
+  end
+
+  create_table "premixes", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "species_safe", default: "both", null: false
+    t.boolean "active", default: true, null: false
+    t.text "description"
+    t.text "notes"
+    t.decimal "calcium_mg_per_g", precision: 10, scale: 4, default: "0.0", null: false
+    t.decimal "phosphorus_mg_per_g", precision: 10, scale: 4, default: "0.0", null: false
+    t.decimal "magnesium_mg_per_g", precision: 10, scale: 4, default: "0.0", null: false
+    t.decimal "potassium_mg_per_g", precision: 10, scale: 4, default: "0.0", null: false
+    t.decimal "zinc_mg_per_g", precision: 10, scale: 4, default: "0.0", null: false
+    t.decimal "iron_mg_per_g", precision: 10, scale: 4, default: "0.0", null: false
+    t.decimal "copper_mg_per_g", precision: 10, scale: 4, default: "0.0", null: false
+    t.decimal "iodine_mcg_per_g", precision: 10, scale: 4, default: "0.0", null: false
+    t.decimal "selenium_mcg_per_g", precision: 10, scale: 4, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active", "species_safe"], name: "index_premixes_on_active_and_species_safe"
+    t.index ["name"], name: "index_premixes_on_name", unique: true
   end
 
   create_table "users", force: :cascade do |t|

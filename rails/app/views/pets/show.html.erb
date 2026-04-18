@@ -78,7 +78,7 @@
   <!-- Diet section -->
   <div class="bg-white rounded-2xl border border-outline-variant shadow-sm p-6">
     <div class="mb-4">
-      <h2 class="text-lg font-bold text-on-background">Dieta Casera</h2>
+      <h2 class="text-lg font-bold text-on-background">Plan Nutricional</h2>
     </div>
 
     <% if @latest_diet %>
@@ -96,19 +96,19 @@
           <span class="text-on-surface-variant text-xs">Preparación</span>
         </div>
       </div>
-      <%= link_to "Ver dieta completa →", pet_diet_path(@pet, @latest_diet),
+      <%= link_to "Ver plan completo →", pet_diet_path(@pet, @latest_diet),
             class: "text-sm font-semibold text-primary hover:underline" %>
     <% else %>
       <div class="text-center py-10 bg-surface-low rounded-xl">
         <span class="material-symbols-outlined text-5xl text-outline mb-3 block">restaurant</span>
-        <p class="text-on-surface-variant text-sm mb-4">Aún no hay una dieta calculada para <%= @pet.name %>.</p>
+        <p class="text-on-surface-variant text-sm mb-4">Aún no hay un plan generado para <%= @pet.name %>.</p>
         <% if [1, 9].include?(@pet.body_condition_score.to_i) %>
-          <p class="text-sm font-semibold text-red-700">Necesita atención veterinaria inmediata antes de calcular su dieta.</p>
+          <p class="text-sm font-semibold text-red-700">Necesita atención veterinaria inmediata antes de generar su plan.</p>
         <% else %>
           <%= link_to new_pet_diet_path(@pet),
               class: "inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-primary-container transition-colors" do %>
             <span class="material-symbols-outlined text-base leading-none">calculate</span>
-            Calcular dieta
+            Generar plan
           <% end %>
         <% end %>
       </div>

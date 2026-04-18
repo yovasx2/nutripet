@@ -83,6 +83,17 @@ TOKEN_TRANSLATIONS = {
   "xilitol" => "xylitol", "cafe" => "coffee", "chocolate" => "dark chocolate", "amargo" => "dark"
 }.freeze
 
+IODINE_FALLBACKS_MCG = {
+  /bacalao/ => 110.0,
+  /sardinas/ => 35.0,
+  /salmon/ => 30.0,
+  /atun/ => 30.0,
+  /tilapia/ => 18.0,
+  /huevo entero/ => 47.0,
+  /clara de huevo/ => 7.0,
+  /camaron|camaron seco/ => 35.0
+}.freeze
+
 def load_seed_ingredients
   content = File.read(SEEDS_PATH)
   start_idx = content.index("ingredients = [")
@@ -259,45 +270,53 @@ def estimate_scores(attrs)
   }
 end
 
+def iodine_fallback_for(name)
+  normalized = name.to_s.unicode_normalize(:nfkd).encode("ASCII", undef: :replace, invalid: :replace, replace: "").downcase
+  match = IODINE_FALLBACKS_MCG.find { |pattern, _value| normalized.match?(pattern) }
+  match ? match.last : 0.0
+end
+
 def build_record(seed_attrs)
   attrs = seed_attrs.transform_keys(&:to_sym)
 
   usda_profile = fetch_usda_profile(attrs[:name])
   if usda_profile
     attrs.merge!(
-      energy_kcal: usda_profile[:energy_kcal] || attrs[:energy_kcal],
-      protein_g: usda_profile[:protein_g] || attrs[:protein_g],
-      fat_g: usda_profile[:fat_g] || attrs[:fat_g],
-      carbs_g: usda_profile[:carbs_g] || attrs[:carbs_g],
-      fiber_g: usda_profile[:fiber_g] || attrs[:fiber_g] || 0,
-      moisture_g: usda_profile[:moisture_g] || attrs[:moisture_g],
-      calcium_mg: usda_profile[:calcium_mg] || 0,
-      phosphorus_mg: usda_profile[:phosphorus_mg] || 0,
-      magnesium_mg: usda_profile[:magnesium_mg] || 0,
-      potassium_mg: usda_profile[:potassium_mg] || 0,
-      zinc_mg: usda_profile[:zinc_mg] || 0,
-      iron_mg: usda_profile[:iron_mg] || 0,
-      copper_mg: usda_profile[:copper_mg] || 0,
-      iodine_mcg: usda_profile[:iodine_mcg] || 0,
-      selenium_mcg: usda_profile[:selenium_mcg] || 0,
-      omega3_mg: usda_profile[:omega3_mg] || 0,
+      energy_kcal: usda_profile[:energy_kcal].to_f.positive? ? usda_profile[:energy_kcal] : attrs[:energy_kcal],
+      protein_g: usda_profile[:protein_g].to_f.positive? ? usda_profile[:protein_g] : attrs[:protein_g],
+      fat_g: usda_profile[:fat_g].to_f.positive? ? usda_profile[:fat_g] : attrs[:fat_g],
+      carbs_g: usda_profile[:carbs_g].to_f.positive? ? usda_profile[:carbs_g] : attrs[:carbs_g],
+      fiber_g: usda_profile[:fiber_g].to_f.positive? ? usda_profile[:fiber_g] : (attrs[:fiber_g] || 0),
+      moisture_g: usda_profile[:moisture_g].to_f.positive? ? usda_profile[:moisture_g] : attrs[:moisture_g],
+      calcium_mg: usda_profile[:calcium_mg].to_f.positive? ? usda_profile[:calcium_mg] : (attrs[:calcium_mg] || 0),
+      phosphorus_mg: usda_profile[:phosphorus_mg].to_f.positive? ? usda_profile[:phosphorus_mg] : (attrs[:phosphorus_mg] || 0),
+      magnesium_mg: usda_profile[:magnesium_mg].to_f.positive? ? usda_profile[:magnesium_mg] : (attrs[:magnesium_mg] || 0),
+      potassium_mg: usda_profile[:potassium_mg].to_f.positive? ? usda_profile[:potassium_mg] : (attrs[:potassium_mg] || 0),
+      zinc_mg: usda_profile[:zinc_mg].to_f.positive? ? usda_profile[:zinc_mg] : (attrs[:zinc_mg] || 0),
+      iron_mg: usda_profile[:iron_mg].to_f.positive? ? usda_profile[:iron_mg] : (attrs[:iron_mg] || 0),
+      copper_mg: usda_profile[:copper_mg].to_f.positive? ? usda_profile[:copper_mg] : (attrs[:copper_mg] || 0),
+      iodine_mcg: usda_profile[:iodine_mcg].to_f.positive? ? usda_profile[:iodine_mcg] : (attrs[:iodine_mcg] || 0),
+      selenium_mcg: usda_profile[:selenium_mcg].to_f.positive? ? usda_profile[:selenium_mcg] : (attrs[:selenium_mcg] || 0),
+      omega3_mg: usda_profile[:omega3_mg].to_f.positive? ? usda_profile[:omega3_mg] : (attrs[:omega3_mg] || 0),
       notes: "USDA FDC #{usda_profile[:fdc_id]} - #{usda_profile[:usda_description]}"
     )
   else
     attrs.merge!(
       fiber_g: attrs[:fiber_g] || 0,
-      calcium_mg: 0,
-      phosphorus_mg: 0,
-      magnesium_mg: 0,
-      potassium_mg: 0,
-      zinc_mg: 0,
-      iron_mg: 0,
-      copper_mg: 0,
-      iodine_mcg: 0,
-      selenium_mcg: 0,
-      omega3_mg: 0
+      calcium_mg: attrs[:calcium_mg] || 0,
+      phosphorus_mg: attrs[:phosphorus_mg] || 0,
+      magnesium_mg: attrs[:magnesium_mg] || 0,
+      potassium_mg: attrs[:potassium_mg] || 0,
+      zinc_mg: attrs[:zinc_mg] || 0,
+      iron_mg: attrs[:iron_mg] || 0,
+      copper_mg: attrs[:copper_mg] || 0,
+      iodine_mcg: attrs[:iodine_mcg] || 0,
+      selenium_mcg: attrs[:selenium_mcg] || 0,
+      omega3_mg: attrs[:omega3_mg] || 0
     )
   end
+
+  attrs[:iodine_mcg] = iodine_fallback_for(attrs[:name]) if attrs[:iodine_mcg].to_f <= 0
 
   attrs.merge!(estimate_scores(attrs))
   attrs[:source] = "USDA FoodData Central"

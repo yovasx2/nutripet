@@ -29,3 +29,54 @@
 
 en:
   hello: "Hello world"
+  diets:
+    show:
+      page_title: "%{pet_name} Plan"
+      back_link: "← %{pet_name}"
+      heading: "%{pet_name} nutritional plan"
+      plan_note: "Each recipe corresponds to one day of the plan. The validator checks the full set, not each day separately."
+      status:
+        needs_premix: "Needs premix"
+        needs_review: "Needs review"
+        validated: "Validated"
+      metrics:
+        plan_days: "plan days"
+        total_set: "set total"
+        per_day: "per day"
+        nutritional_status: "nutritional status"
+      validator:
+        heading: "Plan validation issues"
+      premix:
+        heading: "%{name} required"
+        default_name: "Premix"
+        default_note: "Supplement was added to close micronutrient gaps."
+      nutrients:
+        calcium: "Calcium"
+        phosphorus: "Phosphorus"
+        magnesium: "Magnesium"
+        potassium: "Potassium"
+        zinc: "Zinc"
+        iron: "Iron"
+        copper: "Copper"
+        iodine: "Iodine"
+        selenium: "Selenium"
+      days:
+        heading: "Plan days"
+        description: "The full set is optimized to meet requirements when all plan days are summed together."
+        day_label: "Day %{number}"
+      categories:
+        protein: "Protein"
+        vegetable: "Vegetable"
+        carb: "Carbohydrate"
+        fat: "Fat"
+      critical:
+        heading: "Immediate veterinary attention"
+        body: "BCS %{bcs}/9: for safety, the plan cannot be regenerated until medical evaluation."
+      regenerate:
+        heading: "Regenerate full plan"
+        description: "The optimizer will recalculate every day in the set. Ingredients are no longer edited one by one."
+        plan_mode: "Plan mode"
+        button: "Regenerate plan"
+      modes:
+        cooked: "Cooked"
+        mixed: "Mixed"

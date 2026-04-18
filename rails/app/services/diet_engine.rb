@@ -68,6 +68,14 @@ module DietEngine
       }
     end
 
+    # Phase 2: deterministic optimizer that builds a fixed recipe set (3-5)
+    # validated under hard nutritional constraints for the aggregate set.
+    def generate_fixed_set(pet, total_kcal_set: nil, diet_mode: "cooked")
+      DietEngine::Optimizer
+        .new(pet: pet, total_kcal_set: total_kcal_set, diet_mode: diet_mode)
+        .generate_fixed_set
+    end
+
     # Recompute macros + AAFCO from existing diet_items (after swap/remove)
     def recalculate_output(pet, diet)
       items = diet.diet_items.includes(:ingredient).map do |di|

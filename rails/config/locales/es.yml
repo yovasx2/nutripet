@@ -1,4 +1,55 @@
 es:
+  diets:
+    show:
+      page_title: "Plan de %{pet_name}"
+      back_link: "← %{pet_name}"
+      heading: "Plan nutricional de %{pet_name}"
+      plan_note: "Cada receta corresponde a un día del plan. El validador revisa el set completo, no cada día por separado."
+      status:
+        needs_premix: "Necesita premix"
+        needs_review: "Requiere revisión"
+        validated: "Validado"
+      metrics:
+        plan_days: "días del plan"
+        total_set: "total del set"
+        per_day: "por día"
+        nutritional_status: "estado nutricional"
+      validator:
+        heading: "Incumplimientos del plan"
+      premix:
+        heading: "%{name} obligatorio"
+        default_name: "Premix"
+        default_note: "Se añadió suplemento para cerrar brechas de micronutrientes."
+      nutrients:
+        calcium: "Calcio"
+        phosphorus: "Fósforo"
+        magnesium: "Magnesio"
+        potassium: "Potasio"
+        zinc: "Zinc"
+        iron: "Hierro"
+        copper: "Cobre"
+        iodine: "Yodo"
+        selenium: "Selenio"
+      days:
+        heading: "Días del plan"
+        description: "El set completo está optimizado para cubrir requerimientos al sumar todos los días del plan."
+        day_label: "Día %{number}"
+      categories:
+        protein: "Proteína"
+        vegetable: "Verdura"
+        carb: "Carbohidrato"
+        fat: "Grasa"
+      critical:
+        heading: "Atención veterinaria inmediata"
+        body: "BCS %{bcs}/9: por seguridad, el plan no puede regenerarse hasta valoración médica."
+      regenerate:
+        heading: "Regenerar plan completo"
+        description: "El motor optimizador recalculará todas las recetas del set. Ya no se editan ingredientes uno por uno."
+        plan_mode: "Modo del plan"
+        button: "Regenerar plan"
+      modes:
+        cooked: "Cocida"
+        mixed: "Mixto"
   activerecord:
     models:
       user: Usuario
