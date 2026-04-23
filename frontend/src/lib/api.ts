@@ -9,6 +9,32 @@ function authHeaders(): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+function extractErrorMessage(data: any, status: number): string {
+  if (typeof data === "string") return data;
+
+  // Devise custom controllers format: { status: { message: "..." }, errors: [...] }
+  if (data?.status?.message) {
+    const base = data.status.message;
+    if (Array.isArray(data.errors) && data.errors.length > 0) {
+      return `${base}: ${data.errors.join(", ")}`;
+    }
+    return base;
+  }
+
+  // Rails default error format: { errors: [...] } or { error: "..." }
+  if (Array.isArray(data?.errors) && data.errors.length > 0) {
+    return data.errors.join(", ");
+  }
+  if (data?.error) {
+    return data.error;
+  }
+  if (data?.message) {
+    return data.message;
+  }
+
+  return `HTTP ${status}`;
+}
+
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const url = `${API_BASE.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
   const res = await fetch(url, {
@@ -21,8 +47,8 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   });
 
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(err.message || `HTTP ${res.status}`);
+    const data = await res.json().catch(() => null);
+    throw new Error(extractErrorMessage(data, res.status));
   }
 
   return res.json();
