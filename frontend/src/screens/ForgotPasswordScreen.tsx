@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiFetch } from '@/lib/api';
+import { validateForgotPassword } from '@/lib/validators';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,6 +18,11 @@ export default function ForgotPasswordScreen() {
     e.preventDefault();
     setError('');
     setSuccess('');
+    const validationError = validateForgotPassword(email);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     setLoading(true);
     try {
       await apiFetch('/password', {

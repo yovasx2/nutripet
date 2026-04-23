@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { validateRegister } from '@/lib/validators';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,8 +20,9 @@ export default function RegisterScreen() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (password !== passwordConfirmation) {
-      setError('Las contraseñas no coinciden');
+    const validationError = validateRegister(email, password, passwordConfirmation);
+    if (validationError) {
+      setError(validationError);
       return;
     }
     setLoading(true);

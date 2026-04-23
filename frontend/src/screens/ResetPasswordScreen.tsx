@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { apiFetch } from '@/lib/api';
+import { validateResetPassword } from '@/lib/validators';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -32,8 +33,9 @@ export default function ResetPasswordScreen() {
       setError('Token de recuperación no válido.');
       return;
     }
-    if (password !== passwordConfirmation) {
-      setError('Las contraseñas no coinciden');
+    const validationError = validateResetPassword(password, passwordConfirmation);
+    if (validationError) {
+      setError(validationError);
       return;
     }
     setLoading(true);
