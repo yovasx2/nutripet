@@ -1,0 +1,14 @@
+.env
+!.env.example
+
+# Frontend
+frontend/node_modules
+frontend/dist
+
+# Backend
+backend/tmp
+backend/log
+backend/vendor/bundle
+backend/.bundle
+backend/config/master.key
+backend/config/credentials.yml.enc

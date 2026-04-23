@@ -1,0 +1,62 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nutripet-postgres
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nutripet}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nutripet}
+      POSTGRES_DB: ${POSTGRES_DB:-nutripet_production}
+    networks:
+      - nutripet-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nutripet} -d ${POSTGRES_DB:-nutripet_production}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nutripet-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      RAILS_ENV: production
+      RAILS_LOG_LEVEL: info
+      PORT: 3001
+      DATABASE_URL: postgres://${POSTGRES_USER:-nutripet}:${POSTGRES_PASSWORD:-nutripet}@postgres:5432/${POSTGRES_DB:-nutripet_production}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      DEVISE_JWT_SECRET_KEY: ${DEVISE_JWT_SECRET_KEY}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+    networks:
+      - nutripet-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:3001
+    container_name: nutripet-frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - nutripet-network
+
+volumes:
+  postgres_data:
+
+networks:
+  nutripet-network:
+    driver: bridge

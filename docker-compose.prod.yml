@@ -1,0 +1,74 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nutripet-postgres
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nutripet}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nutripet}
+      POSTGRES_DB: ${POSTGRES_DB:-nutripet_production}
+    networks:
+      - nutripet-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nutripet} -d ${POSTGRES_DB:-nutripet_production}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nutripet-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      RAILS_ENV: production
+      RAILS_LOG_LEVEL: info
+      PORT: 3001
+      DATABASE_URL: postgres://${POSTGRES_USER:-nutripet}:${POSTGRES_PASSWORD:-nutripet}@postgres:5432/${POSTGRES_DB:-nutripet_production}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      DEVISE_JWT_SECRET_KEY: ${DEVISE_JWT_SECRET_KEY}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+    networks:
+      - nutripet-network
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nutripet-api.rule=Host(`api.${DOMAIN}`)"
+      - "traefik.http.routers.nutripet-api.entrypoints=websecure"
+      - "traefik.http.routers.nutripet-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.nutripet-api.loadbalancer.server.port=3001"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: https://api.${DOMAIN}
+    container_name: nutripet-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - nutripet-network
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nutripet-web.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.nutripet-web.entrypoints=websecure"
+      - "traefik.http.routers.nutripet-web.tls.certresolver=letsencrypt"
+      - "traefik.http.services.nutripet-web.loadbalancer.server.port=80"
+
+volumes:
+  postgres_data:
+
+networks:
+  nutripet-network:
+    driver: bridge
+  traefik-public:
+    external: true
