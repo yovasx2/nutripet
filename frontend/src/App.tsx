@@ -4,7 +4,11 @@ import ScrollToTop from './components/ScrollToTop'
 import NavigationBar from './components/NavigationBar'
 import Footer from './components/Footer'
 import FeedbackFab from './components/FeedbackFab'
+import ProtectedRoute from './components/ProtectedRoute'
 import LandingPage from './screens/LandingPage'
+import LoginScreen from './screens/LoginScreen'
+import RegisterScreen from './screens/RegisterScreen'
+import ProfileScreen from './screens/ProfileScreen'
 import AddPetScreen from './screens/AddPetScreen'
 import KibbleSelectorScreen from './screens/KibbleSelectorScreen'
 import MealPlanScreen from './screens/MealPlanScreen'
@@ -22,11 +26,26 @@ export default function App() {
           <main>
             <Routes>
               <Route path="/" element={<LandingPage />} />
-              <Route path="/add-pet" element={<AddPetScreen />} />
-              <Route path="/kibble" element={<KibbleSelectorScreen />} />
-              <Route path="/plan" element={<MealPlanScreen />} />
-              <Route path="/supplements" element={<SupplementsScreen />} />
-              <Route path="/dashboard" element={<DashboardScreen />} />
+              <Route path="/login" element={<LoginScreen />} />
+              <Route path="/register" element={<RegisterScreen />} />
+              <Route path="/profile" element={
+                <ProtectedRoute><ProfileScreen /></ProtectedRoute>
+              } />
+              <Route path="/add-pet" element={
+                <ProtectedRoute><AddPetScreen /></ProtectedRoute>
+              } />
+              <Route path="/kibble" element={
+                <ProtectedRoute><KibbleSelectorScreen /></ProtectedRoute>
+              } />
+              <Route path="/plan" element={
+                <ProtectedRoute><MealPlanScreen /></ProtectedRoute>
+              } />
+              <Route path="/supplements" element={
+                <ProtectedRoute><SupplementsScreen /></ProtectedRoute>
+              } />
+              <Route path="/dashboard" element={
+                <ProtectedRoute><DashboardScreen /></ProtectedRoute>
+              } />
               <Route path="/education" element={<EducationScreen />} />
             </Routes>
           </main>

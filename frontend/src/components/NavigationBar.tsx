@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { usePet } from '../context/PetContext';
-import { Menu, X } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import { Menu, X, User } from 'lucide-react';
 
 const navLinks = [
   { label: 'Cómo Funciona', href: '/#como-funciona' },
@@ -14,8 +15,10 @@ export default function NavigationBar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { pet } = usePet();
+  const { user, logout } = useAuth();
 
   const isLanding = location.pathname === '/';
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 100);
@@ -37,6 +40,12 @@ export default function NavigationBar() {
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 300);
     }
+  };
+
+  const handleLogout = async () => {
+    setMobileOpen(false);
+    await logout();
+    navigate('/');
   };
 
   return (
@@ -63,7 +72,7 @@ export default function NavigationBar() {
           </div>
         )}
 
-        {!isLanding && (
+        {!isLanding && !isAuthPage && (
           <div className="hidden md:flex items-center gap-6">
             <Link to="/dashboard" className="text-sm text-taupe hover:text-espresso transition-colors font-medium">Panel</Link>
             <Link to="/plan" className="text-sm text-taupe hover:text-espresso transition-colors font-medium">Plan</Link>
@@ -72,14 +81,34 @@ export default function NavigationBar() {
         )}
 
         <div className="hidden md:flex items-center gap-3">
-          {pet ? (
-            <Link to="/dashboard" className="bg-terracotta text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-terracotta-dark hover:shadow-glow transition-all duration-300 hover:scale-[1.03]">
-              Perfil de {pet.name}
-            </Link>
+          {user ? (
+            <>
+              <Link
+                to="/profile"
+                className="flex items-center gap-2 text-sm text-taupe hover:text-espresso transition-colors font-medium px-3 py-2 rounded-full hover:bg-cream"
+              >
+                <User className="w-4 h-4" />
+                {user.email.split('@')[0]}
+              </Link>
+              {pet ? (
+                <Link to="/dashboard" className="bg-terracotta text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-terracotta-dark hover:shadow-glow transition-all duration-300 hover:scale-[1.03]">
+                  Perfil de {pet.name}
+                </Link>
+              ) : (
+                <Link to="/add-pet" className="bg-terracotta text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-terracotta-dark hover:shadow-glow transition-all duration-300 hover:scale-[1.03]">
+                  Analizar Croquetas
+                </Link>
+              )}
+            </>
           ) : (
-            <Link to="/add-pet" className="bg-terracotta text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-terracotta-dark hover:shadow-glow transition-all duration-300 hover:scale-[1.03]">
-              Analizar Croquetas
-            </Link>
+            <>
+              <Link to="/login" className="text-sm text-taupe hover:text-espresso transition-colors font-medium px-3 py-2">
+                Iniciar Sesión
+              </Link>
+              <Link to="/register" className="bg-terracotta text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-terracotta-dark hover:shadow-glow transition-all duration-300 hover:scale-[1.03]">
+                Registrarse
+              </Link>
+            </>
           )}
         </div>
 
@@ -96,17 +125,31 @@ export default function NavigationBar() {
               {link.label}
             </button>
           ))}
-          {!isLanding && (
+          {!isLanding && !isAuthPage && (
             <>
               <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="block text-sm text-taupe hover:text-espresso py-2">Panel</Link>
               <Link to="/plan" onClick={() => setMobileOpen(false)} className="block text-sm text-taupe hover:text-espresso py-2">Plan</Link>
               <Link to="/supplements" onClick={() => setMobileOpen(false)} className="block text-sm text-taupe hover:text-espresso py-2">Suplementos</Link>
             </>
           )}
-          <Link to={pet ? '/dashboard' : '/add-pet'} onClick={() => setMobileOpen(false)}
-            className="block text-center bg-terracotta text-white text-sm font-medium px-5 py-2.5 rounded-full mt-2">
-            {pet ? `Perfil de ${pet.name}` : 'Analizar Croquetas'}
-          </Link>
+          {user ? (
+            <>
+              <Link to="/profile" onClick={() => setMobileOpen(false)} className="block text-sm text-taupe hover:text-espresso py-2">Mi Perfil</Link>
+              <button onClick={handleLogout} className="block w-full text-left text-sm text-red-600 py-2">Cerrar sesión</button>
+              <Link to={pet ? '/dashboard' : '/add-pet'} onClick={() => setMobileOpen(false)}
+                className="block text-center bg-terracotta text-white text-sm font-medium px-5 py-2.5 rounded-full mt-2">
+                {pet ? `Perfil de ${pet.name}` : 'Analizar Croquetas'}
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/login" onClick={() => setMobileOpen(false)} className="block text-sm text-taupe hover:text-espresso py-2">Iniciar Sesión</Link>
+              <Link to="/register" onClick={() => setMobileOpen(false)}
+                className="block text-center bg-terracotta text-white text-sm font-medium px-5 py-2.5 rounded-full mt-2">
+                Registrarse
+              </Link>
+            </>
+          )}
         </div>
       )}
     </nav>
