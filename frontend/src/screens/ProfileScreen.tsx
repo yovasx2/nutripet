@@ -85,7 +85,7 @@ export default function ProfileScreen() {
                   Mi Perfil
                 </CardTitle>
                 <CardDescription className="text-taupe text-sm">
-                  {user.email}
+                  {user.email ?? 'No email'}
                 </CardDescription>
               </div>
             </div>
@@ -95,7 +95,7 @@ export default function ProfileScreen() {
               <div className="bg-cream rounded-xl p-3">
                 <p className="text-taupe">Miembro desde</p>
                 <p className="text-espresso font-medium">
-                  {new Date(user.created_at).toLocaleDateString('es-MX')}
+                  {user.created_at ? new Date(user.created_at).toLocaleDateString('es-MX') : '-'}
                 </p>
               </div>
               <div className="bg-cream rounded-xl p-3">

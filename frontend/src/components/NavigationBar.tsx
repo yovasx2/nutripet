@@ -88,7 +88,7 @@ export default function NavigationBar() {
                 className="flex items-center gap-2 text-sm text-taupe hover:text-espresso transition-colors font-medium px-3 py-2 rounded-full hover:bg-cream"
               >
                 <User className="w-4 h-4" />
-                {user.email.split('@')[0]}
+                {user.email?.split('@')[0] ?? 'User'}
               </Link>
               {pet ? (
                 <Link to="/dashboard" className="bg-terracotta text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-terracotta-dark hover:shadow-glow transition-all duration-300 hover:scale-[1.03]">
