@@ -1,6 +1,5 @@
 module Users
   class Mailer < Devise::Mailer
-    helper :application
     default template_path: "devise/mailer"
 
     def reset_password_instructions(record, token, opts = {})
