@@ -5,7 +5,8 @@ Rails.application.routes.draw do
     registration: "register"
   }, controllers: {
     sessions: "users/sessions",
-    registrations: "users/registrations"
+    registrations: "users/registrations",
+    passwords: "users/passwords"
   }
 
   namespace :users do

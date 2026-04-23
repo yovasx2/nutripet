@@ -17,4 +17,24 @@ Rails.application.configure do
 
   # Allow any host since Traefik handles routing
   config.hosts << /.*/ if ENV["RAILS_ENV"] == "production"
+
+  # ActionMailer config
+  config.action_mailer.default_url_options = { host: ENV.fetch("DOMAIN", "localhost") }
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.perform_caching = false
+
+  if ENV["SMTP_ADDRESS"].present?
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+      address:              ENV["SMTP_ADDRESS"],
+      port:                 ENV.fetch("SMTP_PORT", 587),
+      domain:               ENV.fetch("SMTP_DOMAIN", ENV.fetch("DOMAIN", "localhost")),
+      user_name:            ENV["SMTP_USERNAME"],
+      password:             ENV["SMTP_PASSWORD"],
+      authentication:       ENV.fetch("SMTP_AUTHENTICATION", "plain"),
+      enable_starttls_auto: ENV.fetch("SMTP_TLS", "true") == "true"
+    }
+  else
+    config.action_mailer.delivery_method = :test
+  end
 end

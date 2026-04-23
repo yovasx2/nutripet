@@ -8,6 +8,8 @@ import ProtectedRoute from './components/ProtectedRoute'
 import LandingPage from './screens/LandingPage'
 import LoginScreen from './screens/LoginScreen'
 import RegisterScreen from './screens/RegisterScreen'
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen'
+import ResetPasswordScreen from './screens/ResetPasswordScreen'
 import ProfileScreen from './screens/ProfileScreen'
 import AddPetScreen from './screens/AddPetScreen'
 import KibbleSelectorScreen from './screens/KibbleSelectorScreen'
@@ -28,6 +30,8 @@ export default function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginScreen />} />
               <Route path="/register" element={<RegisterScreen />} />
+              <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
+              <Route path="/reset-password" element={<ResetPasswordScreen />} />
               <Route path="/profile" element={
                 <ProtectedRoute><ProfileScreen /></ProtectedRoute>
               } />
