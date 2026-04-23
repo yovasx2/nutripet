@@ -17,7 +17,7 @@ export function validateRegister(
   if (!email.trim()) return "El correo electrónico es obligatorio";
   if (!isValidEmail(email)) return "El correo electrónico no es válido";
   if (!password) return "La contraseña es obligatoria";
-  if (password.length < 6) return "La contraseña debe tener al menos 6 caracteres";
+  if (password.length < 8) return "La contraseña debe tener al menos 8 caracteres";
   if (password !== passwordConfirmation) return "Las contraseñas no coinciden";
   return null;
 }
@@ -33,7 +33,7 @@ export function validateResetPassword(
   passwordConfirmation: string
 ): string | null {
   if (!password) return "La contraseña es obligatoria";
-  if (password.length < 6) return "La contraseña debe tener al menos 6 caracteres";
+  if (password.length < 8) return "La contraseña debe tener al menos 8 caracteres";
   if (password !== passwordConfirmation) return "Las contraseñas no coinciden";
   return null;
 }
