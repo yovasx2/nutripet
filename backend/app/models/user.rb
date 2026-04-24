@@ -5,5 +5,7 @@ class User < ApplicationRecord
          :recoverable, :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
+  has_many :pets, dependent: :destroy
+
   validates :name, presence: true
 end

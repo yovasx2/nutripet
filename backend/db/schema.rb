@@ -10,9 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_24_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_24_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "pets", force: :cascade do |t|
+    t.string "activity_level", default: "moderate", null: false
+    t.integer "age_months", default: 0, null: false
+    t.integer "age_years", default: 0, null: false
+    t.string "breed", null: false
+    t.datetime "created_at", null: false
+    t.integer "ecc_score", default: 5, null: false
+    t.string "life_stage", default: "adult", null: false
+    t.string "name", null: false
+    t.string "reproductive_status", default: "none", null: false
+    t.string "selected_kibble_id"
+    t.string "sex", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.decimal "weight", precision: 6, scale: 2, null: false
+    t.index ["user_id"], name: "index_pets_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -27,4 +45,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_24_000001) do
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "pets", "users"
 end

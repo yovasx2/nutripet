@@ -11,6 +11,7 @@ services:
       # Switch to development mode for code auto-reloading
       RAILS_ENV: development
       RAILS_LOG_LEVEL: debug
+      DATABASE_URL: postgres://nutripet:nutripet@postgres:5432/nutripet_development
       # Allow frontend dev server origin
       CORS_ORIGINS: http://localhost:5173
     # Override production command to use Rails dev server with reloading.
@@ -36,6 +37,12 @@ services:
     ports:
       # Use a different host port to avoid conflicts
       - "5173:3000"
+
+  postgres:
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: nutripet_development
 
 volumes:
   frontend_node_modules:

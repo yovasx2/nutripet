@@ -34,6 +34,7 @@ export default function AddPetScreen() {
   const [reproductiveStatus, setReproductiveStatus] = useState<'none' | 'gestating' | 'lactating'>('none');
   const [showEccModal, setShowEccModal] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSaving, setIsSaving] = useState(false);
 
   // Pre-fill from the pet being edited
   useEffect(() => {
@@ -81,11 +82,12 @@ export default function AddPetScreen() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!validateStep()) return;
-    if (step < 3) setStep(step + 1);
-    else {
-      setPet({
+    if (step < 3) { setStep(step + 1); return; }
+    setIsSaving(true);
+    try {
+      await setPet({
         id: editId,
         name: name.trim(),
         breed,
@@ -99,6 +101,10 @@ export default function AddPetScreen() {
         reproductiveStatus,
       });
       navigate(editId ? '/dashboard' : '/kibble');
+    } catch (err) {
+      setErrors({ submit: err instanceof Error ? err.message : 'Error al guardar' });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -316,15 +322,18 @@ export default function AddPetScreen() {
             </div>
           </div>
         )}
-        <div className="flex gap-3 mt-8">
+        {errors.submit && (
+          <p className="mt-4 text-sm text-terracotta text-center">{errors.submit}</p>
+        )}
+        <div className="flex gap-3 mt-4">
           {step > 1 && (
-            <button onClick={() => setStep(step - 1)} className="flex-1 py-3 rounded-full border border-border-subtle text-espresso font-medium text-sm hover:bg-white transition-all duration-200">
+            <button onClick={() => setStep(step - 1)} disabled={isSaving} className="flex-1 py-3 rounded-full border border-border-subtle text-espresso font-medium text-sm hover:bg-white transition-all duration-200 disabled:opacity-50">
               Atrás
             </button>
           )}
-          <button onClick={handleNext} className="flex-1 py-3 rounded-full bg-terracotta text-white font-medium text-sm hover:bg-terracotta-dark hover:shadow-glow transition-all duration-200 flex items-center justify-center gap-2">
-            {step === 3 ? (petToEdit ? 'Guardar cambios' : 'Continuar') : 'Siguiente'}
-            <ChevronRight className="w-4 h-4" />
+          <button onClick={handleNext} disabled={isSaving} className="flex-1 py-3 rounded-full bg-terracotta text-white font-medium text-sm hover:bg-terracotta-dark hover:shadow-glow transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-70">
+            {isSaving ? 'Guardando…' : step === 3 ? (petToEdit ? 'Guardar cambios' : 'Continuar') : 'Siguiente'}
+            {!isSaving && <ChevronRight className="w-4 h-4" />}
           </button>
         </div>
       </div>

@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     get "me", to: "me#show"
   end
 
+  resources :pets, only: [:index, :create, :update, :destroy]
+
   get "up" => "rails/health#show", as: :rails_health_check
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
