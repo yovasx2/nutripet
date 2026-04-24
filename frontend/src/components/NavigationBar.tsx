@@ -24,7 +24,7 @@ export default function NavigationBar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { pet } = usePet();
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
 
   const isLanding = location.pathname === '/';
   const isAuthPage = ['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname);
@@ -83,7 +83,7 @@ export default function NavigationBar() {
         </Link>
 
         {/* Desktop center links */}
-        {!isAuthPage && (
+        {!isAuthPage && !isLoading && (
           <div className="hidden md:flex items-center gap-8">
             {isLanding
               ? landingLinks.map(link => (
@@ -107,7 +107,7 @@ export default function NavigationBar() {
         )}
 
         {/* Desktop right side */}
-        {!isAuthPage && (
+        {!isAuthPage && !isLoading && (
           <div className="hidden md:flex items-center gap-3">
             {user ? (
               <>
@@ -175,7 +175,7 @@ export default function NavigationBar() {
       </div>
 
       {/* Mobile menu */}
-      {mobileOpen && !isAuthPage && (
+      {mobileOpen && !isAuthPage && !isLoading && (
         <div className="md:hidden bg-white/98 backdrop-blur-[24px] border-t border-border-subtle px-6 py-4 space-y-1">
           {/* Context nav links */}
           {isLanding

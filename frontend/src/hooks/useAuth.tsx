@@ -27,6 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const data = await apiFetch("/users/me");
       setUser(data);
     } catch {
+      removeToken();
       setUser(null);
     }
   }, []);

@@ -41,6 +41,7 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
     ...options,
     headers: {
       "Content-Type": "application/json",
+      "Accept": "application/json",
       ...authHeaders(),
       ...(options.headers || {}),
     },
