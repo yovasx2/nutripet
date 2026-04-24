@@ -1,0 +1,41 @@
+# Development override — hot reload without rebuilding images.
+# Docker Compose merges this automatically with docker-compose.yml.
+# Run: docker compose up
+
+services:
+  backend:
+    volumes:
+      # Mount source code so Rails sees changes immediately
+      - ./backend:/app
+    environment:
+      # Switch to development mode for code auto-reloading
+      RAILS_ENV: development
+      RAILS_LOG_LEVEL: debug
+      # Allow frontend dev server origin
+      CORS_ORIGINS: http://localhost:5173
+    # Override production command to use Rails dev server with reloading.
+    # db:prepare is handled automatically by bin/docker-entrypoint.
+    command: >
+      sh -c "rm -f tmp/pids/server.pid && ./bin/rails server -b 0.0.0.0 -p 3001"
+
+  frontend:
+    # Skip the static nginx build; use dev Dockerfile with explicit npm install
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      # Keep container's own node_modules so host OS doesn't matter
+      - frontend_node_modules:/app/node_modules
+    environment:
+      # Browser calls backend directly on exposed host port
+      VITE_API_URL: http://localhost:3001
+    command: >
+      sh -c "npm install && npm run dev -- --host"
+    ports:
+      # Use a different host port to avoid conflicts
+      - "5173:3000"
+
+volumes:
+  frontend_node_modules:

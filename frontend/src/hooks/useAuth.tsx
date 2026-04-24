@@ -12,7 +12,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, passwordConfirmation: string) => Promise<void>;
+  register: (email: string, password: string, passwordConfirmation: string, name?: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -44,10 +44,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(res.data);
   }, []);
 
-  const register = useCallback(async (email: string, password: string, passwordConfirmation: string) => {
+  const register = useCallback(async (email: string, password: string, passwordConfirmation: string, name?: string) => {
+    const payload: Record<string, string> = { email, password, password_confirmation: passwordConfirmation };
+    if (name?.trim()) payload.name = name.trim();
     const res = await apiFetch("/register", {
       method: "POST",
-      body: JSON.stringify({ user: { email, password, password_confirmation: passwordConfirmation } }),
+      body: JSON.stringify({ user: payload }),
     });
     if (res.token) setToken(res.token);
     setUser(res.data);

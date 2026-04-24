@@ -1,7 +1,8 @@
 # Create a test user
-User.find_or_create_by!(email: "test@nutripet.com") do |user|
-  user.password = "password123"
-  user.password_confirmation = "password123"
+User.find_or_create_by!(email: "user@nutripet.com") do |user|
+  user.name = "Carlos Pérez"
+  user.password = "user1234"
+  user.password_confirmation = "user1234"
 end
 
-puts "Seeded 1 test user: test@nutripet.com / password123"
+puts "Seeded 1 test user: user@nutripet.com / user1234"

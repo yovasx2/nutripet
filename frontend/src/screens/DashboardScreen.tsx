@@ -7,7 +7,7 @@ import { Dog, Utensils, Leaf, FileText, ChevronRight, Plus, TrendingUp, Shield }
 
 export default function DashboardScreen() {
   const navigate = useNavigate();
-  const { pet, selectedKibbleId } = usePet();
+  const { pets, pet, activePetId, setActivePetId, selectedKibbleId } = usePet();
 
   const selectedKibble = selectedKibbleId ? kibbles.find(k => k.id === selectedKibbleId) : null;
   const analysis = useMemo(() => {
@@ -18,6 +18,33 @@ export default function DashboardScreen() {
   return (
     <div className="min-h-[100dvh] bg-cream pt-20 pb-12">
       <div className="max-w-[800px] mx-auto px-4">
+        {/* Pet switcher — visible when there are multiple pets or at least one */}
+        {pets.length > 0 && (
+          <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-1 -mx-1 px-1">
+            {pets.map(p => (
+              <button
+                key={p.id}
+                onClick={() => setActivePetId(p.id)}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all shrink-0 ${
+                  p.id === activePetId
+                    ? 'bg-terracotta text-white shadow-sm'
+                    : 'bg-white border border-border-subtle text-taupe hover:border-terracotta hover:text-terracotta'
+                }`}
+              >
+                <Dog className="w-3.5 h-3.5" />
+                {p.name}
+              </button>
+            ))}
+            <button
+              onClick={() => navigate('/add-pet')}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap shrink-0 bg-white border border-dashed border-border-subtle text-warm-gray hover:border-terracotta hover:text-terracotta transition-all"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Agregar
+            </button>
+          </div>
+        )}
+
         {pet && <PetHeader title={`Perfil de ${pet.name}`} />}
 
         {!pet && (

@@ -1,8 +1,10 @@
 #!/bin/bash -e
 
-# If running the rails server then create or migrate existing database
-if [ "${1}" == "bundle" ] && [ "${2}" == "exec" ] && [ "${3}" == "puma" ]; then
+# Auto-run db:prepare (create DB + run migrations) whenever a Rails server starts.
+# Covers production (bundle exec puma), development (rails server), and
+# any wrapper command (sh -c "... rails server ...").
+if echo "$*" | grep -Eq "(puma|rails server)"; then
   ./bin/rails db:prepare
 fi
 
-exec "${@}"
+exec "$@"

@@ -12,7 +12,7 @@ module Users
       }, status: :ok
     end
 
-    def respond_to_on_destroy
+    def respond_to_on_destroy(_resource = nil)
       if current_user
         render json: {
           status: 200,

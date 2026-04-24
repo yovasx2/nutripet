@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { validateRegister } from '@/lib/validators';
@@ -10,25 +10,32 @@ import { AlertCircle } from 'lucide-react';
 
 export default function RegisterScreen() {
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, user } = useAuth();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [user, navigate]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const validationError = validateRegister(email, password, passwordConfirmation);
+    const validationError = validateRegister(email, password, passwordConfirmation, name);
     if (validationError) {
       setError(validationError);
       return;
     }
     setLoading(true);
     try {
-      await register(email, password, passwordConfirmation);
-      navigate('/dashboard');
+      await register(email, password, passwordConfirmation, name);
+      navigate('/dashboard', { replace: true });
     } catch (err: any) {
       setError(err.message || 'Error al registrarse');
     } finally {
@@ -55,6 +62,18 @@ export default function RegisterScreen() {
                 {error}
               </div>
             )}
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-espresso text-sm font-medium">Nombre</Label>
+              <Input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                placeholder="Tu nombre"
+                className="w-full px-4 py-3 rounded-xl border border-border-subtle bg-white focus:border-terracotta focus:ring-terracotta/20"
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="email" className="text-espresso text-sm font-medium">Correo electrónico</Label>
               <Input

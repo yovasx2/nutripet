@@ -37,7 +37,7 @@ export default function PetHeader({ title, subtitle }: PetHeaderProps) {
           {title || pet.name}
         </h1>
         <button
-          onClick={() => navigate('/add-pet')}
+          onClick={() => navigate(`/add-pet?edit=${pet.id}`)}
           className="p-2.5 rounded-full text-warm-gray hover:text-terracotta hover:bg-terracotta/5 transition-all"
           aria-label={`Editar perfil de ${pet.name}`}
           title="Editar perfil"

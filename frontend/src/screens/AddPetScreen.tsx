@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { usePet } from '../context/PetContext';
 import { ChevronRight, Dog, Calendar, Home, Footprints, Zap, HelpCircle, X, Mars, Venus } from 'lucide-react';
 
@@ -16,7 +16,12 @@ breeds.push('Mestizo (Sin raza definida)', 'Otra');
 
 export default function AddPetScreen() {
   const navigate = useNavigate();
-  const { pet, setPet } = usePet();
+  const [searchParams] = useSearchParams();
+  const { pets, setPet } = usePet();
+
+  const editId = searchParams.get('edit') ?? undefined;
+  const petToEdit = editId ? pets.find(p => p.id === editId) : undefined;
+
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [breed, setBreed] = useState('');
@@ -30,20 +35,21 @@ export default function AddPetScreen() {
   const [showEccModal, setShowEccModal] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Pre-fill from existing pet data when editing
+  // Pre-fill from the pet being edited
   useEffect(() => {
-    if (pet) {
-      setName(pet.name || '');
-      setBreed(pet.breed || '');
-      setSex(pet.sex || 'male');
-      setAgeYears(pet.ageYears?.toString() || '');
-      setAgeMonths(pet.ageMonths?.toString() || '');
-      setWeight(pet.weight?.toString() || '');
-      setActivityLevel(pet.activityLevel || 'moderate');
-      setEccScore(pet.eccScore || 5);
-      setReproductiveStatus(pet.reproductiveStatus || 'none');
+    if (petToEdit) {
+      setName(petToEdit.name || '');
+      setBreed(petToEdit.breed || '');
+      setSex(petToEdit.sex || 'male');
+      setAgeYears(petToEdit.ageYears?.toString() || '');
+      setAgeMonths(petToEdit.ageMonths?.toString() || '');
+      setWeight(petToEdit.weight?.toString() || '');
+      setActivityLevel(petToEdit.activityLevel || 'moderate');
+      setEccScore(petToEdit.eccScore || 5);
+      setReproductiveStatus(petToEdit.reproductiveStatus || 'none');
     }
-  }, [pet]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editId]);
 
   // Preload ECC image
   useEffect(() => {
@@ -80,6 +86,7 @@ export default function AddPetScreen() {
     if (step < 3) setStep(step + 1);
     else {
       setPet({
+        id: editId,
         name: name.trim(),
         breed,
         sex,
@@ -91,7 +98,7 @@ export default function AddPetScreen() {
         eccScore,
         reproductiveStatus,
       });
-      navigate('/kibble');
+      navigate(editId ? '/dashboard' : '/kibble');
     }
   };
 
@@ -131,8 +138,8 @@ export default function AddPetScreen() {
                 <Dog className="w-5 h-5 text-terracotta" />
               </div>
               <div>
-                <h1 className="font-display text-2xl text-espresso">{pet ? `Editar perfil de ${pet.name}` : '¿Cómo se llama tu perro?'}</h1>
-                <p className="text-sm text-taupe">{pet ? 'Actualiza los datos de tu mascota' : 'Empecemos con lo básico'}</p>
+                <h1 className="font-display text-2xl text-espresso">{petToEdit ? `Editar perfil de ${petToEdit.name}` : '¿Cómo se llama tu perro?'}</h1>
+                <p className="text-sm text-taupe">{petToEdit ? 'Actualiza los datos de tu mascota' : 'Empecemos con lo básico'}</p>
               </div>
             </div>
             <div className="space-y-4">
@@ -316,7 +323,7 @@ export default function AddPetScreen() {
             </button>
           )}
           <button onClick={handleNext} className="flex-1 py-3 rounded-full bg-terracotta text-white font-medium text-sm hover:bg-terracotta-dark hover:shadow-glow transition-all duration-200 flex items-center justify-center gap-2">
-            {step === 3 ? (pet ? 'Guardar cambios' : 'Continuar') : 'Siguiente'}
+            {step === 3 ? (petToEdit ? 'Guardar cambios' : 'Continuar') : 'Siguiente'}
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>

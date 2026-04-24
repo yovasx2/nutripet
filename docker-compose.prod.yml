@@ -63,6 +63,9 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
+    # Nginx serves on container port 80; expose for Dockploy/Traefik
+    ports:
+      - "3000:80"
     networks:
       - nutripet-network
       - traefik-public

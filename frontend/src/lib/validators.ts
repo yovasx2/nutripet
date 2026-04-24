@@ -2,6 +2,10 @@ export function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+export function isValidPassword(password: string): boolean {
+  return password.length >= 8;
+}
+
 export function validateLogin(email: string, password: string): string | null {
   if (!email.trim()) return "El correo electrónico es obligatorio";
   if (!isValidEmail(email)) return "El correo electrónico no es válido";
@@ -12,8 +16,10 @@ export function validateLogin(email: string, password: string): string | null {
 export function validateRegister(
   email: string,
   password: string,
-  passwordConfirmation: string
+  passwordConfirmation: string,
+  name: string
 ): string | null {
+  if (!name.trim()) return "El nombre es obligatorio";
   if (!email.trim()) return "El correo electrónico es obligatorio";
   if (!isValidEmail(email)) return "El correo electrónico no es válido";
   if (!password) return "La contraseña es obligatoria";

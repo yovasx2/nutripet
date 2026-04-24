@@ -19,9 +19,9 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="flex items-center gap-2">
-              <img src="/nutripet-icon.png" alt="NutriPet" className="h-7 w-auto" />
-              <span className="font-display text-lg text-espresso">NutriPet</span>
+            <Link to="/" className="flex items-center gap-2.5">
+              <img src="/logo.png" alt="NutriPet" className="h-10 w-auto" />
+              <span className="font-display text-xl text-espresso">NutriPet</span>
             </Link>
             <p className="text-sm text-warm-gray mt-2 max-w-[200px]">
               Claridad nutricional para cada perro.

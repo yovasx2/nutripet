@@ -153,7 +153,7 @@ export default function LandingPage() {
                     <span className="text-xs text-warm-gray">Basado en AAFCO adulto</span>
                   </div>
                   {[
-                    { name: 'Proteina', value: 92, color: 'bg-olive' },
+                    { name: 'Proteína', value: 92, color: 'bg-olive' },
                     { name: 'Omega-3', value: 35, color: 'bg-terracotta' },
                     { name: 'Vitamina E', value: 58, color: 'bg-clay' },
                     { name: 'Zinc', value: 72, color: 'bg-sage' },
@@ -167,8 +167,8 @@ export default function LandingPage() {
                   ))}
                 </div>
                 <div className="mt-6 pt-4 border-t border-border-subtle flex items-center justify-between">
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-olive" /><span className="text-xs text-warm-gray">Optimo</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-sage" /><span className="text-xs text-warm-gray">Al limite</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-olive" /><span className="text-xs text-warm-gray">Óptimo</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-sage" /><span className="text-xs text-warm-gray">Al límite</span></div>
                   <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-terracotta" /><span className="text-xs text-warm-gray">Deficiente</span></div>
                 </div>
               </div>
